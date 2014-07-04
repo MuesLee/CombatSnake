@@ -5,28 +5,24 @@ import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JFrame;
 
-public class Controller implements KeyListener, Observer
-{
+public class Controller implements KeyListener {
 	private Playground playground;
 	private JFrame frame;
 
 	private Player playerOne;
 	private Snake snakeOne;
 	private Player playerTwo;
+	private Thread threadSnakeOne;
 
-	public Controller()
-	{
+	public Controller() {
 		this.setPlayerOne(new Player("Player One", null));
 		this.frame = new JFrame("COMBAT SNAKEZ!!!111");
 
 		this.snakeOne = new Snake(15);
 		playerOne.setSnake(snakeOne);
-		snakeOne.addObserver(this);
 
 		ArrayList<Snake> snakes = new ArrayList<Snake>(2);
 		snakes.add(snakeOne);
@@ -34,15 +30,15 @@ public class Controller implements KeyListener, Observer
 		this.playground = new Playground(new Dimension(500, 500), snakes);
 	}
 
-	public void showPlayground()
-	{
+	public void showPlayground() {
 		configureFrame();
 		playground.setVisible(true);
 		frame.pack();
+		Thread threadPaint = new Thread(playground);
+		threadPaint.start();
 	}
 
-	private void configureFrame()
-	{
+	private void configureFrame() {
 		Dimension size = playground.getSize();
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setSize(size.height, size.width);
@@ -53,50 +49,39 @@ public class Controller implements KeyListener, Observer
 		frame.setVisible(true);
 	}
 
-	private void checkSnakeMovement(Snake snake, Direction direction)
-	{
-
-		if (direction == null)
-		{
+	private void checkSnakeMovement(Snake snake, Direction direction) {
+		if (direction == null) {
 			return;
 		}
-		SnakePiece headWithNextPosition = snake.createHeadWithNextPosition(direction);
+		SnakePiece headWithNextPosition = snake
+				.createHeadWithNextPosition(direction);
 
-		if (pieceIsOutOfBounds(headWithNextPosition))
-		{
+		if (pieceIsOutOfBounds(headWithNextPosition)) {
 			endGame();
-		}
-		else if (headIsHittingALooseSnakePiece(headWithNextPosition))
-		{
+		} else if (headIsHittingALooseSnakePiece(headWithNextPosition)) {
 			startConsumeProcess();
-		}
-		else if (pieceCollidesWithOtherSnakePiece(headWithNextPosition))
-		{
+		} else if (pieceCollidesWithOtherSnakePiece(headWithNextPosition)) {
 			endGame();
-		}
-		else
-		{
+		} else {
 			snake.move(direction);
 		}
 	}
 
-	private void startConsumeProcess()
-	{
-		//TODO: Punkte erhöhen
+	private void startConsumeProcess() {
+		// TODO: Punkte erhöhen
 	}
 
-	private boolean pieceCollidesWithOtherSnakePiece(SnakePiece headWithNextPosition)
-	{
+	private boolean pieceCollidesWithOtherSnakePiece(
+			SnakePiece headWithNextPosition) {
 		return false;
 	}
 
-	private boolean headIsHittingALooseSnakePiece(SnakePiece headWithNextPosition)
-	{
+	private boolean headIsHittingALooseSnakePiece(
+			SnakePiece headWithNextPosition) {
 		return false;
 	}
 
-	private boolean pieceIsOutOfBounds(SnakePiece headWithNextPosition)
-	{
+	private boolean pieceIsOutOfBounds(SnakePiece headWithNextPosition) {
 		int x = headWithNextPosition.getX();
 		int y = headWithNextPosition.getY();
 		Dimension size = playground.getSize();
@@ -104,57 +89,50 @@ public class Controller implements KeyListener, Observer
 		return x < 0 || y < 0 || x > size.width || y > size.height;
 	}
 
-	private void endGame()
-	{
+	private void endGame() {
 		System.out.println("Shit's over!");
-		System.out.println("X: " + snakeOne.getHead().getX() + ", Y: " + snakeOne.getHead().getY());
+		snakeOne.setAlive(false);
+
 	}
 
-	public void setPlaygroundSize(Dimension size)
-	{
+	public void setPlaygroundSize(Dimension size) {
 		playground.setSize(size);
 	}
 
-	public Player getPlayerOne()
-	{
+	public Player getPlayerOne() {
 		return playerOne;
 	}
 
-	public void setPlayerOne(Player playerOne)
-	{
+	public void setPlayerOne(Player playerOne) {
 		this.playerOne = playerOne;
 	}
 
-	public Player getPlayerTwo()
-	{
+	public Player getPlayerTwo() {
 		return playerTwo;
 	}
 
-	public void setPlayerTwo(Player playerTwo)
-	{
+	public void setPlayerTwo(Player playerTwo) {
 		this.playerTwo = playerTwo;
 	}
 
-	public void keyPressed(KeyEvent e)
-	{
+	public void keyPressed(KeyEvent e) {
 		char keyChar = e.getKeyChar();
 		Direction direction = null;
-		switch (keyChar)
-		{
-			case 'w':
-				direction = Direction.UP;
+		switch (keyChar) {
+		case 'w':
+			direction = Direction.UP;
 			break;
-			case 's':
-				direction = Direction.DOWN;
+		case 's':
+			direction = Direction.DOWN;
 			break;
-			case 'a':
-				direction = Direction.LEFT;
+		case 'a':
+			direction = Direction.LEFT;
 			break;
-			case 'd':
-				direction = Direction.RIGHT;
+		case 'd':
+			direction = Direction.RIGHT;
 			break;
 
-			default:
+		default:
 			break;
 		}
 
@@ -162,33 +140,20 @@ public class Controller implements KeyListener, Observer
 		snake.setDirection(direction);
 	}
 
-	public void startSnakeOne()
-	{
+	public void startSnakeOne() {
 		Snake snake = playerOne.getSnake();
 
-		Thread thread = new Thread(snake);
-		thread.start();
+		threadSnakeOne = new Thread(snake);
+		threadSnakeOne.start();
 	}
 
-	public void keyReleased(KeyEvent e)
-	{
+	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void keyTyped(KeyEvent e)
-	{
+	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-
-	}
-
-	public void update(Observable arg0, Object arg1)
-	{
-		if (arg0 instanceof Snake)
-		{
-			checkSnakeMovement(snakeOne, snakeOne.getDirection());
-			playground.repaint();
-		}
 
 	}
 }
