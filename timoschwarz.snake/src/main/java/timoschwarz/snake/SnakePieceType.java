@@ -2,7 +2,7 @@ package timoschwarz.snake;
 
 public enum SnakePieceType {
 
-	BODY("BODY"), HEAD("HEAD"), TAIL("TAIL");
+	BODY("BODY"), HEAD("HEAD"), TAIL("TAIL"), LOOSE("LOOSE");
 
 	private String name;
 

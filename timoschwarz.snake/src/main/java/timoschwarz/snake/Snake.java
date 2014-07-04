@@ -44,26 +44,7 @@ public class Snake
 
 	public void move(Direction direction)
 	{
-
-		SnakePiece headWithNextPosition = null;
-
-		switch (direction)
-		{
-			case UP:
-				headWithNextPosition = createNextHead(0, -1);
-			break;
-			case DOWN:
-				headWithNextPosition = createNextHead(0, 1);
-			break;
-			case RIGHT:
-				headWithNextPosition = createNextHead(1, 0);
-			break;
-			case LEFT:
-				headWithNextPosition = createNextHead(-1, 0);
-			break;
-		}
-
-		moveSnakePieces(headWithNextPosition);
+		moveSnakePieces(createHeadWithNextPosition(direction));
 	}
 
 	private void moveSnakePieces(SnakePiece headWithNextPosition)
@@ -93,13 +74,14 @@ public class Snake
 		currentSnakePiece.setY(givenSnakePiece.getY());
 	}
 
-	private SnakePiece createNextHead(int difX, int difY)
+	public SnakePiece createHeadWithNextPosition(Direction direction)
 	{
 		SnakePiece currentHead = getPieces().get(0);
 		SnakePiece nextHead = currentHead.clone();
+		Diff diff = direction.getDifForDirection();
 
-		int x = currentHead.getX() + difX;
-		int y = currentHead.getY() + difY;
+		int x = currentHead.getX() + diff.getDifX();
+		int y = currentHead.getY() + diff.getDifY();
 		nextHead.setX(x);
 		nextHead.setY(y);
 

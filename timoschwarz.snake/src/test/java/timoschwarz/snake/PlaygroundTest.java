@@ -13,7 +13,7 @@ public class PlaygroundTest
 	public void canCreatePlaygroundWithSizeOf100to100() throws Exception
 	{
 		Dimension expectedSize = new Dimension(100, 100);
-		Playground playground = new Playground(expectedSize);
+		Playground playground = new Playground(expectedSize, null);
 		Dimension actualSize = playground.getSize();
 		assertEquals(expectedSize, actualSize);
 	}
