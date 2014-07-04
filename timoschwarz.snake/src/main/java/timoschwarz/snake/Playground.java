@@ -8,7 +8,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-public class Playground extends JPanel
+public class Playground extends JPanel implements Runnable
 {
 	private static final long serialVersionUID = -4762811280627220936L;
 	private static final int PAINT_SIZE = 15;
@@ -56,6 +56,23 @@ public class Playground extends JPanel
 	public void setSize(Dimension size)
 	{
 		this.size = size;
+	}
+
+	public void run()
+	{
+		while (true)
+		{
+			try
+			{
+				Thread.sleep(50);
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			repaint();
+		}
 	}
 
 }

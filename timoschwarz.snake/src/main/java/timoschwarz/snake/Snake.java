@@ -2,11 +2,15 @@ package timoschwarz.snake;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
 
-public class Snake
+public class Snake extends Observable implements Runnable
 {
+
+	private Direction direction = Direction.RIGHT;
 	private int size;
 	private LinkedList<SnakePiece> pieces;
+	private boolean isAlive = true;
 
 	public Snake(int size)
 	{
@@ -45,6 +49,8 @@ public class Snake
 	public void move(Direction direction)
 	{
 		moveSnakePieces(createHeadWithNextPosition(direction));
+		setChanged();
+		notifyObservers();
 	}
 
 	private void moveSnakePieces(SnakePiece headWithNextPosition)
@@ -112,6 +118,37 @@ public class Snake
 	public void setPieces(LinkedList<SnakePiece> pieces)
 	{
 		this.pieces = pieces;
+	}
+
+	public void run()
+	{
+		while (isAlive)
+		{
+			try
+			{
+				Thread.sleep(500);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			move(getDirection());
+		}
+	}
+
+	public Direction getDirection()
+	{
+		return direction;
+	}
+
+	public void setDirection(Direction direction)
+	{
+		this.direction = direction;
+	}
+
+	public SnakePiece getHead()
+	{
+		return pieces.get(0);
 	}
 
 }

@@ -5,15 +5,18 @@ import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JFrame;
 
-public class Controller implements KeyListener
+public class Controller implements KeyListener, Observer
 {
 	private Playground playground;
 	private JFrame frame;
 
 	private Player playerOne;
+	private Snake snakeOne;
 	private Player playerTwo;
 
 	public Controller()
@@ -21,8 +24,10 @@ public class Controller implements KeyListener
 		this.setPlayerOne(new Player("Player One", null));
 		this.frame = new JFrame("COMBAT SNAKEZ!!!111");
 
-		Snake snakeOne = new Snake(4);
+		this.snakeOne = new Snake(15);
 		playerOne.setSnake(snakeOne);
+		snakeOne.addObserver(this);
+
 		ArrayList<Snake> snakes = new ArrayList<Snake>(2);
 		snakes.add(snakeOne);
 
@@ -50,11 +55,16 @@ public class Controller implements KeyListener
 
 	private void checkSnakeMovement(Snake snake, Direction direction)
 	{
+
+		if (direction == null)
+		{
+			return;
+		}
 		SnakePiece headWithNextPosition = snake.createHeadWithNextPosition(direction);
 
-		if (!pieceIsOutOfBounds(headWithNextPosition))
+		if (pieceIsOutOfBounds(headWithNextPosition))
 		{
-			snake.move(direction);
+			endGame();
 		}
 		else if (headIsHittingALooseSnakePiece(headWithNextPosition))
 		{
@@ -66,7 +76,7 @@ public class Controller implements KeyListener
 		}
 		else
 		{
-			endGame();
+			snake.move(direction);
 		}
 	}
 
@@ -97,6 +107,7 @@ public class Controller implements KeyListener
 	private void endGame()
 	{
 		System.out.println("Shit's over!");
+		System.out.println("X: " + snakeOne.getHead().getX() + ", Y: " + snakeOne.getHead().getY());
 	}
 
 	public void setPlaygroundSize(Dimension size)
@@ -148,8 +159,15 @@ public class Controller implements KeyListener
 		}
 
 		Snake snake = playerOne.getSnake();
-		checkSnakeMovement(snake, direction);
-		playground.repaint();
+		snake.setDirection(direction);
+	}
+
+	public void startSnakeOne()
+	{
+		Snake snake = playerOne.getSnake();
+
+		Thread thread = new Thread(snake);
+		thread.start();
 	}
 
 	public void keyReleased(KeyEvent e)
@@ -161,6 +179,16 @@ public class Controller implements KeyListener
 	public void keyTyped(KeyEvent e)
 	{
 		// TODO Auto-generated method stub
+
+	}
+
+	public void update(Observable arg0, Object arg1)
+	{
+		if (arg0 instanceof Snake)
+		{
+			checkSnakeMovement(snakeOne, snakeOne.getDirection());
+			playground.repaint();
+		}
 
 	}
 }
