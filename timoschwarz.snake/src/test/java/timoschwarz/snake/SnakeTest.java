@@ -107,6 +107,77 @@ public class SnakeTest
 	}
 
 	@Test
+	public void snakeMovesCorrectlyUp() throws Exception
+	{
+		LinkedList<SnakePiece> pieces = new LinkedList<SnakePiece>();
+		pieces.add(new SnakePiece(1, 4, SnakePieceType.HEAD));
+		pieces.add(new SnakePiece(1, 3, SnakePieceType.BODY));
+		pieces.add(new SnakePiece(1, 2, SnakePieceType.BODY));
+		pieces.add(new SnakePiece(1, 1, SnakePieceType.TAIL));
+
+		snake.setPieces(pieces);
+		snake.move(Direction.DOWN);
+
+		LinkedList<SnakePiece> expectedPieces = new LinkedList<SnakePiece>();
+		expectedPieces.add(new SnakePiece(1, 5, SnakePieceType.HEAD));
+		expectedPieces.add(new SnakePiece(1, 4, SnakePieceType.BODY));
+		expectedPieces.add(new SnakePiece(1, 3, SnakePieceType.BODY));
+		expectedPieces.add(new SnakePiece(1, 2, SnakePieceType.TAIL));
+
+		List<SnakePiece> actualPieces = snake.getPieces();
+		assertEquals(expectedPieces, actualPieces);
+
+	}
+
+	@Test
+	public void snakeMovesCorrectlyRight() throws Exception
+	{
+		LinkedList<SnakePiece> pieces = new LinkedList<SnakePiece>();
+		pieces.add(new SnakePiece(4, 4, SnakePieceType.HEAD));
+		pieces.add(new SnakePiece(3, 4, SnakePieceType.BODY));
+		pieces.add(new SnakePiece(2, 4, SnakePieceType.BODY));
+		pieces.add(new SnakePiece(1, 4, SnakePieceType.TAIL));
+
+		snake.setPieces(pieces);
+
+		LinkedList<SnakePiece> expectedPieces = new LinkedList<SnakePiece>();
+		expectedPieces.add(new SnakePiece(5, 4, SnakePieceType.HEAD));
+		expectedPieces.add(new SnakePiece(4, 4, SnakePieceType.BODY));
+		expectedPieces.add(new SnakePiece(3, 4, SnakePieceType.BODY));
+		expectedPieces.add(new SnakePiece(2, 4, SnakePieceType.TAIL));
+
+		snake.move(Direction.RIGHT);
+
+		List<SnakePiece> actualPieces = snake.getPieces();
+		assertEquals(expectedPieces, actualPieces);
+
+	}
+
+	@Test
+	public void snakeMovesCorrectlyLeft() throws Exception
+	{
+		LinkedList<SnakePiece> pieces = new LinkedList<SnakePiece>();
+		pieces.add(new SnakePiece(4, 4, SnakePieceType.HEAD));
+		pieces.add(new SnakePiece(3, 4, SnakePieceType.BODY));
+		pieces.add(new SnakePiece(2, 4, SnakePieceType.BODY));
+		pieces.add(new SnakePiece(1, 4, SnakePieceType.TAIL));
+
+		snake.setPieces(pieces);
+
+		LinkedList<SnakePiece> expectedPieces = new LinkedList<SnakePiece>();
+		expectedPieces.add(new SnakePiece(3, 4, SnakePieceType.HEAD));
+		expectedPieces.add(new SnakePiece(4, 4, SnakePieceType.BODY));
+		expectedPieces.add(new SnakePiece(3, 4, SnakePieceType.BODY));
+		expectedPieces.add(new SnakePiece(2, 4, SnakePieceType.TAIL));
+
+		snake.move(Direction.LEFT);
+
+		List<SnakePiece> actualPieces = snake.getPieces();
+		assertEquals(expectedPieces, actualPieces);
+
+	}
+
+	@Test
 	public void snakeIsCorrectlyPlacedInitially() throws Exception
 	{
 		LinkedList<SnakePiece> expectedPieces = new LinkedList<SnakePiece>();

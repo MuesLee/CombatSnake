@@ -7,7 +7,6 @@ public class Snake
 {
 	private int size;
 	private LinkedList<SnakePiece> pieces;
-	private SnakePiece head;
 
 	public Snake(int size)
 	{
@@ -28,8 +27,7 @@ public class Snake
 
 			if (i == 0)
 			{
-				head = new SnakePiece(x, y, SnakePieceType.HEAD);
-				getPieces().add(head);
+				getPieces().add(new SnakePiece(x, y, SnakePieceType.HEAD));
 			}
 			else if (i == size - 1)
 			{
@@ -47,28 +45,28 @@ public class Snake
 	public void move(Direction direction)
 	{
 
-		SnakePiece nextHead = null;
+		SnakePiece headWithNextPosition = null;
 
 		switch (direction)
 		{
 			case UP:
-				nextHead = createNextHead(0, -1);
+				headWithNextPosition = createNextHead(0, -1);
 			break;
 			case DOWN:
-				nextHead = createNextHead(0, 1);
+				headWithNextPosition = createNextHead(0, 1);
 			break;
 			case RIGHT:
-				nextHead = createNextHead(1, 0);
+				headWithNextPosition = createNextHead(1, 0);
 			break;
 			case LEFT:
-				nextHead = createNextHead(-1, 0);
+				headWithNextPosition = createNextHead(-1, 0);
 			break;
 		}
 
-		moveRestOfSnake(nextHead);
+		moveSnakePieces(headWithNextPosition);
 	}
 
-	private void moveRestOfSnake(SnakePiece nextHead)
+	private void moveSnakePieces(SnakePiece headWithNextPosition)
 	{
 		SnakePiece previousSnakePiece = null;
 
@@ -77,7 +75,7 @@ public class Snake
 			if (i == 0)
 			{
 				previousSnakePiece = pieces.get(i).clone();
-				moveSnakePieceToPositionOfGivenSnakePiece(i, nextHead);
+				moveSnakePieceToPositionOfGivenSnakePiece(i, headWithNextPosition);
 			}
 			else
 			{
@@ -97,10 +95,11 @@ public class Snake
 
 	private SnakePiece createNextHead(int difX, int difY)
 	{
-		SnakePiece nextHead = head.clone();
+		SnakePiece currentHead = getPieces().get(0);
+		SnakePiece nextHead = currentHead.clone();
 
-		int x = head.getX() + difX;
-		int y = head.getY() + difY;
+		int x = currentHead.getX() + difX;
+		int y = currentHead.getY() + difY;
 		nextHead.setX(x);
 		nextHead.setY(y);
 
