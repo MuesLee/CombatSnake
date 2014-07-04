@@ -2,6 +2,7 @@ package timoschwarz.snake;
 
 import static org.junit.Assert.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Before;
@@ -88,4 +89,35 @@ public class SnakeTest
 		assertEquals(expectedBodyCount, actualBodyCount);
 
 	}
+
+	@Test
+	public void snakeMovesCorrectlyDown() throws Exception
+	{
+		LinkedList<SnakePiece> expectedPieces = new LinkedList<SnakePiece>();
+		expectedPieces.add(new SnakePiece(4, 1, SnakePieceType.HEAD));
+		expectedPieces.add(new SnakePiece(4, 0, SnakePieceType.BODY));
+		expectedPieces.add(new SnakePiece(3, 0, SnakePieceType.BODY));
+		expectedPieces.add(new SnakePiece(2, 0, SnakePieceType.TAIL));
+
+		snake.move(Direction.DOWN);
+
+		List<SnakePiece> actualPieces = snake.getPieces();
+		assertEquals(expectedPieces, actualPieces);
+
+	}
+
+	@Test
+	public void snakeIsCorrectlyPlacedInitially() throws Exception
+	{
+		LinkedList<SnakePiece> expectedPieces = new LinkedList<SnakePiece>();
+		expectedPieces.add(new SnakePiece(4, 0, SnakePieceType.HEAD));
+		expectedPieces.add(new SnakePiece(3, 0, SnakePieceType.BODY));
+		expectedPieces.add(new SnakePiece(2, 0, SnakePieceType.BODY));
+		expectedPieces.add(new SnakePiece(1, 0, SnakePieceType.TAIL));
+
+		List<SnakePiece> actualPieces = snake.getPieces();
+		assertEquals(expectedPieces, actualPieces);
+
+	}
+
 }
