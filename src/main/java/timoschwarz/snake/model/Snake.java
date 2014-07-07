@@ -44,15 +44,13 @@ public class Snake extends Observable implements Runnable
 			{
 				getPieces().add(new SnakePiece(x, y, SnakePieceType.BODY));
 			}
-
 		}
-
 	}
 
 	public void move(Direction direction)
 	{
 		moveSnakePieces(createHeadWithNextPosition(direction));
-		System.out.println("Head X: " + getHead().getX() + "Y: " + getHead().getY());
+		//System.out.println("Head X: " + getHead().getX() + "Y: " + getHead().getY());
 	}
 
 	private void moveSnakePieces(SnakePiece headWithNextPosition)
@@ -160,7 +158,7 @@ public class Snake extends Observable implements Runnable
 
 	public SnakePiece getHead()
 	{
-		return pieces.get(0);
+		return pieces.getFirst();
 	}
 
 	public boolean isAlive()
