@@ -2,8 +2,6 @@ package timoschwarz.snake.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
@@ -13,9 +11,8 @@ import javax.swing.JFrame;
 import timoschwarz.snake.model.Player;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.view.Playground;
-import timoschwarz.util.Direction;
 
-public class Controller implements KeyListener, Observer
+public class Controller implements Observer
 {
 	private Playground playground;
 	private JFrame frame;
@@ -63,7 +60,8 @@ public class Controller implements KeyListener, Observer
 		frame.setSize(size.height, size.width);
 		frame.setLayout(new BorderLayout());
 		frame.setLocationRelativeTo(null);
-		frame.addKeyListener(this);
+		frame.addKeyListener(playerOne);
+		frame.addKeyListener(playerTwo);
 		frame.add(playground, BorderLayout.CENTER);
 		frame.setVisible(true);
 	}
@@ -103,33 +101,6 @@ public class Controller implements KeyListener, Observer
 		this.playerTwo = playerTwo;
 	}
 
-	public void keyPressed(KeyEvent e)
-	{
-		char keyChar = e.getKeyChar();
-		Direction direction = null;
-		switch (keyChar)
-		{
-			case 'w':
-				direction = Direction.UP;
-			break;
-			case 's':
-				direction = Direction.DOWN;
-			break;
-			case 'a':
-				direction = Direction.LEFT;
-			break;
-			case 'd':
-				direction = Direction.RIGHT;
-			break;
-
-			default:
-			break;
-		}
-
-		Snake snake = playerOne.getSnake();
-		snake.setDirection(direction);
-	}
-
 	private void startSnakeOne()
 	{
 		Snake snake = playerOne.getSnake();
@@ -155,18 +126,6 @@ public class Controller implements KeyListener, Observer
 		Snake snake = playerTwo.getSnake();
 		Thread snakeThread = new Thread(snake);
 		snakeThread.start();
-
-	}
-
-	public void keyReleased(KeyEvent e)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	public void keyTyped(KeyEvent e)
-	{
-		// TODO Auto-generated method stub
 
 	}
 

@@ -95,7 +95,7 @@ public class Referee extends Observable implements Runnable
 
 	public void run()
 	{
-		while (gameIsActive())
+		while (isActive())
 		{
 			try
 			{
@@ -104,13 +104,12 @@ public class Referee extends Observable implements Runnable
 			}
 			catch (InterruptedException e)
 			{
-				e.printStackTrace();
 			}
 		}
 
 	}
 
-	public boolean gameIsActive()
+	public boolean isActive()
 	{
 		return isActive;
 	}
