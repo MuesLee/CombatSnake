@@ -1,31 +1,16 @@
 package timoschwarz.snake.model;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
-import timoschwarz.util.Direction;
-import timoschwarz.util.KeyboardSettings;
-
-public class Player implements KeyListener
+public class Player
 {
 	private String name;
 	private int points;
 	private Snake snake;
-	private KeyboardSettings keyboardSettings;
+	private boolean isAlive = true;
 
-	public Player(String name, KeyboardSettings keyboardSettings)
+	public Player(String name)
 	{
 		this.name = name;
-		this.keyboardSettings = keyboardSettings;
-	}
-
-	public void keyPressed(KeyEvent e)
-	{
-		int keyCode = e.getKeyCode();
-
-		Direction direction = KeyboardSettings.getDirectionForKey(keyCode);
-
-		snake.setDirection(direction);
 	}
 
 	public String getName()
@@ -53,16 +38,6 @@ public class Player implements KeyListener
 		this.points += points;
 	}
 
-	public KeyboardSettings getKeyboardSettings()
-	{
-		return keyboardSettings;
-	}
-
-	public void setKeyboardSettings(KeyboardSettings keyboardSettings)
-	{
-		this.keyboardSettings = keyboardSettings;
-	}
-
 	public Snake getSnake()
 	{
 		return snake;
@@ -73,14 +48,14 @@ public class Player implements KeyListener
 		this.snake = snake;
 	}
 
-	public void keyReleased(KeyEvent arg0)
+	public boolean isAlive()
 	{
-
+		return isAlive;
 	}
 
-	public void keyTyped(KeyEvent arg0)
+	public void setAlive(boolean isAlive)
 	{
-
+		this.isAlive = isAlive;
 	}
 
 }

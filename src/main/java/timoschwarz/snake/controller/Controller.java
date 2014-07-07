@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import timoschwarz.snake.model.Player;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.view.Playground;
+import timoschwarz.util.GameKeyBindings;
 
 public class Controller implements Observer
 {
@@ -25,8 +26,8 @@ public class Controller implements Observer
 	public Controller()
 	{
 
-		this.setPlayerOne(new Player("Player One", null));
-		this.setPlayerTwo(new Player("Player Two", null));
+		this.setPlayerOne(new Player("Player One"));
+		this.setPlayerTwo(new Player("Player Two"));
 		this.frame = new JFrame("COMBAT SNAKEZ!!!111");
 
 		Snake snakeOne = new Snake(15);
@@ -42,6 +43,7 @@ public class Controller implements Observer
 		this.playground = new Playground(new Dimension(500, 500), snakes);
 		this.setReferee(new Referee(playground, snakes));
 		referee.addObserver(this);
+		GameKeyBindings keyBindings = new GameKeyBindings(playground, snakeOne, snakeTwo);
 	}
 
 	public void showPlayground()
@@ -60,8 +62,6 @@ public class Controller implements Observer
 		frame.setSize(size.height, size.width);
 		frame.setLayout(new BorderLayout());
 		frame.setLocationRelativeTo(null);
-		frame.addKeyListener(playerOne);
-		frame.addKeyListener(playerTwo);
 		frame.add(playground, BorderLayout.CENTER);
 		frame.setVisible(true);
 	}

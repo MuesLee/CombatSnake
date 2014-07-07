@@ -23,6 +23,8 @@ public class Playground extends JPanel implements Runnable
 
 	public Playground(Dimension size, LinkedList<Snake> snakes)
 	{
+		super(true);
+		setIgnoreRepaint(true);
 		this.snakes = snakes;
 		this.setSize(size);
 		this.setPreferredSize(size);

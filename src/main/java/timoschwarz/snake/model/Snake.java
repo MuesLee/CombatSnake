@@ -47,13 +47,13 @@ public class Snake extends Observable implements Runnable
 		}
 	}
 
-	public void move(Direction direction)
+	public synchronized void move(Direction direction)
 	{
 		moveSnakePieces(createHeadWithNextPosition(direction));
 		//System.out.println("Head X: " + getHead().getX() + "Y: " + getHead().getY());
 	}
 
-	private void moveSnakePieces(SnakePiece headWithNextPosition)
+	private synchronized void moveSnakePieces(SnakePiece headWithNextPosition)
 	{
 		if (headWithNextPosition == null)
 		{
@@ -78,14 +78,15 @@ public class Snake extends Observable implements Runnable
 		}
 	}
 
-	private void moveSnakePieceToPositionOfGivenSnakePiece(int indexOfMovingSnakePiece, SnakePiece givenSnakePiece)
+	private synchronized void moveSnakePieceToPositionOfGivenSnakePiece(int indexOfMovingSnakePiece,
+		SnakePiece givenSnakePiece)
 	{
 		SnakePiece currentSnakePiece = getPieces().get(indexOfMovingSnakePiece);
 		currentSnakePiece.setX(givenSnakePiece.getX());
 		currentSnakePiece.setY(givenSnakePiece.getY());
 	}
 
-	public SnakePiece createHeadWithNextPosition(Direction direction)
+	public synchronized SnakePiece createHeadWithNextPosition(Direction direction)
 	{
 		if (direction == null)
 		{
@@ -117,7 +118,6 @@ public class Snake extends Observable implements Runnable
 	public void addTail()
 	{
 		this.size++;
-
 	}
 
 	public LinkedList<SnakePiece> getPieces()
@@ -136,10 +136,11 @@ public class Snake extends Observable implements Runnable
 		{
 			try
 			{
-				Thread.sleep(millis);
+				Thread.sleep(100);
 			}
 			catch (InterruptedException e)
 			{
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			move(getDirection());
