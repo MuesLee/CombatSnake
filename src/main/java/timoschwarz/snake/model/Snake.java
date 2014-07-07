@@ -1,13 +1,13 @@
 package timoschwarz.snake.model;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Observable;
 
 import timoschwarz.util.Diff;
 import timoschwarz.util.Direction;
 
-public class Snake extends Observable implements Runnable {
+public class Snake extends Observable implements Runnable
+{
 
 	private Direction direction = Direction.RIGHT;
 	private int size;
@@ -15,25 +15,33 @@ public class Snake extends Observable implements Runnable {
 	private boolean isAlive = true;
 	private int millis = 100;
 
-	public Snake(int size) {
+	public Snake(int size)
+	{
 		this.setSize(size);
 		initSnake();
 	}
 
-	private void initSnake() {
+	private void initSnake()
+	{
 		int x = 0;
 		int y = 0;
 
 		pieces = new LinkedList<SnakePiece>();
 
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < size; i++)
+		{
 			x = size - i;
 
-			if (i == 0) {
+			if (i == 0)
+			{
 				getPieces().add(new SnakePiece(x, y, SnakePieceType.HEAD));
-			} else if (i == size - 1) {
+			}
+			else if (i == size - 1)
+			{
 				getPieces().add(new SnakePiece(x, y, SnakePieceType.TAIL));
-			} else {
+			}
+			else
+			{
 				getPieces().add(new SnakePiece(x, y, SnakePieceType.BODY));
 			}
 
@@ -41,24 +49,30 @@ public class Snake extends Observable implements Runnable {
 
 	}
 
-	public void move(Direction direction) {
+	public void move(Direction direction)
+	{
 		moveSnakePieces(createHeadWithNextPosition(direction));
-		System.out.println("Head X: " + getHead().getX() + "Y: "
-				+ getHead().getY());
+		System.out.println("Head X: " + getHead().getX() + "Y: " + getHead().getY());
 	}
 
-	private void moveSnakePieces(SnakePiece headWithNextPosition) {
+	private void moveSnakePieces(SnakePiece headWithNextPosition)
+	{
 		if (headWithNextPosition == null)
+		{
 			return;
+		}
 
 		SnakePiece previousSnakePiece = null;
 
-		for (int i = 0; i < pieces.size(); i++) {
-			if (i == 0) {
+		for (int i = 0; i < pieces.size(); i++)
+		{
+			if (i == 0)
+			{
 				previousSnakePiece = pieces.get(i).clone();
-				moveSnakePieceToPositionOfGivenSnakePiece(i,
-						headWithNextPosition);
-			} else {
+				moveSnakePieceToPositionOfGivenSnakePiece(i, headWithNextPosition);
+			}
+			else
+			{
 				SnakePiece temp = pieces.get(i).clone();
 				moveSnakePieceToPositionOfGivenSnakePiece(i, previousSnakePiece);
 				previousSnakePiece = temp;
@@ -66,16 +80,19 @@ public class Snake extends Observable implements Runnable {
 		}
 	}
 
-	private void moveSnakePieceToPositionOfGivenSnakePiece(
-			int indexOfMovingSnakePiece, SnakePiece givenSnakePiece) {
+	private void moveSnakePieceToPositionOfGivenSnakePiece(int indexOfMovingSnakePiece, SnakePiece givenSnakePiece)
+	{
 		SnakePiece currentSnakePiece = getPieces().get(indexOfMovingSnakePiece);
 		currentSnakePiece.setX(givenSnakePiece.getX());
 		currentSnakePiece.setY(givenSnakePiece.getY());
 	}
 
-	public SnakePiece createHeadWithNextPosition(Direction direction) {
+	public SnakePiece createHeadWithNextPosition(Direction direction)
+	{
 		if (direction == null)
+		{
 			return null;
+		}
 
 		SnakePiece currentHead = getPieces().get(0);
 		SnakePiece nextHead = currentHead.clone();
@@ -89,55 +106,70 @@ public class Snake extends Observable implements Runnable {
 		return nextHead;
 	}
 
-	public int getSize() {
+	public int getSize()
+	{
 		return size;
 	}
 
-	public void setSize(int size) {
+	public void setSize(int size)
+	{
 		this.size = size;
 	}
 
-	public void addTail() {
+	public void addTail()
+	{
 		this.size++;
 
 	}
 
-	public List<SnakePiece> getPieces() {
+	public LinkedList<SnakePiece> getPieces()
+	{
 		return pieces;
 	}
 
-	public void setPieces(LinkedList<SnakePiece> pieces) {
+	public void setPieces(LinkedList<SnakePiece> pieces)
+	{
 		this.pieces = pieces;
 	}
 
-	public void run() {
-		while (isAlive()) {
-			try {
+	public void run()
+	{
+		while (isAlive())
+		{
+			try
+			{
 				Thread.sleep(millis);
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e)
+			{
 				e.printStackTrace();
 			}
 			move(getDirection());
 		}
 	}
 
-	public Direction getDirection() {
+	public Direction getDirection()
+	{
 		return direction;
 	}
 
-	public void setDirection(Direction direction) {
+	public void setDirection(Direction direction)
+	{
 		this.direction = direction;
 	}
 
-	public SnakePiece getHead() {
+	public SnakePiece getHead()
+	{
 		return pieces.get(0);
 	}
 
-	public boolean isAlive() {
+	public boolean isAlive()
+	{
 		return isAlive;
 	}
 
-	public void setAlive(boolean isAlive) {
+	public void setAlive(boolean isAlive)
+	{
 		this.isAlive = isAlive;
 	}
 
