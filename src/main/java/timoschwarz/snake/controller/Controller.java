@@ -1,4 +1,4 @@
-package timoschwarz.snake;
+package timoschwarz.snake.controller;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -7,6 +7,12 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+
+import timoschwarz.snake.model.Player;
+import timoschwarz.snake.model.Snake;
+import timoschwarz.snake.model.SnakePiece;
+import timoschwarz.snake.view.Playground;
+import timoschwarz.util.Direction;
 
 public class Controller implements KeyListener {
 	private Playground playground;

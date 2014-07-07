@@ -1,4 +1,4 @@
-package timoschwarz.snake;
+package timoschwarz.util;
 
 public enum Direction {
 	UP, DOWN, LEFT, RIGHT;

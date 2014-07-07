@@ -1,8 +1,11 @@
-package timoschwarz.snake;
+package timoschwarz.snake.model;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
+
+import timoschwarz.util.Diff;
+import timoschwarz.util.Direction;
 
 public class Snake extends Observable implements Runnable {
 

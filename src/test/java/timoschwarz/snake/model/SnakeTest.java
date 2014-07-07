@@ -1,4 +1,4 @@
-package timoschwarz.snake;
+package timoschwarz.snake.model;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,11 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import timoschwarz.snake.model.Snake;
+import timoschwarz.snake.model.SnakePiece;
+import timoschwarz.snake.model.SnakePieceType;
+import timoschwarz.util.Direction;
 
 public class SnakeTest
 {

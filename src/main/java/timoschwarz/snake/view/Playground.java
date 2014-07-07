@@ -1,4 +1,4 @@
-package timoschwarz.snake;
+package timoschwarz.snake.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+
+import timoschwarz.snake.model.Snake;
+import timoschwarz.snake.model.SnakePiece;
 
 public class Playground extends JPanel implements Runnable {
 	private static final long serialVersionUID = -4762811280627220936L;

@@ -1,4 +1,6 @@
-package timoschwarz.snake;
+package timoschwarz.snake.model;
+
+import timoschwarz.util.KeyboardSettings;
 
 
 public class Player

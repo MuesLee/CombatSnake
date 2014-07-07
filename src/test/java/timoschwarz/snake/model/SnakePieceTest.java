@@ -1,8 +1,11 @@
-package timoschwarz.snake;
+package timoschwarz.snake.model;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import timoschwarz.snake.model.SnakePiece;
+import timoschwarz.snake.model.SnakePieceType;
 
 public class SnakePieceTest
 {

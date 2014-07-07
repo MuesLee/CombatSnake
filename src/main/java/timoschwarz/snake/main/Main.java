@@ -1,4 +1,6 @@
-package timoschwarz.snake;
+package timoschwarz.snake.main;
+
+import timoschwarz.snake.controller.Controller;
 
 public class Main {
 

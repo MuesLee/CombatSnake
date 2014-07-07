@@ -1,10 +1,12 @@
-package timoschwarz.snake;
+package timoschwarz.snake.view;
 
 import static org.junit.Assert.*;
 
 import java.awt.Dimension;
 
 import org.junit.Test;
+
+import timoschwarz.snake.view.Playground;
 
 public class PlaygroundTest
 {

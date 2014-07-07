@@ -1,4 +1,4 @@
-package timoschwarz.snake;
+package timoschwarz.snake.model;
 
 public enum SnakePieceType {
 
