@@ -9,9 +9,9 @@ import javax.swing.KeyStroke;
 
 import timoschwarz.snake.model.Snake;
 
-public class GameKeyBindings
+public class KeyBindings
 {
-	public GameKeyBindings(JComponent gp, final Snake snakeOne, final Snake snakeTwo)
+	public KeyBindings(JComponent gp, final Snake snakeOne, final Snake snakeTwo)
 	{
 		//SNAKE TWO
 
