@@ -5,10 +5,13 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Playground extends JPanel
@@ -60,6 +63,8 @@ public class Playground extends JPanel
 	//Only run this in another Thread!
 	public void gameLoop()
 	{
+		System.out.println("Loop");
+
 		//This value would probably be stored elsewhere.
 		final double GAME_HERTZ = 30.0;
 		//Calculate how many ns each frame should take for our target game hertz.
@@ -129,7 +134,6 @@ public class Playground extends JPanel
 				{
 					//allow the threading system to play threads that are waiting to run.
 					Thread.yield();
-
 					//This stops the app from consuming all your CPU. It makes this slightly less accurate, but is worth it.
 					//You can remove this line and it will still work (better), your CPU just climbs on certain OSes.
 					//FYI on some OS's this can cause pretty bad stuttering. Scroll down and have a look at different peoples' solutions to this.
@@ -162,24 +166,22 @@ public class Playground extends JPanel
 
 	private void checkForCollisions()
 	{
-		if (entities.get(0).intersects(entities.get(2)) || entities.get(1).intersects(entities.get(2)))
-		{
-			System.out.println("Intersecting");
-		}
-		/*
-			//This is best used when images have transparent and non-transparent pixels (only detects pixel collisions of non-transparent pixels)
-			if (entities.get(0).checkPerPixelCollision(entities.get(2)) | entities.get(1).checkPerPixelCollision(entities.get(2))) {
-			if (entities.get(2).LEFT) {
-			entities.get(2).RIGHT = true;
-			entities.get(2).LEFT = false;
-			} else {
-			entities.get(2).LEFT = true;
-			entities.get(2).RIGHT = false;
+		Entity entity1 = entities.get(0);
+		Entity entity2 = entities.get(1);
 
-			}
-			System.out.println("Intersecting");
-			}
-			*/
+		boolean entity1Fails = entity1.intersects(entity2) || entity1.intersects(entity1);
+		boolean entity2Fails = entity2.intersects(entity1) || entity2.intersects(entity2);
+
+		if (entity1Fails)
+		{
+			running.set(false);
+			JOptionPane.showConfirmDialog(this, "GAME OVER!", "SNAKE ONE BUMPED ITS HEAD!", JOptionPane.ERROR_MESSAGE);
+		}
+		else if (entity2Fails)
+		{
+			running.set(false);
+			JOptionPane.showConfirmDialog(this, "GAME OVER!", "SNAKE TWO BUMPED ITS HEAD!", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private void updateEntityMovements(long elapsedTime)
@@ -220,7 +222,11 @@ public class Playground extends JPanel
 		{
 			if (e.isVisible())
 			{
-				g2d.drawImage(e.getCurrentImage(), (int) e.getX(), (int) e.getY(), null);
+				LinkedList<Rectangle2D.Double> rects = e.getRects();
+				for (Rectangle2D.Double rec : rects)
+				{
+					g2d.draw(rec);
+				}
 			}
 		}
 	}

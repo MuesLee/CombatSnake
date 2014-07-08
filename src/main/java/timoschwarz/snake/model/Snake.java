@@ -130,13 +130,14 @@ public class Snake extends Observable implements Runnable
 		this.pieces = pieces;
 	}
 
+	@Override
 	public void run()
 	{
 		while (isAlive())
 		{
 			try
 			{
-				Thread.sleep(100);
+				Thread.sleep(millis);
 			}
 			catch (InterruptedException e)
 			{

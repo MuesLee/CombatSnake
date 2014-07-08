@@ -21,7 +21,7 @@ public class Entity extends Animator
 	public Entity(ArrayList<BufferedImage> images, ArrayList<Long> timings, Snake snake)
 	{
 		super(images, timings);
-		this.snake = snake;
+		this.setSnake(snake);
 		visible = true;
 		setRects(new LinkedList<Rectangle2D.Double>());
 		fillRects();
@@ -31,10 +31,10 @@ public class Entity extends Animator
 	private void fillRects()
 	{
 
-		LinkedList<SnakePiece> pieces = snake.getPieces();
+		LinkedList<SnakePiece> pieces = getSnake().getPieces();
 		SnakePiece first = pieces.getFirst();
-		snakeHead = new Rectangle2D.Double(first.getX(), first.getY(), getCurrentImage().getWidth(), getCurrentImage()
-			.getHeight());
+		setSnakeHead(new Rectangle2D.Double(first.getX(), first.getY(), getCurrentImage().getWidth(), getCurrentImage()
+			.getHeight()));
 		first = null;
 
 		for (SnakePiece snakePiece : pieces)
@@ -42,6 +42,19 @@ public class Entity extends Animator
 			getRects().add(
 				new Rectangle2D.Double(snakePiece.getX(), snakePiece.getY(), getCurrentImage().getWidth(),
 					getCurrentImage().getHeight()));
+		}
+
+	}
+
+	private void updateRects()
+	{
+		LinkedList<SnakePiece> pieces = snake.getPieces();
+
+		for (int i = 0; i < rects.size(); i++)
+		{
+			Rectangle2D.Double rect = rects.get(i);
+			rect.x = pieces.get(i).getX();
+			rect.y = pieces.get(i).getY();
 		}
 
 	}
@@ -136,7 +149,12 @@ public class Entity extends Animator
 		LinkedList<Rectangle2D.Double> rectsToCheck = e.getRects();
 		for (Rectangle2D.Double rect : rectsToCheck)
 		{
-			snakeHead.intersects(rect);
+			if (getSnakeHead() == rect)
+			{
+				continue;
+			}
+
+			getSnakeHead().intersects(rect);
 		}
 
 		return intersects;
@@ -144,31 +162,31 @@ public class Entity extends Animator
 
 	public double getX()
 	{
-		return snakeHead.x;
+		return getSnakeHead().x;
 	}
 
 	public double getY()
 	{
-		return snakeHead.y;
+		return getSnakeHead().y;
 	}
 
 	public double getWidth()
 	{
 		if (getCurrentImage() == null)
 		{//there might be no image (which is unwanted ofcourse but  we must not get NPE so we check for null and return 0
-			return snakeHead.width = 0;
+			return getSnakeHead().width = 0;
 		}
 
-		return snakeHead.width = getCurrentImage().getWidth();
+		return getSnakeHead().width = getCurrentImage().getWidth();
 	}
 
 	public double getHeight()
 	{
 		if (getCurrentImage() == null)
 		{
-			return snakeHead.height = 0;
+			return getSnakeHead().height = 0;
 		}
-		return snakeHead.height = getCurrentImage().getHeight();
+		return getSnakeHead().height = getCurrentImage().getHeight();
 	}
 
 	public LinkedList<Rectangle2D.Double> getRects()
@@ -183,6 +201,26 @@ public class Entity extends Animator
 
 	public void move()
 	{
-		fillRects();
+		updateRects();
+	}
+
+	public Snake getSnake()
+	{
+		return snake;
+	}
+
+	public void setSnake(Snake snake)
+	{
+		this.snake = snake;
+	}
+
+	public Rectangle2D.Double getSnakeHead()
+	{
+		return snakeHead;
+	}
+
+	public void setSnakeHead(Rectangle2D.Double snakeHead)
+	{
+		this.snakeHead = snakeHead;
 	}
 }

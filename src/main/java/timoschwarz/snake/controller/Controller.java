@@ -77,6 +77,7 @@ public class Controller implements Observer
 			}
 		});
 		loop.start();
+		playground.running.set(true);
 	}
 
 	private void configureFrame()
