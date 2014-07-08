@@ -32,4 +32,36 @@ public enum Direction {
 		return new Diff(difX, difY);
 	}
 
+	public boolean isOppositeOf(Direction direction)
+	{
+		switch (this)
+		{
+			case UP:
+				if (direction == Direction.DOWN)
+				{
+					return true;
+				}
+			break;
+			case DOWN:
+				if (direction == Direction.UP)
+				{
+					return true;
+				}
+			break;
+			case LEFT:
+				if (direction == Direction.RIGHT)
+				{
+					return true;
+				}
+			break;
+			case RIGHT:
+				if (direction == Direction.LEFT)
+				{
+					return true;
+				}
+			break;
+		}
+		return false;
+	}
+
 }

@@ -12,7 +12,7 @@ class Animator
 	private int currIndex;
 	private long animationTime;
 	private long totalAnimationDuration;
-	private AtomicBoolean done;//used to keep track if a single set of frames/ an animtion has finished its loop
+	private AtomicBoolean done;
 
 	public Animator(ArrayList<BufferedImage> frames, ArrayList<Long> timings)
 	{
@@ -67,7 +67,7 @@ class Animator
 				return frames.get(currIndex);
 			}
 			catch (Exception ex)
-			{//images might have been altered so we reset the index and return first image of the new frames/animation 
+			{
 				currIndex = 0;
 				return frames.get(currIndex);
 			}
@@ -77,7 +77,7 @@ class Animator
 	public void setFrames(ArrayList<BufferedImage> frames, ArrayList<Long> timings)
 	{
 		if (frames == null || timings == null)
-		{//so that constructor super(null,null) cause this to throw NullPointerException
+		{
 			return;
 		}
 		this.frames = frames;

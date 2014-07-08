@@ -6,7 +6,7 @@ import java.util.Observable;
 import timoschwarz.util.Diff;
 import timoschwarz.util.Direction;
 
-public class Snake extends Observable implements Runnable
+public class Snake extends Observable
 {
 
 	private Direction direction = Direction.RIGHT;
@@ -47,7 +47,7 @@ public class Snake extends Observable implements Runnable
 		}
 	}
 
-	public synchronized void move(Direction direction)
+	public synchronized void move()
 	{
 		moveSnakePieces(createHeadWithNextPosition(direction));
 		//System.out.println("Head X: " + getHead().getX() + "Y: " + getHead().getY());
@@ -115,9 +115,11 @@ public class Snake extends Observable implements Runnable
 		this.size = size;
 	}
 
-	public void addTail()
+	public void addTail(int x, int y)
 	{
 		this.size++;
+		pieces.getLast().setType(SnakePieceType.BODY);
+		pieces.add(new SnakePiece(x, y, SnakePieceType.TAIL));
 	}
 
 	public LinkedList<SnakePiece> getPieces()
@@ -130,24 +132,6 @@ public class Snake extends Observable implements Runnable
 		this.pieces = pieces;
 	}
 
-	@Override
-	public void run()
-	{
-		while (isAlive())
-		{
-			try
-			{
-				Thread.sleep(millis);
-			}
-			catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			move(getDirection());
-		}
-	}
-
 	public Direction getDirection()
 	{
 		return direction;
@@ -155,12 +139,24 @@ public class Snake extends Observable implements Runnable
 
 	public void setDirection(Direction direction)
 	{
-		this.direction = direction;
+		if (this.direction.isOppositeOf(direction))
+		{
+			return;
+		}
+		else
+		{
+			this.direction = direction;
+		}
 	}
 
 	public SnakePiece getHead()
 	{
 		return pieces.getFirst();
+	}
+
+	public SnakePiece getTail()
+	{
+		return pieces.getLast();
 	}
 
 	public boolean isAlive()
@@ -173,4 +169,22 @@ public class Snake extends Observable implements Runnable
 		this.isAlive = isAlive;
 	}
 
+	public boolean snakeBlocksCoordinates(int x, int y)
+	{
+		for (SnakePiece piece : pieces)
+		{
+			if (piece.getX() == x && piece.getY() == y)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public void forceDirection(Direction direction)
+	{
+		direction = direction;
+
+	}
 }

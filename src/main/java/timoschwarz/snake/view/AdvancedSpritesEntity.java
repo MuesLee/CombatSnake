@@ -15,7 +15,7 @@ class AdvancedSpritesEntity extends Entity
 
 	void setAnimation(ArrayList<BufferedImage> images, ArrayList<Long> timings)
 	{
-		reset();//reset variables of animator class
-		setFrames(images, timings);//set new frames for animation
+		reset();
+		setFrames(images, timings);
 	}
 }

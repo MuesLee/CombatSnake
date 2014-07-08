@@ -39,10 +39,10 @@ public class Entity extends Animator
 
 		for (SnakePiece snakePiece : pieces)
 		{
-			getRects().add(
-				new Rectangle2D.Double(snakePiece.getX() * paintSize + Playground.BORDER_THICKNESS, snakePiece.getY()
-					* paintSize + Playground.BORDER_THICKNESS, getCurrentImage().getWidth(), getCurrentImage()
-					.getHeight()));
+			final Rectangle2D.Double rect = new Rectangle2D.Double(snakePiece.getX() * paintSize
+				+ Playground.BORDER_THICKNESS, snakePiece.getY() * paintSize + Playground.BORDER_THICKNESS,
+				getCurrentImage().getWidth(), getCurrentImage().getHeight());
+			getRects().add(rect);
 		}
 		snakeHead = rects.getFirst();
 
@@ -56,6 +56,11 @@ public class Entity extends Animator
 
 		for (int i = 0; i < rects.size(); i++)
 		{
+			if (i >= pieces.size())
+			{
+				return;
+			}
+
 			Rectangle2D.Double rect = rects.get(i);
 			rect.x = pieces.get(i).getX() * paintSize + Playground.BORDER_THICKNESS;
 			rect.y = pieces.get(i).getY() * paintSize + Playground.BORDER_THICKNESS;
@@ -77,26 +82,25 @@ public class Entity extends Animator
 	{
 		HashSet<String> mask = new HashSet<String>();
 		int pixel, a;
-		BufferedImage bi = e.getCurrentImage();//gets the current image being shown
+		BufferedImage bi = e.getCurrentImage();
 		for (int i = 0; i < bi.getWidth(); i++)
-		{ // for every (x,y) component in the given box, 
+		{
 			for (int j = 0; j < bi.getHeight(); j++)
 			{
-				pixel = bi.getRGB(i, j); // get the RGB value of the pixel
+				pixel = bi.getRGB(i, j);
 				a = pixel >> 24 & 0xff;
 				if (a != 0)
-				{ // if the alpha is not 0, it must be something other than transparent
-					mask.add(e.getX() + i + "," + (e.getY() - j)); // add the absolute x and absolute y coordinates to our set
+				{
+					mask.add(e.getX() + i + "," + (e.getY() - j));
 				}
 			}
 		}
-		return mask; //return our set
+		return mask;
 	}
 
-	// Returns true if there is a collision between object a and object b   
 	public boolean checkPerPixelCollision(Entity b)
 	{
-		// This method detects to see if the images overlap at all. If they do, collision is possible
+
 		int ax1 = (int) getX();
 		int ay1 = (int) getY();
 
@@ -112,7 +116,7 @@ public class Entity extends Animator
 
 		if (by2 < ay1 || ay2 < by1 || bx2 < ax1 || ax2 < bx1)
 		{
-			return false; // Collision is impossible.
+			return false;
 		}
 		else
 		{

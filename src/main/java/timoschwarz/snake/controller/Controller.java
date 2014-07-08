@@ -9,12 +9,15 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import timoschwarz.snake.model.Player;
 import timoschwarz.snake.model.Snake;
+import timoschwarz.snake.model.SnakePiece;
+import timoschwarz.snake.model.SnakePieceType;
 import timoschwarz.snake.view.Entity;
 import timoschwarz.snake.view.Playground;
 import timoschwarz.util.KeyBindings;
@@ -23,6 +26,9 @@ public class Controller
 {
 	public static final int SNAKE_SIZE = 15;
 	public static final int PAINT_SIZE = 15;
+	public static final int PLAYGROUND_SIZE_X = 500;
+	public static final int PLAYGROUND_SIZE_Y = 500;
+	private static final int AMOUNT_OF_LOOSE_SNAKEPIECES = 1;
 
 	private Playground playground;
 	private JFrame frame;
@@ -31,12 +37,15 @@ public class Controller
 	private Player playerOne;
 	private Player playerTwo;
 
+	private ArrayList<Entity> looseSnakePieces;
+
 	public Controller()
 	{
 
 		this.setPlayerOne(new Player("Player One"));
 		this.setPlayerTwo(new Player("Player Two"));
 		this.frame = new JFrame("COMBAT SNAKEZ!!!111");
+		setLooseSnakePieces(new ArrayList<Entity>());
 
 		Snake snakeOne = new Snake(SNAKE_SIZE, SNAKE_SIZE, 0);
 		Snake snakeTwo = new Snake(SNAKE_SIZE, SNAKE_SIZE, 10);
@@ -48,23 +57,36 @@ public class Controller
 		snakes.add(snakeOne);
 		snakes.add(snakeTwo);
 
-		this.playground = new Playground(500, 500);
+		this.playground = new Playground(this, PLAYGROUND_SIZE_X, PLAYGROUND_SIZE_Y);
 
-		ArrayList<BufferedImage> imagesSnakeOne = new ArrayList<BufferedImage>();
-		ArrayList<Long> timingsSnakeOne = new ArrayList<Long>();
-		imagesSnakeOne.add(createColouredImage("white", PAINT_SIZE, PAINT_SIZE, false));
-		timingsSnakeOne.add(500l);
-
-		ArrayList<BufferedImage> imagesSnakeTwo = new ArrayList<BufferedImage>();
-		ArrayList<Long> timingsSnakeTwo = new ArrayList<Long>();
-		imagesSnakeTwo.add(createColouredImage("red", PAINT_SIZE, PAINT_SIZE, false));
-		timingsSnakeTwo.add(500l);
-
-		playground.addEntity(new Entity(imagesSnakeOne, timingsSnakeOne, snakeOne));
-		playground.addEntity(new Entity(imagesSnakeTwo, timingsSnakeTwo, snakeTwo));
+		playground.addEntity(createEntity(snakeOne, "white"));
+		playground.addEntity(createEntity(snakeTwo, "red"));
 
 		KeyBindings keyBindings = new KeyBindings(playground, snakeOne, snakeTwo);
 		configureFrame();
+	}
+
+	public void endGame()
+	{
+		stopSnakesAndPlayers();
+	}
+
+	private void stopSnakesAndPlayers()
+	{
+		playerOne.getSnake().setAlive(false);
+		playerOne.setAlive(false);
+		playerTwo.getSnake().setAlive(false);
+		playerTwo.setAlive(false);
+	}
+
+	private Entity createEntity(Snake snakeOne, String color)
+	{
+		ArrayList<BufferedImage> imagesSnakeOne = new ArrayList<BufferedImage>();
+		ArrayList<Long> timingsSnakeOne = new ArrayList<Long>();
+		imagesSnakeOne.add(createColouredImage(color, PAINT_SIZE, PAINT_SIZE, false));
+		timingsSnakeOne.add(500l);
+
+		return new Entity(imagesSnakeOne, timingsSnakeOne, snakeOne);
 	}
 
 	private void showPlayground()
@@ -78,6 +100,12 @@ public class Controller
 			}
 		});
 		loop.start();
+	}
+
+	public void moveSnakes()
+	{
+		playerOne.getSnake().move();
+		playerTwo.getSnake().move();
 	}
 
 	private void configureFrame()
@@ -112,11 +140,6 @@ public class Controller
 		playerOne.getSnake();
 	}
 
-	private void startConsumeProcess()
-	{
-		// TODO: Punkte erhöhen
-	}
-
 	public void setPlaygroundSize(Dimension size)
 	{
 		playground.setSize(size);
@@ -142,25 +165,50 @@ public class Controller
 		this.playerTwo = playerTwo;
 	}
 
-	private void startSnakeOne()
-	{
-		Snake snake = playerOne.getSnake();
-		Thread snakeThread = new Thread(snake);
-		snakeThread.start();
-	}
-
 	public void startSnakes()
 	{
-		startSnakeOne();
-		startSnakeTwo();
+		initLooseSnakePieces();
 	}
 
-	private void startSnakeTwo()
+	private void initLooseSnakePieces()
 	{
-		Snake snake = playerTwo.getSnake();
-		Thread snakeThread = new Thread(snake);
-		snakeThread.start();
+		looseSnakePieces = new ArrayList<>();
+		for (int i = 0; i < AMOUNT_OF_LOOSE_SNAKEPIECES; i++)
+		{
+			Snake snake = new Snake(1, 6, 6);
+			Entity entity = createEntity(snake, "blue");
+			createNewLooseSnakePieceForEntity(entity);
+			looseSnakePieces.add(entity);
+		}
+	}
 
+	private void createNewLooseSnakePieceForEntity(Entity entity)
+	{
+		Random random = new Random();
+
+		int randomX = 0;
+		int randomY = 0;
+		do
+		{
+			randomX = random.nextInt(PLAYGROUND_SIZE_X + 1);
+			randomY = random.nextInt(PLAYGROUND_SIZE_Y + 1);
+		}
+		while (coordinatesAreFree(randomX, randomY));
+
+		LinkedList<SnakePiece> pieces = new LinkedList<SnakePiece>();
+		pieces.add(new SnakePiece(randomX, randomY, SnakePieceType.TAIL));
+		entity.getSnake().setPieces(pieces);
+
+	}
+
+	private boolean coordinatesAreFree(int randomX, int randomY)
+	{
+		if (playerOne.getSnake().snakeBlocksCoordinates(randomX, randomY)
+			|| playerTwo.getSnake().snakeBlocksCoordinates(randomX, randomY))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	public static BufferedImage createColouredImage(String color, int w, int h, boolean circular)
@@ -207,5 +255,20 @@ public class Controller
 		}
 		g2.dispose();
 		return img;
+	}
+
+	public void removeLooseSnakePiece(Entity entity)
+	{
+		createNewLooseSnakePieceForEntity(entity);
+	}
+
+	public ArrayList<Entity> getLooseSnakePieces()
+	{
+		return looseSnakePieces;
+	}
+
+	public void setLooseSnakePieces(ArrayList<Entity> looseSnakePieces)
+	{
+		this.looseSnakePieces = looseSnakePieces;
 	}
 }
