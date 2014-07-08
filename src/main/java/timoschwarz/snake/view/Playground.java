@@ -305,11 +305,11 @@ public class Playground extends JPanel
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 
-		//		for (int i = 0; i < 128; i++)
-		//		{
-		//			g2d.setColor(new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
-		//			g2d.drawLine(getWidth() / 2, getHeight() / 2, random.nextInt(getWidth()), random.nextInt(getHeight()));
-		//		}
+		for (int i = 0; i < 128; i++)
+		{
+			g2d.setColor(new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
+			g2d.drawLine(getWidth() / 2, getHeight() / 2, random.nextInt(getWidth()), random.nextInt(getHeight()));
+		}
 	}
 
 	public Controller getController()
