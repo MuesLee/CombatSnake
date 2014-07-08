@@ -13,18 +13,18 @@ public class Snake extends Observable implements Runnable
 	private int size;
 	private LinkedList<SnakePiece> pieces;
 	private boolean isAlive = true;
-	private int millis = 100;
+	private int millis = 300;
 
-	public Snake(int size)
+	public Snake(int size, int startX, int startY)
 	{
 		this.setSize(size);
-		initSnake();
+		initSnake(startX, startY);
 	}
 
-	private void initSnake()
+	private void initSnake(int startX, int startY)
 	{
-		int x = 0;
-		int y = 0;
+		int x = startX;
+		int y = startY;
 
 		pieces = new LinkedList<SnakePiece>();
 

@@ -8,9 +8,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import timoschwarz.snake.model.Snake;
-import timoschwarz.snake.model.SnakePiece;
-import timoschwarz.snake.model.SnakePieceType;
 import timoschwarz.util.Direction;
 
 public class SnakeTest
@@ -20,7 +17,7 @@ public class SnakeTest
 	@Before
 	public void initSnake()
 	{
-		snake = new Snake(4);
+		snake = new Snake(4, 0, 0);
 	}
 
 	@Test

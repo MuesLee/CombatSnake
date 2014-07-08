@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import timoschwarz.snake.controller.Controller;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.SnakePiece;
 
 public class Entity extends Animator
 {
 
-	private int speed = 5;
 	public boolean visible = false;
 	private LinkedList<Rectangle2D.Double> rects;
 	private Snake snake;
@@ -30,19 +30,21 @@ public class Entity extends Animator
 
 	private void fillRects()
 	{
-
+		int paintSize = Controller.PAINT_SIZE;
 		LinkedList<SnakePiece> pieces = getSnake().getPieces();
 		SnakePiece first = pieces.getFirst();
-		setSnakeHead(new Rectangle2D.Double(first.getX(), first.getY(), getCurrentImage().getWidth(), getCurrentImage()
-			.getHeight()));
+		setSnakeHead(new Rectangle2D.Double(first.getX() * paintSize + Playground.BORDER_THICKNESS, first.getY()
+			* paintSize + Playground.BORDER_THICKNESS, getCurrentImage().getWidth(), getCurrentImage().getHeight()));
 		first = null;
 
 		for (SnakePiece snakePiece : pieces)
 		{
 			getRects().add(
-				new Rectangle2D.Double(snakePiece.getX(), snakePiece.getY(), getCurrentImage().getWidth(),
-					getCurrentImage().getHeight()));
+				new Rectangle2D.Double(snakePiece.getX() * paintSize + Playground.BORDER_THICKNESS, snakePiece.getY()
+					* paintSize + Playground.BORDER_THICKNESS, getCurrentImage().getWidth(), getCurrentImage()
+					.getHeight()));
 		}
+		snakeHead = rects.getFirst();
 
 	}
 
@@ -50,23 +52,15 @@ public class Entity extends Animator
 	{
 		LinkedList<SnakePiece> pieces = snake.getPieces();
 
+		int paintSize = Controller.PAINT_SIZE;
+
 		for (int i = 0; i < rects.size(); i++)
 		{
 			Rectangle2D.Double rect = rects.get(i);
-			rect.x = pieces.get(i).getX();
-			rect.y = pieces.get(i).getY();
+			rect.x = pieces.get(i).getX() * paintSize + Playground.BORDER_THICKNESS;
+			rect.y = pieces.get(i).getY() * paintSize + Playground.BORDER_THICKNESS;
 		}
 
-	}
-
-	public void setSpeed(int speed)
-	{
-		this.speed = speed;
-	}
-
-	public int getSpeed()
-	{
-		return speed;
 	}
 
 	public boolean isVisible()
@@ -121,13 +115,12 @@ public class Entity extends Animator
 			return false; // Collision is impossible.
 		}
 		else
-		{ // Collision is possible.
-			// get the masks for both images
+		{
 			HashSet<String> maskPlayer1 = getMask(this);
 			HashSet<String> maskPlayer2 = getMask(b);
-			maskPlayer1.retainAll(maskPlayer2); // Check to see if any pixels in maskPlayer2 are the same as those in maskPlayer1
+			maskPlayer1.retainAll(maskPlayer2);
 			if (maskPlayer1.size() > 0)
-			{ // if so, than there exists at least one pixel that is the same in both images, thus
+			{
 				return true;
 			}
 		}
@@ -138,8 +131,8 @@ public class Entity extends Animator
 	public void update(long elapsedTime)
 	{
 		super.update(elapsedTime);
-		getWidth();//set the rectangles height accordingly after image update
-		getHeight();//set rectangles height accordingle after update
+		getWidth();
+		getHeight();
 	}
 
 	public boolean intersects(Entity e)
@@ -154,7 +147,10 @@ public class Entity extends Animator
 				continue;
 			}
 
-			getSnakeHead().intersects(rect);
+			if (getSnakeHead().intersects(rect))
+			{
+				return true;
+			}
 		}
 
 		return intersects;
@@ -173,7 +169,7 @@ public class Entity extends Animator
 	public double getWidth()
 	{
 		if (getCurrentImage() == null)
-		{//there might be no image (which is unwanted ofcourse but  we must not get NPE so we check for null and return 0
+		{
 			return getSnakeHead().width = 0;
 		}
 
@@ -222,5 +218,11 @@ public class Entity extends Animator
 	public void setSnakeHead(Rectangle2D.Double snakeHead)
 	{
 		this.snakeHead = snakeHead;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "KOPF X: " + snakeHead.getX() + " Y: " + snakeHead.getY();
 	}
 }

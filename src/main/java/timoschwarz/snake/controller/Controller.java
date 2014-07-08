@@ -4,12 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Observable;
-import java.util.Observer;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import timoschwarz.snake.model.Player;
@@ -18,12 +19,14 @@ import timoschwarz.snake.view.Entity;
 import timoschwarz.snake.view.Playground;
 import timoschwarz.util.KeyBindings;
 
-public class Controller implements Observer
+public class Controller
 {
+	public static final int SNAKE_SIZE = 15;
+	public static final int PAINT_SIZE = 15;
+
 	private Playground playground;
 	private JFrame frame;
-
-	private Referee referee;
+	private JButton startButton;
 
 	private Player playerOne;
 	private Player playerTwo;
@@ -35,8 +38,8 @@ public class Controller implements Observer
 		this.setPlayerTwo(new Player("Player Two"));
 		this.frame = new JFrame("COMBAT SNAKEZ!!!111");
 
-		Snake snakeOne = new Snake(15);
-		Snake snakeTwo = new Snake(15);
+		Snake snakeOne = new Snake(SNAKE_SIZE, SNAKE_SIZE, 0);
+		Snake snakeTwo = new Snake(SNAKE_SIZE, SNAKE_SIZE, 10);
 
 		playerOne.setSnake(snakeOne);
 		playerTwo.setSnake(snakeTwo);
@@ -49,25 +52,23 @@ public class Controller implements Observer
 
 		ArrayList<BufferedImage> imagesSnakeOne = new ArrayList<BufferedImage>();
 		ArrayList<Long> timingsSnakeOne = new ArrayList<Long>();
-		imagesSnakeOne.add(createColouredImage("white", 5, 5, false));
+		imagesSnakeOne.add(createColouredImage("white", PAINT_SIZE, PAINT_SIZE, false));
 		timingsSnakeOne.add(500l);
 
 		ArrayList<BufferedImage> imagesSnakeTwo = new ArrayList<BufferedImage>();
 		ArrayList<Long> timingsSnakeTwo = new ArrayList<Long>();
-		imagesSnakeTwo.add(createColouredImage("red", 5, 5, false));
+		imagesSnakeTwo.add(createColouredImage("red", PAINT_SIZE, PAINT_SIZE, false));
 		timingsSnakeTwo.add(500l);
 
 		playground.addEntity(new Entity(imagesSnakeOne, timingsSnakeOne, snakeOne));
 		playground.addEntity(new Entity(imagesSnakeTwo, timingsSnakeTwo, snakeTwo));
 
-		this.setReferee(new Referee(playground, snakes));
-		referee.addObserver(this);
 		KeyBindings keyBindings = new KeyBindings(playground, snakeOne, snakeTwo);
+		configureFrame();
 	}
 
-	public void showPlayground()
+	private void showPlayground()
 	{
-		configureFrame();
 		Thread loop = new Thread(new Runnable()
 		{
 			@Override
@@ -77,17 +78,32 @@ public class Controller implements Observer
 			}
 		});
 		loop.start();
-		playground.running.set(true);
 	}
 
 	private void configureFrame()
 	{
+		startButton = new JButton("Start");
+		startButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				playground.running.set(true);
+				showPlayground();
+				startSnakes();
+			}
+		});
+		startButton.setVisible(true);
+
 		Dimension size = playground.getSize();
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setSize(size.height, size.width);
 		frame.setLayout(new BorderLayout());
+		frame.setSize(500, 500);
 		frame.setLocationRelativeTo(null);
+		frame.setResizable(false);
 		frame.add(playground, BorderLayout.CENTER);
+		frame.add(startButton, BorderLayout.PAGE_END);
 		frame.setVisible(true);
 	}
 
@@ -137,13 +153,6 @@ public class Controller implements Observer
 	{
 		startSnakeOne();
 		startSnakeTwo();
-		startReferee();
-	}
-
-	private void startReferee()
-	{
-		Thread refereeThread = new Thread(referee);
-		refereeThread.start();
 	}
 
 	private void startSnakeTwo()
@@ -152,39 +161,6 @@ public class Controller implements Observer
 		Thread snakeThread = new Thread(snake);
 		snakeThread.start();
 
-	}
-
-	@Override
-	public void update(Observable arg0, Object arg1)
-	{
-		if (arg0 instanceof Referee && arg1 instanceof Snake)
-		{
-			Snake loser = (Snake) arg1;
-
-			if (playerOne.getSnake() == loser)
-			{
-				System.out.println(playerTwo.getName() + " won!");
-			}
-			else
-			{
-				System.out.println(playerOne.getName() + " won!");
-			}
-
-			playerOne.getSnake().setAlive(false);
-			playerTwo.getSnake().setAlive(false);
-			referee.setActive(false);
-
-		}
-	}
-
-	public Referee getReferee()
-	{
-		return referee;
-	}
-
-	public void setReferee(Referee referee)
-	{
-		this.referee = referee;
 	}
 
 	public static BufferedImage createColouredImage(String color, int w, int h, boolean circular)
