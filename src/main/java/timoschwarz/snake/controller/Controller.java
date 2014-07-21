@@ -1,15 +1,12 @@
 package timoschwarz.snake.controller;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
@@ -26,7 +23,7 @@ import timoschwarz.snake.model.SnakePieceType;
 import timoschwarz.snake.model.World;
 import timoschwarz.snake.view.Entity;
 import timoschwarz.snake.view.Playground;
-import timoschwarz.snake.view.SnakeEntity;
+import timoschwarz.util.EntityHelper;
 import timoschwarz.util.KeyBindings;
 
 public class Controller
@@ -85,8 +82,8 @@ public class Controller
 		this.world = new World(snakes, this, WORLD_SIZE_X, WORLD_SIZE_Y);
 		this.playground = new Playground(this, WORLD_SIZE_X * paintSize, WORLD_SIZE_Y * paintSize);
 
-		playground.addEntity(createSnakeEntity(snakeOne, "white"));
-		playground.addEntity(createSnakeEntity(snakeTwo, "red"));
+		playground.addEntity(EntityHelper.createSnakeEntity(snakeOne, "white"));
+		playground.addEntity(EntityHelper.createSnakeEntity(snakeTwo, "red"));
 
 		KeyBindings keyBindings = new KeyBindings(playground, snakeOne, snakeTwo);
 		configureFrame();
@@ -158,26 +155,6 @@ public class Controller
 		playerOne.setAlive(false);
 		playerTwo.getSnake().setAlive(false);
 		playerTwo.setAlive(false);
-	}
-
-	public SnakeEntity createSnakeEntity(Snake snakeOne, String color)
-	{
-		ArrayList<BufferedImage> imagesSnakeOne = new ArrayList<BufferedImage>();
-		ArrayList<Long> timingsSnakeOne = new ArrayList<Long>();
-		imagesSnakeOne.add(createColouredImage(color, paintSize, paintSize, false));
-		timingsSnakeOne.add(500l);
-
-		return new SnakeEntity(imagesSnakeOne, timingsSnakeOne, snakeOne);
-	}
-
-	public Entity createEntity(LinkedList<SnakePiece> pieces, String color)
-	{
-		ArrayList<BufferedImage> imagesSnakeOne = new ArrayList<BufferedImage>();
-		ArrayList<Long> timingsSnakeOne = new ArrayList<Long>();
-		imagesSnakeOne.add(createColouredImage(color, paintSize, paintSize, false));
-		timingsSnakeOne.add(500l);
-
-		return new Entity(imagesSnakeOne, timingsSnakeOne, pieces);
 	}
 
 	private void startGame()
@@ -318,7 +295,7 @@ public class Controller
 		{
 			snake = new Snake(1, 6, 6);
 			world.addLooseSnakePiece(snake.getHead());
-			Entity entity = createSnakeEntity(snake, "yellow");
+			Entity entity = EntityHelper.createSnakeEntity(snake, "yellow");
 			looseSnakePieces.add(entity);
 		}
 		playground.setLooseSnakePieces(looseSnakePieces);
@@ -351,52 +328,6 @@ public class Controller
 			return false;
 		}
 		return true;
-	}
-
-	public static BufferedImage createColouredImage(String color, int w, int h, boolean circular)
-	{
-		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2 = img.createGraphics();
-		switch (color.toLowerCase())
-		{
-			case "green":
-				g2.setColor(Color.GREEN);
-			break;
-			case "magenta":
-				g2.setColor(Color.MAGENTA);
-			break;
-			case "red":
-				g2.setColor(Color.RED);
-			break;
-			case "yellow":
-				g2.setColor(Color.YELLOW);
-			break;
-			case "blue":
-				g2.setColor(Color.BLUE);
-			break;
-			case "orange":
-				g2.setColor(Color.ORANGE);
-			break;
-			case "cyan":
-				g2.setColor(Color.CYAN);
-			break;
-			case "gray":
-				g2.setColor(Color.GRAY);
-			break;
-			default:
-				g2.setColor(Color.WHITE);
-			break;
-		}
-		if (!circular)
-		{
-			g2.fillRect(0, 0, img.getWidth(), img.getHeight());
-		}
-		else
-		{
-			g2.fillOval(0, 0, img.getWidth(), img.getHeight());
-		}
-		g2.dispose();
-		return img;
 	}
 
 	public void snakeHasConsumedALoosePiece(Snake snake)

@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 
 import timoschwarz.snake.controller.Controller;
 import timoschwarz.snake.model.SnakePiece;
+import timoschwarz.util.EntityHelper;
 
 public class Playground extends JPanel
 {
@@ -179,7 +180,7 @@ public class Playground extends JPanel
 		Graphics2D g2d = (Graphics2D) grphcs;
 
 		applyRenderHints(g2d);
-		drawBackground(g2d);
+		//	drawBackground(g2d);
 		drawEntitiesToScreen(g2d);
 		drawFpsCounter(g2d);
 		drawScore(g2d);
@@ -267,7 +268,7 @@ public class Playground extends JPanel
 	public void updateLooseSnakePieceEntities()
 	{
 		LinkedList<SnakePiece> looseSnakePieces2 = controller.getLooseSnakePieces();
-		Entity entity = controller.createEntity(looseSnakePieces2, "yellow");
+		Entity entity = EntityHelper.createEntity(looseSnakePieces2, "yellow");
 		looseSnakePieces.clear();
 		looseSnakePieces.add(entity);
 	}
