@@ -9,7 +9,6 @@ public class Snake
 {
 
 	private Direction direction = Direction.RIGHT;
-	private int size;
 	private LinkedList<SnakePiece> pieces;
 	private LinkedList<SnakePiece> consumedLoosePieces;
 	private boolean isAlive = true;
@@ -17,11 +16,10 @@ public class Snake
 	public Snake(int size, int startX, int startY)
 	{
 		this.consumedLoosePieces = new LinkedList<SnakePiece>();
-		this.setSize(size);
-		initSnake(startX, startY);
+		initSnake(startX, startY, size);
 	}
 
-	private void initSnake(int startX, int startY)
+	private void initSnake(int startX, int startY, int size)
 	{
 		int x = startX;
 		int y = startY;
@@ -132,20 +130,14 @@ public class Snake
 
 	public int getSize()
 	{
-		return size;
-	}
-
-	public void setSize(int size)
-	{
-		this.size = size;
+		return pieces.size();
 	}
 
 	public void addTail(int x, int y)
 	{
-		this.size++;
 		pieces.getLast().setType(SnakePieceType.BODY);
 		pieces.add(new SnakePiece(x, y, SnakePieceType.TAIL));
-		System.out.println("Snake has GROWN!");
+		System.out.println("Snake has GROWN!" + pieces.size());
 	}
 
 	public LinkedList<SnakePiece> getPieces()

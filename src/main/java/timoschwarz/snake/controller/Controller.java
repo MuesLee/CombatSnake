@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -30,13 +32,13 @@ import timoschwarz.util.KeyBindings;
 public class Controller
 {
 	public static final int SNAKE_SIZE = 15;
-	public static final int PAINT_SIZE = 15;
-	public static final int PLAYGROUND_SIZE_X = 500;
-	public static final int PLAYGROUND_SIZE_Y = 500;
+	public static int paintSize = 15;
+	private static double MAX_PERCENTAGE_OF_SCREEN_SIZE = 0.7;
 	private static final int AMOUNT_OF_LOOSE_SNAKEPIECES = 1;
 	private static final int POINTS_FOR_CONSUMPTION = 10;
 	private static final int GAME_SPEED = 100;
-	private boolean gameIsActive = false;
+	private static final int WORLD_SIZE_X = 50;
+	private static final int WORLD_SIZE_Y = 50;
 
 	public static final String TEXT_GAME_OVER = "GAME OVER";
 	public static final String TEXT_SNAKE_ONE_WAS_VICTORIOUS = "Snake One has won!";
@@ -53,6 +55,8 @@ public class Controller
 
 	private World world;
 
+	private boolean gameIsActive = false;
+
 	public Controller()
 	{
 
@@ -61,6 +65,9 @@ public class Controller
 
 	private void initGame()
 	{
+
+		calculatePaintSize();
+
 		this.setPlayerOne(new Player("Player One"));
 		this.setPlayerTwo(new Player("Player Two"));
 		this.frame = new JFrame("COMBAT SNAKEZ!!!111");
@@ -75,14 +82,27 @@ public class Controller
 		snakes.add(snakeOne);
 		snakes.add(snakeTwo);
 
-		this.world = new World(snakes, this);
-		this.playground = new Playground(this, PLAYGROUND_SIZE_X, PLAYGROUND_SIZE_Y);
+		this.world = new World(snakes, this, WORLD_SIZE_X, WORLD_SIZE_Y);
+		this.playground = new Playground(this, WORLD_SIZE_X * paintSize, WORLD_SIZE_Y * paintSize);
 
 		playground.addEntity(createSnakeEntity(snakeOne, "white"));
 		playground.addEntity(createSnakeEntity(snakeTwo, "red"));
 
 		KeyBindings keyBindings = new KeyBindings(playground, snakeOne, snakeTwo);
 		configureFrame();
+	}
+
+	private void calculatePaintSize()
+	{
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		int width = gd.getDisplayMode().getWidth();
+		int height = gd.getDisplayMode().getHeight();
+
+		width = (int) (width * MAX_PERCENTAGE_OF_SCREEN_SIZE / WORLD_SIZE_X);
+		height = (int) (height * MAX_PERCENTAGE_OF_SCREEN_SIZE / WORLD_SIZE_Y);
+
+		paintSize = Math.min(width, height);
+
 	}
 
 	private void resetGame()
@@ -144,7 +164,7 @@ public class Controller
 	{
 		ArrayList<BufferedImage> imagesSnakeOne = new ArrayList<BufferedImage>();
 		ArrayList<Long> timingsSnakeOne = new ArrayList<Long>();
-		imagesSnakeOne.add(createColouredImage(color, PAINT_SIZE, PAINT_SIZE, false));
+		imagesSnakeOne.add(createColouredImage(color, paintSize, paintSize, false));
 		timingsSnakeOne.add(500l);
 
 		return new SnakeEntity(imagesSnakeOne, timingsSnakeOne, snakeOne);
@@ -154,7 +174,7 @@ public class Controller
 	{
 		ArrayList<BufferedImage> imagesSnakeOne = new ArrayList<BufferedImage>();
 		ArrayList<Long> timingsSnakeOne = new ArrayList<Long>();
-		imagesSnakeOne.add(createColouredImage(color, PAINT_SIZE, PAINT_SIZE, false));
+		imagesSnakeOne.add(createColouredImage(color, paintSize, paintSize, false));
 		timingsSnakeOne.add(500l);
 
 		return new Entity(imagesSnakeOne, timingsSnakeOne, pieces);
@@ -190,16 +210,15 @@ public class Controller
 	{
 		while (gameIsActive)
 		{
-			Thread.yield();
 			try
 			{
 				Thread.sleep(GAME_SPEED);
+				moveSnakes();
 			}
 			catch (InterruptedException e)
 			{
 				e.printStackTrace();
 			}
-			moveSnakes();
 		}
 	}
 
@@ -314,8 +333,8 @@ public class Controller
 		int randomY = 0;
 		do
 		{
-			randomX = random.nextInt(PLAYGROUND_SIZE_X + 1);
-			randomY = random.nextInt(PLAYGROUND_SIZE_Y + 1);
+			randomX = random.nextInt(WORLD_SIZE_X + 1);
+			randomY = random.nextInt(WORLD_SIZE_Y + 1);
 		}
 		while (coordinatesAreFree(randomX, randomY));
 
@@ -411,4 +430,5 @@ public class Controller
 		return world.getLooseSnakePieces();
 
 	}
+
 }

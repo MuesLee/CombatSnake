@@ -10,12 +10,36 @@ public class World
 	private List<Snake> snakes;
 	private Controller controller;
 	private LinkedList<SnakePiece> looseSnakePieces;
+	private int height;
+	private int width;
 
-	public World(LinkedList<Snake> snakes, Controller controller)
+	public int getHeight()
+	{
+		return height;
+	}
+
+	public void setHeight(int height)
+	{
+		this.height = height;
+	}
+
+	public int getWidth()
+	{
+		return width;
+	}
+
+	public void setWidth(int width)
+	{
+		this.width = width;
+	}
+
+	public World(LinkedList<Snake> snakes, Controller controller, int width, int height)
 	{
 		this.controller = controller;
 		this.snakes = snakes;
 		this.looseSnakePieces = new LinkedList<>();
+		this.width = width;
+		this.height = height;
 	}
 
 	public void checkForCollisions()
@@ -33,7 +57,7 @@ public class World
 		}
 	}
 
-	private synchronized void checkForConsumptionForSnake(Snake snake)
+	private void checkForConsumptionForSnake(Snake snake)
 	{
 		int x = snake.getHead().getX();
 		int y = snake.getHead().getY();
@@ -75,7 +99,7 @@ public class World
 		int x = snake.getHead().getX();
 		int y = snake.getHead().getY();
 
-		if (x > Controller.PLAYGROUND_SIZE_X || x < 0 || y < 0 || y > Controller.PLAYGROUND_SIZE_Y)
+		if (x > width || x < 0 || y < 0 || y > height)
 		{
 			return true;
 		}
@@ -154,13 +178,13 @@ public class World
 		return looseSnakePieces;
 	}
 
-	public synchronized void addLooseSnakePiece(SnakePiece piece)
+	public void addLooseSnakePiece(SnakePiece piece)
 	{
 		looseSnakePieces.add(piece);
 
 	}
 
-	public synchronized void removeLooseSnakePiece(SnakePiece piece)
+	public void removeLooseSnakePiece(SnakePiece piece)
 	{
 		looseSnakePieces.remove(piece);
 	}

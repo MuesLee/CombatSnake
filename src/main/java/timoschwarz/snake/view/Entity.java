@@ -29,7 +29,7 @@ public class Entity extends Animator
 
 	private void fillRects()
 	{
-		int paintSize = Controller.PAINT_SIZE;
+		int paintSize = Controller.paintSize;
 		SnakePiece first = pieces.getFirst();
 		setSnakeHead(new Rectangle2D.Double(first.getX() * paintSize + Playground.BORDER_THICKNESS, first.getY()
 			* paintSize + Playground.BORDER_THICKNESS, getCurrentImage().getWidth(), getCurrentImage().getHeight()));
@@ -40,7 +40,7 @@ public class Entity extends Animator
 			final Rectangle2D.Double rect = new Rectangle2D.Double(snakePiece.getX() * paintSize
 				+ Playground.BORDER_THICKNESS, snakePiece.getY() * paintSize + Playground.BORDER_THICKNESS,
 				getCurrentImage().getWidth(), getCurrentImage().getHeight());
-			getRects().add(rect);
+			rects.add(rect);
 		}
 		snakeHead = rects.getFirst();
 
@@ -48,7 +48,7 @@ public class Entity extends Animator
 
 	void updateRects(LinkedList<SnakePiece> pieces)
 	{
-		int paintSize = Controller.PAINT_SIZE;
+		int paintSize = Controller.paintSize;
 
 		for (int i = 0; i < rects.size(); i++)
 		{

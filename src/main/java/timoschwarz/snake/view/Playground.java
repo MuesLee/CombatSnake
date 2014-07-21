@@ -36,7 +36,7 @@ public class Playground extends JPanel
 	public static final int BORDER_THICKNESS = 5;
 
 	private int width, height, frameCount = 0, fps = 0;
-	private ArrayList<Entity> snakes = new ArrayList<Entity>();
+	private ArrayList<SnakeEntity> snakes = new ArrayList<SnakeEntity>();
 	private Controller controller;
 	private Random random = new Random();
 	private ArrayList<Entity> looseSnakePieces;
@@ -59,7 +59,7 @@ public class Playground extends JPanel
 		return new Dimension(width, height);
 	}
 
-	public void addEntity(Entity e)
+	public void addEntity(SnakeEntity e)
 	{
 		snakes.add(e);
 	}
@@ -67,6 +67,14 @@ public class Playground extends JPanel
 	void clearEntities()
 	{
 		snakes.clear();
+	}
+
+	void updateRectsInSnakeEntities()
+	{
+		for (int i = 0; i < snakes.size(); i++)
+		{
+			snakes.get(i).checkForNewSnakePieces();
+		}
 	}
 
 	public void gameLoop()
@@ -150,7 +158,8 @@ public class Playground extends JPanel
 
 	private void updateEntityMovements(long elapsedTime)
 	{
-		for (Entity e : snakes)
+		updateRectsInSnakeEntities();
+		for (SnakeEntity e : snakes)
 		{
 			e.update(elapsedTime);
 			e.move();

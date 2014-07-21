@@ -1,9 +1,14 @@
 package timoschwarz.snake.view;
 
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.Rectangle2D.Double;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
+import timoschwarz.snake.controller.Controller;
 import timoschwarz.snake.model.Snake;
+import timoschwarz.snake.model.SnakePiece;
 
 public class SnakeEntity extends Entity
 {
@@ -31,6 +36,24 @@ public class SnakeEntity extends Entity
 	public void move()
 	{
 		updateRects(snake.getPieces());
+	}
+
+	public void checkForNewSnakePieces()
+	{
+		LinkedList<SnakePiece> pieces = snake.getPieces();
+		int paintSize = Controller.paintSize;
+		final LinkedList<Double> rects = getRects();
+
+		if (pieces.size() != rects.size())
+		{
+			SnakePiece last = pieces.getLast();
+
+			final Rectangle2D.Double rect = new Rectangle2D.Double(last.getX() * paintSize
+				+ Playground.BORDER_THICKNESS, last.getY() * paintSize + Playground.BORDER_THICKNESS, getCurrentImage()
+				.getWidth(), getCurrentImage().getHeight());
+			rects.add(rect);
+
+		}
 	}
 
 }
