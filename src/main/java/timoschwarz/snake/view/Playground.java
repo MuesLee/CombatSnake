@@ -15,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import timoschwarz.snake.controller.Controller;
+import timoschwarz.snake.model.SnakePiece;
 
 public class Playground extends JPanel
 {
@@ -252,6 +253,14 @@ public class Playground extends JPanel
 	public void setController(Controller controlller)
 	{
 		this.controller = controlller;
+	}
+
+	public void updateLooseSnakePieceEntities()
+	{
+		LinkedList<SnakePiece> looseSnakePieces2 = controller.getLooseSnakePieces();
+		Entity entity = controller.createEntity(looseSnakePieces2, "yellow");
+		looseSnakePieces.clear();
+		looseSnakePieces.add(entity);
 	}
 
 	public ArrayList<Entity> getLooseSnakePieces()

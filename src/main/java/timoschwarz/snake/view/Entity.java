@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import timoschwarz.snake.controller.Controller;
-import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.SnakePiece;
 
 public class Entity extends Animator
@@ -15,14 +14,14 @@ public class Entity extends Animator
 
 	public boolean visible = false;
 	private LinkedList<Rectangle2D.Double> rects;
-	private Snake snake;
+	private LinkedList<SnakePiece> pieces;
 	private Rectangle2D.Double snakeHead;
 
-	public Entity(ArrayList<BufferedImage> images, ArrayList<Long> timings, Snake snake)
+	public Entity(ArrayList<BufferedImage> images, ArrayList<Long> timings, LinkedList<SnakePiece> pieces)
 	{
 		super(images, timings);
-		this.setSnake(snake);
 		visible = true;
+		this.pieces = pieces;
 		setRects(new LinkedList<Rectangle2D.Double>());
 		fillRects();
 
@@ -31,7 +30,6 @@ public class Entity extends Animator
 	private void fillRects()
 	{
 		int paintSize = Controller.PAINT_SIZE;
-		LinkedList<SnakePiece> pieces = getSnake().getPieces();
 		SnakePiece first = pieces.getFirst();
 		setSnakeHead(new Rectangle2D.Double(first.getX() * paintSize + Playground.BORDER_THICKNESS, first.getY()
 			* paintSize + Playground.BORDER_THICKNESS, getCurrentImage().getWidth(), getCurrentImage().getHeight()));
@@ -48,10 +46,8 @@ public class Entity extends Animator
 
 	}
 
-	private void updateRects()
+	void updateRects(LinkedList<SnakePiece> pieces)
 	{
-		LinkedList<SnakePiece> pieces = snake.getPieces();
-
 		int paintSize = Controller.PAINT_SIZE;
 
 		for (int i = 0; i < rects.size(); i++)
@@ -201,17 +197,7 @@ public class Entity extends Animator
 
 	public void move()
 	{
-		updateRects();
-	}
-
-	public Snake getSnake()
-	{
-		return snake;
-	}
-
-	public void setSnake(Snake snake)
-	{
-		this.snake = snake;
+		updateRects(pieces);
 	}
 
 	public Rectangle2D.Double getSnakeHead()

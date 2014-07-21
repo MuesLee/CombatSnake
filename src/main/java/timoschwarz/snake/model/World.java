@@ -1,7 +1,5 @@
 package timoschwarz.snake.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,14 +9,13 @@ public class World
 {
 	private List<Snake> snakes;
 	private Controller controller;
-	private List<SnakePiece> looseSnakePieces;
+	private LinkedList<SnakePiece> looseSnakePieces;
 
-	public World(List<Snake> snakes, Controller controller)
+	public World(LinkedList<Snake> snakes, Controller controller)
 	{
 		this.controller = controller;
 		this.snakes = snakes;
-		this.looseSnakePieces = new ArrayList<>();
-		this.looseSnakePieces = Collections.synchronizedList(looseSnakePieces);
+		this.looseSnakePieces = new LinkedList<>();
 	}
 
 	public void checkForCollisions()
@@ -48,13 +45,14 @@ public class World
 			{
 				snake.addLooseSnakePieceToConsumeProcess(piece);
 				controller.snakeHasConsumedALoosePiece(snake);
-
+				removeLooseSnakePiece(piece);
 			}
 		}
 	}
 
 	private void checkForOutOfBounds()
 	{
+
 		Snake snakeOne = snakes.get(0);
 		Snake snakeTwo = snakes.get(1);
 
@@ -151,7 +149,7 @@ public class World
 		this.controller = controller;
 	}
 
-	public List<SnakePiece> getLooseSnakePieces()
+	public LinkedList<SnakePiece> getLooseSnakePieces()
 	{
 		return looseSnakePieces;
 	}

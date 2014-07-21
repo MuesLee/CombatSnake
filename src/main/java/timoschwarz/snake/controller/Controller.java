@@ -24,6 +24,7 @@ import timoschwarz.snake.model.SnakePieceType;
 import timoschwarz.snake.model.World;
 import timoschwarz.snake.view.Entity;
 import timoschwarz.snake.view.Playground;
+import timoschwarz.snake.view.SnakeEntity;
 import timoschwarz.util.KeyBindings;
 
 public class Controller
@@ -76,8 +77,8 @@ public class Controller
 		this.world = new World(snakes, this);
 		this.playground = new Playground(this, PLAYGROUND_SIZE_X, PLAYGROUND_SIZE_Y);
 
-		playground.addEntity(createEntity(snakeOne, "white"));
-		playground.addEntity(createEntity(snakeTwo, "red"));
+		playground.addEntity(createSnakeEntity(snakeOne, "white"));
+		playground.addEntity(createSnakeEntity(snakeTwo, "red"));
 
 		KeyBindings keyBindings = new KeyBindings(playground, snakeOne, snakeTwo);
 		configureFrame();
@@ -138,14 +139,24 @@ public class Controller
 		playerTwo.setAlive(false);
 	}
 
-	private Entity createEntity(Snake snakeOne, String color)
+	public SnakeEntity createSnakeEntity(Snake snakeOne, String color)
 	{
 		ArrayList<BufferedImage> imagesSnakeOne = new ArrayList<BufferedImage>();
 		ArrayList<Long> timingsSnakeOne = new ArrayList<Long>();
 		imagesSnakeOne.add(createColouredImage(color, PAINT_SIZE, PAINT_SIZE, false));
 		timingsSnakeOne.add(500l);
 
-		return new Entity(imagesSnakeOne, timingsSnakeOne, snakeOne);
+		return new SnakeEntity(imagesSnakeOne, timingsSnakeOne, snakeOne);
+	}
+
+	public Entity createEntity(LinkedList<SnakePiece> pieces, String color)
+	{
+		ArrayList<BufferedImage> imagesSnakeOne = new ArrayList<BufferedImage>();
+		ArrayList<Long> timingsSnakeOne = new ArrayList<Long>();
+		imagesSnakeOne.add(createColouredImage(color, PAINT_SIZE, PAINT_SIZE, false));
+		timingsSnakeOne.add(500l);
+
+		return new Entity(imagesSnakeOne, timingsSnakeOne, pieces);
 	}
 
 	private void startGame()
@@ -287,14 +298,14 @@ public class Controller
 		{
 			snake = new Snake(1, 6, 6);
 			world.addLooseSnakePiece(snake.getHead());
-			Entity entity = createEntity(snake, "yellow");
+			Entity entity = createSnakeEntity(snake, "yellow");
 			looseSnakePieces.add(entity);
 		}
 		playground.setLooseSnakePieces(looseSnakePieces);
 
 	}
 
-	private void createNewLooseSnakePiece(Entity entity)
+	private void createNewLooseSnakePiece()
 	{
 		Random random = new Random();
 
@@ -368,13 +379,9 @@ public class Controller
 		return img;
 	}
 
-	public void removeLooseSnakePiece(Entity entity)
-	{
-		createNewLooseSnakePiece(entity);
-	}
-
 	public void snakeHasConsumedALoosePiece(Snake snake)
 	{
+
 		if (playerOne.getSnake() == snake)
 		{
 			playerOne.increasePoints(POINTS_FOR_CONSUMPTION);
@@ -383,6 +390,9 @@ public class Controller
 		{
 			playerTwo.increasePoints(POINTS_FOR_CONSUMPTION);
 		}
+
+		createNewLooseSnakePiece();
+		playground.updateLooseSnakePieceEntities();
 	}
 
 	public World getWorld()
@@ -393,5 +403,11 @@ public class Controller
 	public void setWorld(World world)
 	{
 		this.world = world;
+	}
+
+	public LinkedList<SnakePiece> getLooseSnakePieces()
+	{
+		return world.getLooseSnakePieces();
+
 	}
 }

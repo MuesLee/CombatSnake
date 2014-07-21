@@ -145,6 +145,7 @@ public class Snake
 		this.size++;
 		pieces.getLast().setType(SnakePieceType.BODY);
 		pieces.add(new SnakePiece(x, y, SnakePieceType.TAIL));
+		System.out.println("Snake has GROWN!");
 	}
 
 	public LinkedList<SnakePiece> getPieces()
