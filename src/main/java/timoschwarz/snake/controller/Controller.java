@@ -38,6 +38,7 @@ public class Controller
 	private static final int GAME_SPEED = 100;
 	private boolean gameIsActive = false;
 
+	public static final String TEXT_GAME_OVER = "GAME OVER";
 	public static final String TEXT_SNAKE_ONE_WAS_VICTORIOUS = "Snake One has won!";
 	public static final String TEXT_SNAKE_TWO_WAS_VICTORIOUS = "Snake Two has won!";
 	public static final String TEXT_BOTH_SNAKES_DED = "BOS SNAIGS DED!!";
@@ -128,7 +129,7 @@ public class Controller
 			text = TEXT_SNAKE_TWO_WAS_VICTORIOUS;
 		}
 
-		JOptionPane.showInternalMessageDialog(playground, text);
+		JOptionPane.showMessageDialog(frame, text, TEXT_GAME_OVER, JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private void stopSnakesAndPlayers()
