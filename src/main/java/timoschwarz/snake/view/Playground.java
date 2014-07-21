@@ -6,19 +6,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Double;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.BorderFactory;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import timoschwarz.snake.controller.Controller;
-import timoschwarz.snake.model.Snake;
-import timoschwarz.snake.model.SnakePiece;
 
 public class Playground extends JPanel
 {
@@ -42,10 +38,12 @@ public class Playground extends JPanel
 	private ArrayList<Entity> snakes = new ArrayList<Entity>();
 	private Controller controller;
 	private Random random = new Random();
+	private ArrayList<Entity> looseSnakePieces;
 
 	public Playground(Controller controller, int w, int h)
 	{
 		super(true);
+		this.looseSnakePieces = new ArrayList<>();
 		this.controller = controller;
 		setIgnoreRepaint(true);
 		setBackground(Color.black);
@@ -147,83 +145,17 @@ public class Playground extends JPanel
 	private void updateGame(long elapsedTime)
 	{
 		updateEntityMovements(elapsedTime);
-		checkForOutOfBounds();
-		checkForCollisions();
-		checkCollisionWithSnakeTails();
-	}
-
-	private void checkCollisionWithSnakeTails()
-	{
-		for (Entity entity : controller.getLooseSnakePieces())
-		{
-			checkCollisionWithSnakeTails(entity);
-		}
-
-	}
-
-	private void checkCollisionWithSnakeTails(Entity looseEntity)
-	{
-		final LinkedList<SnakePiece> pieces = looseEntity.getSnake().getPieces();
-		SnakePiece piece = pieces.getFirst();
-		int x = piece.getX();
-		int y = piece.getY();
-
-		for (Entity entity : snakes)
-		{
-			Snake snake = entity.getSnake();
-			final SnakePiece tail = snake.getTail();
-
-			if (x == tail.getX() && y == tail.getY())
-			{
-				controller.removeLooseSnakePiece(entity);
-				snake.addTail(x, y);
-			}
-		}
-	}
-
-	private void checkForOutOfBounds()
-	{
-		for (Entity entity : snakes)
-		{
-			final Double snakeHead = entity.getSnakeHead();
-			if (snakeHead.x < BORDER_THICKNESS || snakeHead.y < BORDER_THICKNESS
-				|| snakeHead.x > width - BORDER_THICKNESS || snakeHead.y > height - BORDER_THICKNESS)
-			{
-				JOptionPane.showConfirmDialog(this, "GAME OVER!", "A SNAKE BUMPED ITS HEAD!",
-					JOptionPane.INFORMATION_MESSAGE);
-				running.set(false);
-			}
-		}
-
-	}
-
-	private void checkForCollisions()
-	{
-		Entity entity1 = snakes.get(0);
-		Entity entity2 = snakes.get(1);
-
-		boolean entity1Fails = entity1.intersects(entity2) || entity1.intersects(entity1);
-		boolean entity2Fails = entity2.intersects(entity1) || entity2.intersects(entity2);
-		//		System.out.println("E1: " + entity1);
-		//		System.out.println("E2: " + entity2);
-
-		if (entity1Fails)
-		{
-			JOptionPane.showConfirmDialog(this, "GAME OVER!", "SNAKE ONE FAILED", JOptionPane.INFORMATION_MESSAGE);
-			running.set(false);
-		}
-		else if (entity2Fails)
-		{
-			JOptionPane.showConfirmDialog(this, "GAME OVER!", "SNAKE TWO FAILED!", JOptionPane.INFORMATION_MESSAGE);
-			running.set(false);
-		}
 	}
 
 	private void updateEntityMovements(long elapsedTime)
 	{
-		controller.moveSnakes();
-
 		for (Entity e : snakes)
+		{
+			e.update(elapsedTime);
+			e.move();
+		}
+
+		for (Entity e : looseSnakePieces)
 		{
 			e.update(elapsedTime);
 			e.move();
@@ -267,8 +199,8 @@ public class Playground extends JPanel
 				}
 			}
 		}
-		final ArrayList<Entity> looseSnakePieces = controller.getLooseSnakePieces();
-		for (Entity e : looseSnakePieces)
+
+		for (Entity e : getLooseSnakePieces())
 		{
 			if (e.isVisible())
 			{
@@ -320,5 +252,15 @@ public class Playground extends JPanel
 	public void setController(Controller controlller)
 	{
 		this.controller = controlller;
+	}
+
+	public ArrayList<Entity> getLooseSnakePieces()
+	{
+		return looseSnakePieces;
+	}
+
+	public void setLooseSnakePieces(ArrayList<Entity> looseSnakePieces)
+	{
+		this.looseSnakePieces = looseSnakePieces;
 	}
 }

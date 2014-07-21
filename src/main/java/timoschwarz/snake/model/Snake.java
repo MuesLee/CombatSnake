@@ -1,22 +1,22 @@
 package timoschwarz.snake.model;
 
 import java.util.LinkedList;
-import java.util.Observable;
 
 import timoschwarz.util.Diff;
 import timoschwarz.util.Direction;
 
-public class Snake extends Observable
+public class Snake
 {
 
 	private Direction direction = Direction.RIGHT;
 	private int size;
 	private LinkedList<SnakePiece> pieces;
+	private LinkedList<SnakePiece> consumedLoosePieces;
 	private boolean isAlive = true;
-	private int millis = 300;
 
 	public Snake(int size, int startX, int startY)
 	{
+		this.consumedLoosePieces = new LinkedList<SnakePiece>();
 		this.setSize(size);
 		initSnake(startX, startY);
 	}
@@ -47,13 +47,39 @@ public class Snake extends Observable
 		}
 	}
 
-	public synchronized void move()
+	public void move()
 	{
+		SnakePiece tail = getTail();
 		moveSnakePieces(createHeadWithNextPosition(direction));
+		if (!consumedLoosePieces.isEmpty())
+		{
+			consumeLooseSnakePieces(tail);
+		}
 		//System.out.println("Head X: " + getHead().getX() + "Y: " + getHead().getY());
 	}
 
-	private synchronized void moveSnakePieces(SnakePiece headWithNextPosition)
+	private void consumeLooseSnakePieces(SnakePiece tail)
+	{
+		int x = tail.getX();
+		int y = tail.getY();
+
+		SnakePiece first = consumedLoosePieces.getFirst();
+		final int looseX = first.getX();
+		final int looseY = first.getY();
+		if (x == looseX && y == looseY)
+		{
+			addTail(looseX, looseY);
+			consumedLoosePieces.removeFirst();
+		}
+
+	}
+
+	public void addLooseSnakePieceToConsumeProcess(SnakePiece loosePiece)
+	{
+		this.consumedLoosePieces.addLast(loosePiece);
+	}
+
+	private void moveSnakePieces(SnakePiece headWithNextPosition)
 	{
 		if (headWithNextPosition == null)
 		{
@@ -78,15 +104,14 @@ public class Snake extends Observable
 		}
 	}
 
-	private synchronized void moveSnakePieceToPositionOfGivenSnakePiece(int indexOfMovingSnakePiece,
-		SnakePiece givenSnakePiece)
+	private void moveSnakePieceToPositionOfGivenSnakePiece(int indexOfMovingSnakePiece, SnakePiece givenSnakePiece)
 	{
 		SnakePiece currentSnakePiece = getPieces().get(indexOfMovingSnakePiece);
 		currentSnakePiece.setX(givenSnakePiece.getX());
 		currentSnakePiece.setY(givenSnakePiece.getY());
 	}
 
-	public synchronized SnakePiece createHeadWithNextPosition(Direction direction)
+	public SnakePiece createHeadWithNextPosition(Direction direction)
 	{
 		if (direction == null)
 		{
@@ -186,5 +211,15 @@ public class Snake extends Observable
 	{
 		direction = direction;
 
+	}
+
+	public LinkedList<SnakePiece> getConsumedLoosePieces()
+	{
+		return consumedLoosePieces;
+	}
+
+	public void setConsumedLoosePieces(LinkedList<SnakePiece> consumedLoosePieces)
+	{
+		this.consumedLoosePieces = consumedLoosePieces;
 	}
 }
