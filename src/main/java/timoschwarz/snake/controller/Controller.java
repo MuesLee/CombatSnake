@@ -40,7 +40,7 @@ public class Controller
 	public static final String TEXT_GAME_OVER = "GAME OVER";
 	public static final String TEXT_SNAKE_ONE_WAS_VICTORIOUS = "Snake One has won!";
 	public static final String TEXT_SNAKE_TWO_WAS_VICTORIOUS = "Snake Two has won!";
-	public static final String TEXT_BOTH_SNAKES_DED = "BOS SNAIGS DED!!";
+	public static final String TEXT_BOTH_SNAKES_DEAD = "BOFS SNAIGS DED!!";
 
 	private Playground playground;
 	private JFrame frame;
@@ -135,7 +135,7 @@ public class Controller
 
 		if (gameEndedInADraw)
 		{
-			text = TEXT_BOTH_SNAKES_DED;
+			text = TEXT_BOTH_SNAKES_DEAD;
 		}
 		else if (gameEndedWithVictoryOfPlayerOne)
 		{

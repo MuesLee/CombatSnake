@@ -199,14 +199,18 @@ public class Playground extends JPanel
 
 	private void drawEntitiesToScreen(Graphics2D g2d)
 	{
-		for (Entity e : snakes)
+		for (int i = 0; i < snakes.size(); i++)
 		{
+			Color c = getColorForSnake(i);
+			g2d.setColor(c);
+
+			Entity e = snakes.get(i);
 			if (e.isVisible())
 			{
 				LinkedList<Rectangle2D.Double> rects = e.getRects();
 				for (Rectangle2D.Double rec : rects)
 				{
-					g2d.draw(rec);
+					g2d.fill(rec);
 				}
 			}
 		}
@@ -218,9 +222,24 @@ public class Playground extends JPanel
 				LinkedList<Rectangle2D.Double> rects = e.getRects();
 				for (Rectangle2D.Double rec : rects)
 				{
-					g2d.draw(rec);
+					g2d.setColor(Color.RED);
+					g2d.fill(rec);
 				}
 			}
+		}
+	}
+
+	private Color getColorForSnake(int i)
+	{
+		switch (i)
+		{
+			case 0:
+				return Color.WHITE;
+			case 1:
+				return Color.GRAY;
+
+			default:
+				return Color.YELLOW;
 		}
 	}
 

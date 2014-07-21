@@ -119,9 +119,9 @@ public class World
 		boolean collisionSnakeOneWithSnakeTwo = headIntersectsSnake(headOne, snakeTwo);
 		boolean collisionSnakeTwoWithSnakeOne = headIntersectsSnake(headTwo, snakeOne);
 
-		if (collisionSnakeOneWithItself && collisionSnakeTwoWithItself)
+		if (collisionSnakeOneWithSnakeTwo && collisionSnakeTwoWithSnakeOne)
 		{
-			System.out.println(Controller.TEXT_BOTH_SNAKES_DED);
+			System.out.println(Controller.TEXT_BOTH_SNAKES_DEAD);
 			controller.endGame(null);
 		}
 		else if (collisionSnakeOneWithItself || collisionSnakeOneWithSnakeTwo)
