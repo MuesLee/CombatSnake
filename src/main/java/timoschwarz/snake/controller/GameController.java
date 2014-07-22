@@ -24,14 +24,13 @@ import timoschwarz.util.EntityHelper;
 import timoschwarz.util.KeyBindings;
 import timoschwarz.util.VideoUtils;
 
-public class GameController
-{
+public class GameController {
 	public static final int SNAKE_SIZE = 15;
 	public static int paintSize = 15;
 	private static double MAX_PERCENTAGE_OF_SCREEN_SIZE = 0.7;
 	private static final int AMOUNT_OF_LOOSE_SNAKEPIECES = 1;
 	private static final int POINTS_FOR_CONSUMPTION = 10;
-	private static final int GAME_SPEED = 80;
+	private static final int GAME_SPEED = 100;
 	private static final int WORLD_SIZE_X = 50;
 	private static final int WORLD_SIZE_Y = 50;
 
@@ -54,14 +53,12 @@ public class GameController
 	private JLabel scorePlayerOne;
 	private JLabel scorePlayerTwo;
 
-	public GameController(String namePlayerOne, String namePlayerTwo)
-	{
+	public GameController(String namePlayerOne, String namePlayerTwo) {
 		initGame(namePlayerOne, namePlayerTwo);
 
 	}
 
-	protected void prepareStartOfGame(String namePlayerOne, String namePlayerTwo)
-	{
+	protected void prepareStartOfGame(String namePlayerOne, String namePlayerTwo) {
 		calculatePaintSize();
 
 		this.setPlayerOne(new Player(namePlayerOne));
@@ -79,25 +76,25 @@ public class GameController
 		snakes.add(snakeTwo);
 
 		this.world = new World(snakes, this, WORLD_SIZE_X, WORLD_SIZE_Y);
-		this.playground = new Playground(this, WORLD_SIZE_X * paintSize, WORLD_SIZE_Y * paintSize);
+		this.playground = new Playground(this, WORLD_SIZE_X * paintSize,
+				WORLD_SIZE_Y * paintSize);
 
 		playground.addEntity(EntityHelper.createSnakeEntity(snakeOne, "white"));
 		playground.addEntity(EntityHelper.createSnakeEntity(snakeTwo, "red"));
 
-		KeyBindings keyBindings = new KeyBindings(playground, snakeOne, snakeTwo);
+		KeyBindings keyBindings = new KeyBindings(playground, snakeOne,
+				snakeTwo);
 		configureFrame();
 	}
 
-	private void initGame(String namePlayerOne, String namePlayerTwo)
-	{
+	private void initGame(String namePlayerOne, String namePlayerTwo) {
 		audioController = new AudioController();
 		audioController.startMenuBackgroundMusic();
 		prepareStartOfGame(namePlayerOne, namePlayerTwo);
 
 	}
 
-	private void calculatePaintSize()
-	{
+	private void calculatePaintSize() {
 
 		int width = VideoUtils.getScreenWidth();
 		width = (int) (width * MAX_PERCENTAGE_OF_SCREEN_SIZE / WORLD_SIZE_X);
@@ -108,8 +105,7 @@ public class GameController
 
 	}
 
-	private void resetGame()
-	{
+	private void resetGame() {
 		frame.dispose();
 		initGame(playerOne.getName(), playerTwo.getName());
 
@@ -117,11 +113,11 @@ public class GameController
 
 	/**
 	 * 
-	 * @param snake The victorious Snake
+	 * @param snake
+	 *            The victorious Snake
 	 */
 
-	public void endGame(Snake snake)
-	{
+	public void endGame(Snake snake) {
 		gameIsActive = false;
 
 		audioController.stopBackgroundMusic();
@@ -130,56 +126,44 @@ public class GameController
 		boolean gameEndedInADraw = false;
 		boolean gameEndedWithVictoryOfPlayerOne = false;
 
-		if (snake == null)
-		{
+		if (snake == null) {
 			gameEndedInADraw = true;
-		}
-		else if (snake == playerOne.getSnake())
-		{
+		} else if (snake == playerOne.getSnake()) {
 			gameEndedWithVictoryOfPlayerOne = true;
 		}
 
 		String text = "";
 
-		if (gameEndedInADraw)
-		{
+		if (gameEndedInADraw) {
 			audioController.playSound("annoying");
 			text = TEXT_BOTH_SNAKES_DEAD;
-		}
-		else if (gameEndedWithVictoryOfPlayerOne)
-		{
+		} else if (gameEndedWithVictoryOfPlayerOne) {
 			text = TEXT_SNAKE_ONE_WAS_VICTORIOUS;
-		}
-		else
-		{
+		} else {
 			text = TEXT_SNAKE_TWO_WAS_VICTORIOUS;
 		}
 
-		JOptionPane.showMessageDialog(frame, text, TEXT_GAME_OVER, JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(frame, text, TEXT_GAME_OVER,
+				JOptionPane.INFORMATION_MESSAGE);
 		Playground.running.set(false);
 	}
 
-	void startGame()
-	{
+	void startGame() {
 		audioController.stopMenuBackgroundMusic();
 		audioController.startBackgroundMusic();
 
-		Thread graphicLoop = new Thread(new Runnable()
-		{
+		Thread graphicLoop = new Thread(new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				playground.gameLoop();
 			}
 
 		});
 		graphicLoop.start();
 
-		Thread gameLoop = new Thread(new Runnable()
-		{
+		Thread gameLoop = new Thread(new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				gameIsActive = true;
 				gameLoop();
 			}
@@ -188,31 +172,27 @@ public class GameController
 		gameLoop.start();
 	}
 
-	private void gameLoop()
-	{
-		while (gameIsActive)
-		{
-			try
-			{
+	private void gameLoop() {
+		while (gameIsActive) {
+			try {
 				Thread.sleep(GAME_SPEED);
 				moveSnakes();
-			}
-			catch (InterruptedException e)
-			{
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public void moveSnakes()
-	{
+	public void moveSnakes() {
 		playerOne.getSnake().move();
 		playerTwo.getSnake().move();
+
+		System.out.println("PlayerTwo AT :" + playerTwo.getSnake().getHead());
+		System.out.println("PlayerOne AT :" + playerOne.getSnake().getHead());
 		world.checkForCollisions();
 	}
 
-	private void configureFrame()
-	{
+	private void configureFrame() {
 		JPanel scorePanel = createScorePanel();
 		JButton startButton = createStartButton();
 		JButton resetButton = createResetButton();
@@ -231,8 +211,7 @@ public class GameController
 		frame.setVisible(true);
 	}
 
-	private JPanel createButtonPanel(JButton startButton, JButton resetButton)
-	{
+	private JPanel createButtonPanel(JButton startButton, JButton resetButton) {
 		JPanel buttonPanel = new JPanel(new FlowLayout(1));
 
 		buttonPanel.add(startButton);
@@ -240,14 +219,11 @@ public class GameController
 		return buttonPanel;
 	}
 
-	private JButton createResetButton()
-	{
+	private JButton createResetButton() {
 		JButton resetButton = new JButton("Reset");
-		resetButton.addActionListener(new ActionListener()
-		{
+		resetButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
+			public void actionPerformed(ActionEvent arg0) {
 				playground.running.set(true);
 				resetGame();
 			}
@@ -256,14 +232,11 @@ public class GameController
 		return resetButton;
 	}
 
-	private JButton createStartButton()
-	{
+	private JButton createStartButton() {
 		JButton startButton = new JButton("Start");
-		startButton.addActionListener(new ActionListener()
-		{
+		startButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
+			public void actionPerformed(ActionEvent arg0) {
 				Playground.running.set(true);
 				startGame();
 				startSnakes();
@@ -273,8 +246,7 @@ public class GameController
 		return startButton;
 	}
 
-	private JPanel createScorePanel()
-	{
+	private JPanel createScorePanel() {
 		String textPlayerOne = getScoreTextForPlayer(playerOne);
 		String textPlayerTwo = getScoreTextForPlayer(playerTwo);
 		JPanel scorePanel = new JPanel();
@@ -286,73 +258,60 @@ public class GameController
 		return scorePanel;
 	}
 
-	private String getScoreTextForPlayer(Player player)
-	{
+	private String getScoreTextForPlayer(Player player) {
 		String scoreText = player.getName() + ": " + player.getScore();
 		return scoreText;
 	}
 
-	public void checkSnakes()
-	{
+	public void checkSnakes() {
 		playerOne.getSnake();
 	}
 
-	public void setPlaygroundSize(Dimension size)
-	{
+	public void setPlaygroundSize(Dimension size) {
 		playground.setSize(size);
 	}
 
-	public Player getPlayerOne()
-	{
+	public Player getPlayerOne() {
 		return playerOne;
 	}
 
-	public void setPlayerOne(Player playerOne)
-	{
+	public void setPlayerOne(Player playerOne) {
 		this.playerOne = playerOne;
 	}
 
-	public Player getPlayerTwo()
-	{
+	public Player getPlayerTwo() {
 		return playerTwo;
 	}
 
-	public void setPlayerTwo(Player playerTwo)
-	{
+	public void setPlayerTwo(Player playerTwo) {
 		this.playerTwo = playerTwo;
 	}
 
-	public void startSnakes()
-	{
+	public void startSnakes() {
 		initLooseSnakePieces();
 	}
 
-	private void initLooseSnakePieces()
-	{
+	private void initLooseSnakePieces() {
 		ArrayList<Entity> looseSnakePieces = new ArrayList<Entity>();
 
-		for (int i = 0; i < AMOUNT_OF_LOOSE_SNAKEPIECES; i++)
-		{
+		for (int i = 0; i < AMOUNT_OF_LOOSE_SNAKEPIECES; i++) {
 			world.createNewLooseSnakePiece();
 			world.getLooseSnakePieces();
 
-			Entity entity = EntityHelper.createEntity(world.getLooseSnakePieces(), "red");
+			Entity entity = EntityHelper.createEntity(
+					world.getLooseSnakePieces(), "red");
 			looseSnakePieces.add(entity);
 		}
 		playground.setLooseSnakePieces(looseSnakePieces);
 
 	}
 
-	public void snakeHasConsumedALoosePiece(Snake snake)
-	{
+	public void snakeHasConsumedALoosePiece(Snake snake) {
 		audioController.playSound("bite");
-		if (playerOne.getSnake() == snake)
-		{
+		if (playerOne.getSnake() == snake) {
 			playerOne.increasePoints(POINTS_FOR_CONSUMPTION);
 			scorePlayerOne.setText(getScoreTextForPlayer(playerOne));
-		}
-		else
-		{
+		} else {
 			playerTwo.increasePoints(POINTS_FOR_CONSUMPTION);
 			scorePlayerTwo.setText(getScoreTextForPlayer(playerTwo));
 		}
@@ -361,18 +320,15 @@ public class GameController
 		playground.updateLooseSnakePieceEntities();
 	}
 
-	public World getWorld()
-	{
+	public World getWorld() {
 		return world;
 	}
 
-	public void setWorld(World world)
-	{
+	public void setWorld(World world) {
 		this.world = world;
 	}
 
-	public LinkedList<SnakePiece> getLooseSnakePieces()
-	{
+	public LinkedList<SnakePiece> getLooseSnakePieces() {
 		return world.getLooseSnakePieces();
 
 	}
