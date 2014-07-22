@@ -2,7 +2,7 @@ package timoschwarz.snake.main;
 
 import javax.swing.UIManager;
 
-import timoschwarz.snake.controller.Controller;
+import timoschwarz.snake.controller.GameConfigurator;
 
 public class Main
 {
@@ -17,7 +17,7 @@ public class Main
 			e.printStackTrace();
 		}
 
-		Controller controller = new Controller();
+		GameConfigurator gc = new GameConfigurator();
 
 	}
 }

@@ -9,13 +9,12 @@ import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import timoschwarz.snake.controller.Controller;
+import timoschwarz.snake.controller.GameController;
 import timoschwarz.snake.model.SnakePiece;
 import timoschwarz.util.EntityHelper;
 
@@ -37,16 +36,15 @@ public class Playground extends JPanel
 	public static AtomicBoolean running = new AtomicBoolean(false), paused = new AtomicBoolean(false);
 	public static final int BORDER_THICKNESS = 5;
 
-	private int width, height, frameCount = 0, fps = 0;
+	private int width, height, frameCount = 0;
 	private ArrayList<SnakeEntity> snakes = new ArrayList<SnakeEntity>();
-	private Controller controller;
-	private Random random = new Random();
+	private GameController controller;
 	private ArrayList<Entity> looseSnakePieces;
 
 	private Image image_buffer;
 	private Graphics graphics_buffer;
 
-	public Playground(Controller controller, int w, int h)
+	public Playground(GameController controller, int w, int h)
 	{
 		super(true);
 		this.looseSnakePieces = new ArrayList<>();
@@ -128,7 +126,6 @@ public class Playground extends JPanel
 
 				if (thisSecond > lastSecondTime)
 				{
-					fps = frameCount;
 					frameCount = 0;
 					lastSecondTime = thisSecond;
 				}
@@ -148,7 +145,6 @@ public class Playground extends JPanel
 				}
 			}
 		}
-		fps = 0;
 	}
 
 	private void drawGame()
@@ -185,7 +181,6 @@ public class Playground extends JPanel
 
 		//applyRenderHints(g2d);
 		drawEntitiesToScreen(g2d);
-		drawFpsCounter(g2d);
 		frameCount++;
 	}
 
@@ -255,18 +250,12 @@ public class Playground extends JPanel
 		}
 	}
 
-	private void drawFpsCounter(Graphics2D g2d)
-	{
-		g2d.setColor(Color.WHITE);
-		g2d.drawString("FPS: " + fps, 10, 0);
-	}
-
-	public Controller getController()
+	public GameController getController()
 	{
 		return controller;
 	}
 
-	public void setController(Controller controlller)
+	public void setController(GameController controlller)
 	{
 		this.controller = controlller;
 	}

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import timoschwarz.snake.controller.Controller;
+import timoschwarz.snake.controller.GameController;
 import timoschwarz.snake.model.SnakePiece;
 
 public class Entity extends Animator
@@ -29,7 +29,7 @@ public class Entity extends Animator
 
 	private void fillRects()
 	{
-		int paintSize = Controller.paintSize;
+		int paintSize = GameController.paintSize;
 		SnakePiece first = pieces.getFirst();
 		setSnakeHead(new Rectangle2D.Double(first.getX() * paintSize + Playground.BORDER_THICKNESS, first.getY()
 			* paintSize + Playground.BORDER_THICKNESS, getCurrentImage().getWidth(), getCurrentImage().getHeight()));
@@ -48,7 +48,7 @@ public class Entity extends Animator
 
 	void updateRects(LinkedList<SnakePiece> pieces)
 	{
-		int paintSize = Controller.paintSize;
+		int paintSize = GameController.paintSize;
 
 		for (int i = 0; i < rects.size(); i++)
 		{

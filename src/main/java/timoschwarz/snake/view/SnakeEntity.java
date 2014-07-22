@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import timoschwarz.snake.controller.Controller;
+import timoschwarz.snake.controller.GameController;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.SnakePiece;
 
@@ -41,7 +41,7 @@ public class SnakeEntity extends Entity
 	public void checkForNewSnakePieces()
 	{
 		LinkedList<SnakePiece> pieces = snake.getPieces();
-		int paintSize = Controller.paintSize;
+		int paintSize = GameController.paintSize;
 		final LinkedList<Double> rects = getRects();
 
 		if (pieces.size() != rects.size())

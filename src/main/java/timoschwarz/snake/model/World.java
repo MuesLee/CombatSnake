@@ -4,12 +4,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import timoschwarz.snake.controller.Controller;
+import timoschwarz.snake.controller.GameController;
 
 public class World
 {
 	private List<Snake> snakes;
-	private Controller controller;
+	private GameController controller;
 	private LinkedList<SnakePiece> looseSnakePieces;
 	private int height;
 	private int width;
@@ -34,7 +34,7 @@ public class World
 		this.width = width;
 	}
 
-	public World(LinkedList<Snake> snakes, Controller controller, int width, int height)
+	public World(LinkedList<Snake> snakes, GameController controller, int width, int height)
 	{
 		this.controller = controller;
 		this.snakes = snakes;
@@ -152,17 +152,17 @@ public class World
 
 		if (collisionSnakeOneWithSnakeTwo && collisionSnakeTwoWithSnakeOne)
 		{
-			System.out.println(Controller.TEXT_BOTH_SNAKES_DEAD);
+			System.out.println(GameController.TEXT_BOTH_SNAKES_DEAD);
 			controller.endGame(null);
 		}
 		else if (collisionSnakeOneWithItself || collisionSnakeOneWithSnakeTwo)
 		{
-			System.out.println(Controller.TEXT_SNAKE_TWO_WAS_VICTORIOUS);
+			System.out.println(GameController.TEXT_SNAKE_TWO_WAS_VICTORIOUS);
 			controller.endGame(snakes.get(1));
 		}
 		else if (collisionSnakeTwoWithItself || collisionSnakeTwoWithSnakeOne)
 		{
-			System.out.println(Controller.TEXT_SNAKE_ONE_WAS_VICTORIOUS);
+			System.out.println(GameController.TEXT_SNAKE_ONE_WAS_VICTORIOUS);
 			controller.endGame(snakes.get(0));
 		}
 	}
@@ -194,12 +194,12 @@ public class World
 		return false;
 	}
 
-	public Controller getController()
+	public GameController getController()
 	{
 		return controller;
 	}
 
-	public void setController(Controller controller)
+	public void setController(GameController controller)
 	{
 		this.controller = controller;
 	}

@@ -3,8 +3,6 @@ package timoschwarz.snake.controller;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -24,8 +22,9 @@ import timoschwarz.snake.view.Entity;
 import timoschwarz.snake.view.Playground;
 import timoschwarz.util.EntityHelper;
 import timoschwarz.util.KeyBindings;
+import timoschwarz.util.VideoUtils;
 
-public class Controller
+public class GameController
 {
 	public static final int SNAKE_SIZE = 15;
 	public static int paintSize = 15;
@@ -44,6 +43,8 @@ public class Controller
 	private Playground playground;
 	private JFrame frame;
 
+	private AudioController audioController;
+
 	private Player playerOne;
 	private Player playerTwo;
 
@@ -53,19 +54,19 @@ public class Controller
 	private JLabel scorePlayerOne;
 	private JLabel scorePlayerTwo;
 
-	public Controller()
+	public GameController(String namePlayerOne, String namePlayerTwo)
 	{
+		initGame(namePlayerOne, namePlayerTwo);
 
-		initGame();
 	}
 
-	private void initGame()
+	private void initGame(String namePlayerOne, String namePlayerTwo)
 	{
-
+		audioController = new AudioController();
 		calculatePaintSize();
 
-		this.setPlayerOne(new Player("Player One"));
-		this.setPlayerTwo(new Player("Player Two"));
+		this.setPlayerOne(new Player(namePlayerOne));
+		this.setPlayerTwo(new Player(namePlayerTwo));
 		this.frame = new JFrame("COMBAT SNAKEZ!!!111");
 
 		Snake snakeOne = new Snake(SNAKE_SIZE, SNAKE_SIZE, 0);
@@ -90,11 +91,10 @@ public class Controller
 
 	private void calculatePaintSize()
 	{
-		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		int width = gd.getDisplayMode().getWidth();
-		int height = gd.getDisplayMode().getHeight();
 
+		int width = VideoUtils.getScreenWidth();
 		width = (int) (width * MAX_PERCENTAGE_OF_SCREEN_SIZE / WORLD_SIZE_X);
+		int height = VideoUtils.getScreenHeight();
 		height = (int) (height * MAX_PERCENTAGE_OF_SCREEN_SIZE / WORLD_SIZE_Y);
 
 		paintSize = Math.min(width, height);
@@ -104,7 +104,7 @@ public class Controller
 	private void resetGame()
 	{
 		frame.dispose();
-		initGame();
+		initGame(playerOne.getName(), playerTwo.getName());
 
 	}
 
@@ -116,6 +116,9 @@ public class Controller
 	public void endGame(Snake snake)
 	{
 		gameIsActive = false;
+
+		audioController.stopBackgroundMusic();
+		audioController.playSound("comment_terminated");
 
 		boolean gameEndedInADraw = false;
 		boolean gameEndedWithVictoryOfPlayerOne = false;
@@ -150,6 +153,8 @@ public class Controller
 
 	private void startGame()
 	{
+		audioController.startBackgroundMusic();
+
 		Thread graphicLoop = new Thread(new Runnable()
 		{
 			@Override
@@ -331,7 +336,7 @@ public class Controller
 
 	public void snakeHasConsumedALoosePiece(Snake snake)
 	{
-
+		audioController.playSound("bite");
 		if (playerOne.getSnake() == snake)
 		{
 			playerOne.increasePoints(POINTS_FOR_CONSUMPTION);

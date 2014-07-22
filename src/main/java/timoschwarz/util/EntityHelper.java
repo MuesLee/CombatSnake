@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import timoschwarz.snake.controller.Controller;
+import timoschwarz.snake.controller.GameController;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.SnakePiece;
 import timoschwarz.snake.view.Entity;
@@ -18,7 +18,7 @@ public class EntityHelper
 	{
 		ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
 		ArrayList<Long> timings = new ArrayList<Long>();
-		images.add(createColouredImage(color, Controller.paintSize, Controller.paintSize, false));
+		images.add(createColouredImage(color, GameController.paintSize, GameController.paintSize, false));
 		timings.add(500l);
 
 		return new SnakeEntity(images, timings, snake);
@@ -28,7 +28,7 @@ public class EntityHelper
 	{
 		ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
 		ArrayList<Long> timings = new ArrayList<Long>();
-		images.add(createColouredImage(color, Controller.paintSize, Controller.paintSize, false));
+		images.add(createColouredImage(color, GameController.paintSize, GameController.paintSize, false));
 		timings.add(500l);
 
 		return new Entity(images, timings, pieces);
