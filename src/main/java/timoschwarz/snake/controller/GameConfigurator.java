@@ -111,7 +111,7 @@ public class GameConfigurator
 
 	private void startLanGame(String namePlayerOne, String namePlayerTwo)
 	{
-		MultiplayerController mc = new MultiplayerController(namePlayerOne, namePlayerTwo);
+		LANController mc = new LANController(namePlayerOne, namePlayerTwo);
 	}
 
 	public void startLocalGame(String namePlayerOne, String namePlayerTwo)

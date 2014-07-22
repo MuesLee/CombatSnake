@@ -60,9 +60,8 @@ public class GameController
 
 	}
 
-	private void initGame(String namePlayerOne, String namePlayerTwo)
+	protected void prepareStartOfGame(String namePlayerOne, String namePlayerTwo)
 	{
-		audioController = new AudioController();
 		calculatePaintSize();
 
 		this.setPlayerOne(new Player(namePlayerOne));
@@ -87,6 +86,14 @@ public class GameController
 
 		KeyBindings keyBindings = new KeyBindings(playground, snakeOne, snakeTwo);
 		configureFrame();
+	}
+
+	private void initGame(String namePlayerOne, String namePlayerTwo)
+	{
+		audioController = new AudioController();
+		audioController.startMenuBackgroundMusic();
+		prepareStartOfGame(namePlayerOne, namePlayerTwo);
+
 	}
 
 	private void calculatePaintSize()
@@ -136,6 +143,7 @@ public class GameController
 
 		if (gameEndedInADraw)
 		{
+			audioController.playSound("annoying");
 			text = TEXT_BOTH_SNAKES_DEAD;
 		}
 		else if (gameEndedWithVictoryOfPlayerOne)
@@ -153,6 +161,7 @@ public class GameController
 
 	private void startGame()
 	{
+		audioController.stopMenuBackgroundMusic();
 		audioController.startBackgroundMusic();
 
 		Thread graphicLoop = new Thread(new Runnable()

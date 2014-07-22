@@ -23,9 +23,11 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class AudioController
 {
 	private Properties prop;
-	private Sequencer sequencer;
+	private Sequencer sequencerGame;
+	private Sequencer sequencerMenu;
 	private Map<String, File> clips = new HashMap<String, File>();
-	private InputStream midiFile;
+	private InputStream midiFileGameBackGround;
+	private InputStream midiFileMenuBackGround;
 
 	public AudioController()
 	{
@@ -43,27 +45,53 @@ public class AudioController
 
 	public boolean sequencerIsRunning()
 	{
-		if (sequencer == null)
+		if (sequencerGame == null)
 		{
 			return false;
 		}
-		return sequencer.isRunning();
+		return sequencerGame.isRunning();
 	}
 
 	private void loadMIDIFileForBackgroundMusic()
 	{
-		midiFile = ClassLoader.getSystemResourceAsStream(prop.getProperty("backgroundMusic"));
+		midiFileGameBackGround = ClassLoader.getSystemResourceAsStream(prop.getProperty("backgroundMusic"));
+		midiFileMenuBackGround = ClassLoader.getSystemResourceAsStream(prop.getProperty("backgroundMenuMusic"));
 	}
 
 	public void startBackgroundMusic()
 	{
 		try
 		{
-			sequencer = MidiSystem.getSequencer();
-			sequencer.open();
-			sequencer.setSequence(MidiSystem.getSequence(midiFile));
-			sequencer.setLoopCount(sequencer.LOOP_CONTINUOUSLY);
-			sequencer.start();
+			sequencerGame = MidiSystem.getSequencer();
+			sequencerGame.open();
+			sequencerGame.setSequence(MidiSystem.getSequence(midiFileGameBackGround));
+			sequencerGame.setLoopCount(sequencerGame.LOOP_CONTINUOUSLY);
+			sequencerGame.start();
+		}
+		catch (MidiUnavailableException e2)
+		{
+			System.out.println("MidiUnavailableException");
+		}
+		catch (InvalidMidiDataException e)
+		{
+			System.out.println("InvalidMidiDataException");
+		}
+		catch (IOException e)
+		{
+			System.out.println("IOException");
+		}
+
+	}
+
+	public void startMenuBackgroundMusic()
+	{
+		try
+		{
+			sequencerMenu = MidiSystem.getSequencer();
+			sequencerMenu.open();
+			sequencerMenu.setSequence(MidiSystem.getSequence(midiFileMenuBackGround));
+			sequencerMenu.setLoopCount(sequencerMenu.LOOP_CONTINUOUSLY);
+			sequencerMenu.start();
 		}
 		catch (MidiUnavailableException e2)
 		{
@@ -82,8 +110,14 @@ public class AudioController
 
 	public void stopBackgroundMusic()
 	{
-		sequencer.stop();
-		sequencer.close();
+		sequencerGame.stop();
+		sequencerGame.close();
+	}
+
+	public void stopMenuBackgroundMusic()
+	{
+		sequencerMenu.stop();
+		sequencerMenu.close();
 	}
 
 	public synchronized void playSound(final String soundName)
