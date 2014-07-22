@@ -46,4 +46,10 @@ public class Player
 		this.snake = snake;
 	}
 
+	@Override
+	public String toString()
+	{
+		return name;
+	}
+
 }

@@ -159,7 +159,7 @@ public class GameController
 		Playground.running.set(false);
 	}
 
-	private void startGame()
+	void startGame()
 	{
 		audioController.stopMenuBackgroundMusic();
 		audioController.startBackgroundMusic();

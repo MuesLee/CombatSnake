@@ -55,7 +55,6 @@ public class GameConfigurator
 		frame = new JFrame(TITLE_GAME_CONFIGURATION);
 		frame.setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
 
 		int width = (int) (VideoUtils.getScreenWidth() * PERCENTAGE_OF_SCREEN_SIZE);
 		int height = (int) (VideoUtils.getScreenHeight() * PERCENTAGE_OF_SCREEN_SIZE);
@@ -75,6 +74,7 @@ public class GameConfigurator
 		frame.add(startLocalGame, BorderLayout.WEST);
 		frame.add(startLanGame, BorderLayout.EAST);
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 	}
 
 	private JButton createStartLanGameButton()
@@ -86,6 +86,7 @@ public class GameConfigurator
 			public void actionPerformed(ActionEvent arg0)
 			{
 				startLanGame(namePlayerOne, namePlayerTwo);
+				frame.setVisible(false);
 			}
 
 		});
