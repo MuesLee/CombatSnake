@@ -53,8 +53,8 @@ public class Playground extends JPanel
 		this.controller = controller;
 		setIgnoreRepaint(true);
 		setBackground(Color.black);
-		width = w + BORDER_THICKNESS;
-		height = h + BORDER_THICKNESS;
+		width = w + 2 * BORDER_THICKNESS;
+		height = h + 2 * BORDER_THICKNESS;
 		setBorder(BorderFactory.createLineBorder(Color.RED, BORDER_THICKNESS));
 	}
 
