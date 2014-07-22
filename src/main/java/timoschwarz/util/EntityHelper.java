@@ -14,24 +14,24 @@ import timoschwarz.snake.view.SnakeEntity;
 
 public class EntityHelper
 {
-	public static SnakeEntity createSnakeEntity(Snake snakeOne, String color)
+	public static SnakeEntity createSnakeEntity(Snake snake, String color)
 	{
-		ArrayList<BufferedImage> imagesSnakeOne = new ArrayList<BufferedImage>();
-		ArrayList<Long> timingsSnakeOne = new ArrayList<Long>();
-		imagesSnakeOne.add(createColouredImage(color, Controller.paintSize, Controller.paintSize, false));
-		timingsSnakeOne.add(500l);
+		ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
+		ArrayList<Long> timings = new ArrayList<Long>();
+		images.add(createColouredImage(color, Controller.paintSize, Controller.paintSize, false));
+		timings.add(500l);
 
-		return new SnakeEntity(imagesSnakeOne, timingsSnakeOne, snakeOne);
+		return new SnakeEntity(images, timings, snake);
 	}
 
 	public static Entity createEntity(LinkedList<SnakePiece> pieces, String color)
 	{
-		ArrayList<BufferedImage> imagesSnakeOne = new ArrayList<BufferedImage>();
-		ArrayList<Long> timingsSnakeOne = new ArrayList<Long>();
-		imagesSnakeOne.add(createColouredImage(color, Controller.paintSize, Controller.paintSize, false));
-		timingsSnakeOne.add(500l);
+		ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
+		ArrayList<Long> timings = new ArrayList<Long>();
+		images.add(createColouredImage(color, Controller.paintSize, Controller.paintSize, false));
+		timings.add(500l);
 
-		return new Entity(imagesSnakeOne, timingsSnakeOne, pieces);
+		return new Entity(images, timings, pieces);
 	}
 
 	public static BufferedImage createColouredImage(String color, int w, int h, boolean circular)

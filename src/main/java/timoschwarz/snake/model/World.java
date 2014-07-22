@@ -2,6 +2,7 @@ package timoschwarz.snake.model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import timoschwarz.snake.controller.Controller;
 
@@ -107,12 +108,42 @@ public class World
 		return false;
 	}
 
+	public void createNewLooseSnakePiece()
+	{
+		Random random = new Random();
+
+		int randomX = 0;
+		int randomY = 0;
+		do
+		{
+			randomX = random.nextInt(width + 1);
+			randomY = random.nextInt(height + 1);
+		}
+		while (!coordinatesAreFree(randomX, randomY));
+
+		SnakePiece snakePiece = new SnakePiece(randomX, randomY, SnakePieceType.LOOSE);
+
+		addLooseSnakePiece(snakePiece);
+	}
+
+	private boolean coordinatesAreFree(int randomX, int randomY)
+	{
+		Snake snakeOne = snakes.get(0);
+		Snake snakeTwo = snakes.get(1);
+
+		if (snakeOne.snakeBlocksCoordinates(randomX, randomY) || snakeTwo.snakeBlocksCoordinates(randomX, randomY))
+		{
+			return false;
+		}
+		return true;
+	}
+
 	private void checkForSnakeCollisions()
 	{
 		Snake snakeOne = snakes.get(0);
 		Snake snakeTwo = snakes.get(1);
 		SnakePiece headOne = snakeOne.getHead();
-		SnakePiece headTwo = snakeOne.getHead();
+		SnakePiece headTwo = snakeTwo.getHead();
 
 		boolean collisionSnakeOneWithItself = headIntersectsSnake(headOne, snakeOne);
 		boolean collisionSnakeTwoWithItself = headIntersectsSnake(headTwo, snakeTwo);

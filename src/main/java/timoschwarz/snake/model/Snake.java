@@ -11,7 +11,7 @@ public class Snake
 	private Direction direction = Direction.RIGHT;
 	private LinkedList<SnakePiece> pieces;
 	private LinkedList<SnakePiece> consumedLoosePieces;
-	private boolean isAlive = true;
+	private boolean hasMovedAfterLastDirectionChange = false;
 
 	public Snake(int size, int startX, int startY)
 	{
@@ -53,7 +53,7 @@ public class Snake
 		{
 			consumeLooseSnakePieces(tail);
 		}
-		//System.out.println("Head X: " + getHead().getX() + "Y: " + getHead().getY());
+		hasMovedAfterLastDirectionChange = true;
 	}
 
 	private void consumeLooseSnakePieces(SnakePiece tail)
@@ -163,7 +163,12 @@ public class Snake
 		}
 		else
 		{
+			if (!hasMovedAfterLastDirectionChange)
+			{
+				return;
+			}
 			this.direction = direction;
+			hasMovedAfterLastDirectionChange = false;
 		}
 	}
 
@@ -175,16 +180,6 @@ public class Snake
 	public SnakePiece getTail()
 	{
 		return pieces.getLast();
-	}
-
-	public boolean isAlive()
-	{
-		return isAlive;
-	}
-
-	public void setAlive(boolean isAlive)
-	{
-		this.isAlive = isAlive;
 	}
 
 	public boolean snakeBlocksCoordinates(int x, int y)
@@ -203,7 +198,6 @@ public class Snake
 	public void forceDirection(Direction direction)
 	{
 		direction = direction;
-
 	}
 
 	public LinkedList<SnakePiece> getConsumedLoosePieces()
@@ -214,5 +208,18 @@ public class Snake
 	public void setConsumedLoosePieces(LinkedList<SnakePiece> consumedLoosePieces)
 	{
 		this.consumedLoosePieces = consumedLoosePieces;
+	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+
+		for (SnakePiece piece : pieces)
+		{
+			sb.append(piece);
+		}
+
+		return sb.toString();
 	}
 }

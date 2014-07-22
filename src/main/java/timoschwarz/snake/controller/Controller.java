@@ -9,17 +9,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import timoschwarz.snake.model.Player;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.SnakePiece;
-import timoschwarz.snake.model.SnakePieceType;
 import timoschwarz.snake.model.World;
 import timoschwarz.snake.view.Entity;
 import timoschwarz.snake.view.Playground;
@@ -33,7 +32,7 @@ public class Controller
 	private static double MAX_PERCENTAGE_OF_SCREEN_SIZE = 0.7;
 	private static final int AMOUNT_OF_LOOSE_SNAKEPIECES = 1;
 	private static final int POINTS_FOR_CONSUMPTION = 10;
-	private static final int GAME_SPEED = 100;
+	private static final int GAME_SPEED = 80;
 	private static final int WORLD_SIZE_X = 50;
 	private static final int WORLD_SIZE_Y = 50;
 
@@ -44,8 +43,6 @@ public class Controller
 
 	private Playground playground;
 	private JFrame frame;
-	private JButton startButton;
-	private JButton resetButton;
 
 	private Player playerOne;
 	private Player playerTwo;
@@ -53,6 +50,8 @@ public class Controller
 	private World world;
 
 	private boolean gameIsActive = false;
+	private JLabel scorePlayerOne;
+	private JLabel scorePlayerTwo;
 
 	public Controller()
 	{
@@ -116,8 +115,8 @@ public class Controller
 
 	public void endGame(Snake snake)
 	{
-		Playground.running.set(false);
 		gameIsActive = false;
+
 		boolean gameEndedInADraw = false;
 		boolean gameEndedWithVictoryOfPlayerOne = false;
 
@@ -130,7 +129,6 @@ public class Controller
 			gameEndedWithVictoryOfPlayerOne = true;
 		}
 
-		stopSnakesAndPlayers();
 		String text = "";
 
 		if (gameEndedInADraw)
@@ -147,14 +145,7 @@ public class Controller
 		}
 
 		JOptionPane.showMessageDialog(frame, text, TEXT_GAME_OVER, JOptionPane.INFORMATION_MESSAGE);
-	}
-
-	private void stopSnakesAndPlayers()
-	{
-		playerOne.getSnake().setAlive(false);
-		playerOne.setAlive(false);
-		playerTwo.getSnake().setAlive(false);
-		playerTwo.setAlive(false);
+		Playground.running.set(false);
 	}
 
 	private void startGame()
@@ -208,20 +199,36 @@ public class Controller
 
 	private void configureFrame()
 	{
-		startButton = new JButton("Start");
-		startButton.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
-				playground.running.set(true);
-				startGame();
-				startSnakes();
-			}
-		});
-		startButton.setVisible(true);
+		JPanel scorePanel = createScorePanel();
+		JButton startButton = createStartButton();
+		JButton resetButton = createResetButton();
+		JPanel buttonPanel = createButtonPanel(startButton, resetButton);
 
-		resetButton = new JButton("Reset");
+		Dimension size = playground.getSize();
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setSize(size.height, size.width);
+		frame.setLayout(new BorderLayout());
+		frame.setResizable(false);
+		frame.add(playground, BorderLayout.CENTER);
+		frame.add(buttonPanel, BorderLayout.SOUTH);
+		frame.add(scorePanel, BorderLayout.NORTH);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+	}
+
+	private JPanel createButtonPanel(JButton startButton, JButton resetButton)
+	{
+		JPanel buttonPanel = new JPanel(new FlowLayout(1));
+
+		buttonPanel.add(startButton);
+		buttonPanel.add(resetButton);
+		return buttonPanel;
+	}
+
+	private JButton createResetButton()
+	{
+		JButton resetButton = new JButton("Reset");
 		resetButton.addActionListener(new ActionListener()
 		{
 			@Override
@@ -232,22 +239,43 @@ public class Controller
 			}
 		});
 		resetButton.setVisible(true);
+		return resetButton;
+	}
 
-		JPanel buttonPanel = new JPanel(new FlowLayout(1));
+	private JButton createStartButton()
+	{
+		JButton startButton = new JButton("Start");
+		startButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				Playground.running.set(true);
+				startGame();
+				startSnakes();
+			}
+		});
+		startButton.setVisible(true);
+		return startButton;
+	}
 
-		buttonPanel.add(startButton);
-		buttonPanel.add(resetButton);
+	private JPanel createScorePanel()
+	{
+		String textPlayerOne = getScoreTextForPlayer(playerOne);
+		String textPlayerTwo = getScoreTextForPlayer(playerTwo);
+		JPanel scorePanel = new JPanel();
+		scorePlayerOne = new JLabel(textPlayerOne);
+		scorePlayerTwo = new JLabel(textPlayerTwo);
+		scorePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		scorePanel.add(scorePlayerOne);
+		scorePanel.add(scorePlayerTwo);
+		return scorePanel;
+	}
 
-		Dimension size = playground.getSize();
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setSize(size.height, size.width);
-		frame.setLayout(new BorderLayout());
-		frame.setResizable(false);
-		frame.add(playground, BorderLayout.CENTER);
-		frame.add(buttonPanel, BorderLayout.SOUTH);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
+	private String getScoreTextForPlayer(Player player)
+	{
+		String scoreText = player.getName() + ": " + player.getScore();
+		return scoreText;
 	}
 
 	public void checkSnakes()
@@ -289,45 +317,16 @@ public class Controller
 	{
 		ArrayList<Entity> looseSnakePieces = new ArrayList<Entity>();
 
-		Snake snake = null;
-
 		for (int i = 0; i < AMOUNT_OF_LOOSE_SNAKEPIECES; i++)
 		{
-			snake = new Snake(1, 6, 6);
-			world.addLooseSnakePiece(snake.getHead());
-			Entity entity = EntityHelper.createSnakeEntity(snake, "yellow");
+			world.createNewLooseSnakePiece();
+			world.getLooseSnakePieces();
+
+			Entity entity = EntityHelper.createEntity(world.getLooseSnakePieces(), "red");
 			looseSnakePieces.add(entity);
 		}
 		playground.setLooseSnakePieces(looseSnakePieces);
 
-	}
-
-	private void createNewLooseSnakePiece()
-	{
-		Random random = new Random();
-
-		int randomX = 0;
-		int randomY = 0;
-		do
-		{
-			randomX = random.nextInt(WORLD_SIZE_X + 1);
-			randomY = random.nextInt(WORLD_SIZE_Y + 1);
-		}
-		while (coordinatesAreFree(randomX, randomY));
-
-		SnakePiece snakePiece = new SnakePiece(randomX, randomY, SnakePieceType.LOOSE);
-
-		world.addLooseSnakePiece(snakePiece);
-	}
-
-	private boolean coordinatesAreFree(int randomX, int randomY)
-	{
-		if (playerOne.getSnake().snakeBlocksCoordinates(randomX, randomY)
-			|| playerTwo.getSnake().snakeBlocksCoordinates(randomX, randomY))
-		{
-			return false;
-		}
-		return true;
 	}
 
 	public void snakeHasConsumedALoosePiece(Snake snake)
@@ -336,13 +335,15 @@ public class Controller
 		if (playerOne.getSnake() == snake)
 		{
 			playerOne.increasePoints(POINTS_FOR_CONSUMPTION);
+			scorePlayerOne.setText(getScoreTextForPlayer(playerOne));
 		}
 		else
 		{
 			playerTwo.increasePoints(POINTS_FOR_CONSUMPTION);
+			scorePlayerTwo.setText(getScoreTextForPlayer(playerTwo));
 		}
 
-		createNewLooseSnakePiece();
+		world.createNewLooseSnakePiece();
 		playground.updateLooseSnakePieceEntities();
 	}
 
