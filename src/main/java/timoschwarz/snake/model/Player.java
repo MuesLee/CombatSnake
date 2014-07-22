@@ -1,12 +1,10 @@
 package timoschwarz.snake.model;
 
-
 public class Player
 {
 	private String name;
 	private int points;
 	private Snake snake;
-	private boolean isAlive = true;
 
 	public Player(String name)
 	{
@@ -23,7 +21,7 @@ public class Player
 		this.name = name;
 	}
 
-	public int getPoints()
+	public int getScore()
 	{
 		return points;
 	}
@@ -46,16 +44,6 @@ public class Player
 	public void setSnake(Snake snake)
 	{
 		this.snake = snake;
-	}
-
-	public boolean isAlive()
-	{
-		return isAlive;
-	}
-
-	public void setAlive(boolean isAlive)
-	{
-		this.isAlive = isAlive;
 	}
 
 }
