@@ -10,8 +10,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import timoschwarz.snake.model.Player;
-import timoschwarz.util.Direction;
-import timoschwarz.util.OPCode;
+import timoschwarz.snake.util.Direction;
+import timoschwarz.snake.util.OPCode;
 
 public class LANController extends GameController
 {

@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 import timoschwarz.snake.controller.GameController;
 import timoschwarz.snake.model.SnakePiece;
-import timoschwarz.util.EntityHelper;
+import timoschwarz.snake.util.EntityHelper;
 
 public class Playground extends JPanel {
 

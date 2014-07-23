@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
 import timoschwarz.snake.model.Player;
-import timoschwarz.util.VideoUtils;
+import timoschwarz.snake.util.VideoUtils;
 
 public class LANLobby
 {

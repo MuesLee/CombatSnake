@@ -1,15 +1,12 @@
 package timoschwarz.snake.model;
 
-public class SnakePiece
+public class SnakePiece extends Piece
 {
 	private SnakePieceType type;
-	private int x;
-	private int y;
 
 	public SnakePiece(int x, int y, SnakePieceType type)
 	{
-		this.x = x;
-		this.y = y;
+		super(x, y);
 		this.setType(type);
 	}
 
@@ -21,26 +18,6 @@ public class SnakePiece
 	public void setType(SnakePieceType type)
 	{
 		this.type = type;
-	}
-
-	public int getY()
-	{
-		return y;
-	}
-
-	public void setY(int y)
-	{
-		this.y = y;
-	}
-
-	public int getX()
-	{
-		return x;
-	}
-
-	public void setX(int x)
-	{
-		this.x = x;
 	}
 
 	@Override

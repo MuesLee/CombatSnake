@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import timoschwarz.util.VideoUtils;
+import timoschwarz.snake.util.VideoUtils;
 
 public class LANConfigurator
 {

@@ -2,8 +2,8 @@ package timoschwarz.snake.model;
 
 import java.util.LinkedList;
 
-import timoschwarz.util.Diff;
-import timoschwarz.util.Direction;
+import timoschwarz.snake.util.Diff;
+import timoschwarz.snake.util.Direction;
 
 public class Snake
 {
@@ -12,6 +12,8 @@ public class Snake
 	private LinkedList<SnakePiece> pieces;
 	private LinkedList<SnakePiece> consumedLoosePieces;
 	private boolean hasMovedAfterLastDirectionChange = false;
+	private int movementSpeed = 1;
+	private boolean phased = false;
 
 	public Snake(int size, int startX, int startY)
 	{
@@ -47,13 +49,16 @@ public class Snake
 
 	public void move()
 	{
-		SnakePiece tail = getTail();
-		moveSnakePieces(createHeadWithNextPosition(direction));
-		if (!consumedLoosePieces.isEmpty())
+		for (int i = 0; i < movementSpeed; i++)
 		{
-			consumeLooseSnakePieces(tail);
+			SnakePiece tail = getTail();
+			moveSnakePieces(createHeadWithNextPosition(direction));
+			if (!consumedLoosePieces.isEmpty())
+			{
+				consumeLooseSnakePieces(tail);
+			}
+			hasMovedAfterLastDirectionChange = true;
 		}
-		hasMovedAfterLastDirectionChange = true;
 	}
 
 	private void consumeLooseSnakePieces(SnakePiece tail)
@@ -221,5 +226,25 @@ public class Snake
 		}
 
 		return sb.toString();
+	}
+
+	public int getMovementSpeed()
+	{
+		return movementSpeed;
+	}
+
+	public void setMovementSpeed(int movementSpeed)
+	{
+		this.movementSpeed = movementSpeed;
+	}
+
+	public boolean isPhased()
+	{
+		return phased;
+	}
+
+	public void setPhased(boolean phased)
+	{
+		this.phased = phased;
 	}
 }

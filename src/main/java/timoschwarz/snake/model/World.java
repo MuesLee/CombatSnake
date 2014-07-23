@@ -1,8 +1,10 @@
 package timoschwarz.snake.model;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
 
 import timoschwarz.snake.controller.GameController;
 
@@ -13,6 +15,9 @@ public class World
 	private LinkedList<SnakePiece> looseSnakePieces;
 	private int height;
 	private int width;
+	private List<Booster> allPowerUps;
+	private List<Booster> currentPowerUps;
+	private Timer powerUptimer;
 
 	public int getHeight()
 	{
@@ -41,6 +46,14 @@ public class World
 		this.looseSnakePieces = new LinkedList<>();
 		this.width = width;
 		this.height = height;
+		this.allPowerUps = new ArrayList<Booster>();
+		this.currentPowerUps = new ArrayList<Booster>();
+		this.powerUptimer = new Timer();
+	}
+
+	private void fillAllPowerUps()
+	{
+		allPowerUps.add(null);
 	}
 
 	public void checkForCollisions()
@@ -106,6 +119,11 @@ public class World
 		}
 
 		return false;
+	}
+
+	public void createNewPowerUp()
+	{
+
 	}
 
 	public void createNewLooseSnakePiece()

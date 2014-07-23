@@ -2,7 +2,7 @@ package timoschwarz.snake.util;
 
 import org.junit.Test;
 
-import timoschwarz.util.OPCode;
+import timoschwarz.snake.util.OPCode;
 
 public class OPCodeTest
 {

@@ -1,4 +1,4 @@
-package timoschwarz.util;
+package timoschwarz.snake.util;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;

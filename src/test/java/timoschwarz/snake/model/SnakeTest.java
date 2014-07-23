@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import timoschwarz.util.Direction;
+import timoschwarz.snake.util.Direction;
 
 public class SnakeTest
 {
