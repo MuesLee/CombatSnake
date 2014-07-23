@@ -42,8 +42,8 @@ public class GameController
 	public static final String TEXT_SNAKE_ONE_WAS_VICTORIOUS = "Snake One has won!";
 	public static final String TEXT_SNAKE_TWO_WAS_VICTORIOUS = "Snake Two has won!";
 	public static final String TEXT_BOTH_SNAKES_DEAD = "BOFS SNAIGS DED!!";
-	public static final int DURATION_SPEEDBOOSTER = 4000;
-	public static final int DURATION_PHASEBOOSTER = 7000;
+	public static final int DURATION_SPEEDBOOSTER = 5000;
+	public static final int DURATION_PHASEBOOSTER = 7700;
 	public static final int MAX_AMOUNT_OF_BOOSTER = 2;
 	private static final int BOOST_SPAWN_INTERVAL = 10000;
 
@@ -100,7 +100,6 @@ public class GameController
 	private void initGame(String namePlayerOne, String namePlayerTwo)
 	{
 		audioController = new AudioController();
-		audioController.startMenuBackgroundMusic();
 		if (boostTimer != null)
 		{
 			boostTimer.stop();
@@ -175,7 +174,6 @@ public class GameController
 
 	void startGame()
 	{
-		audioController.stopMenuBackgroundMusic();
 		audioController.startBackgroundMusic();
 
 		Thread graphicLoop = new Thread(new Runnable()
@@ -376,6 +374,7 @@ public class GameController
 
 		if (booster.isEmpty())
 		{
+			playground.clearBooster();
 			return;
 		}
 		ArrayList<Entity> entities = new ArrayList<Entity>();

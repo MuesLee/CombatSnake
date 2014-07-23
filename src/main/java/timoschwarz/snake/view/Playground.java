@@ -335,4 +335,10 @@ public class Playground extends JPanel
 	{
 		this.booster = booster;
 	}
+
+	public void clearBooster()
+	{
+		booster.clear();
+
+	}
 }
