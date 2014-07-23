@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -63,8 +65,39 @@ public class GameConfigurator
 
 		JButton startLocalGame = createStartLocalGameButton();
 		JButton startLanGame = createStartLanGameButton();
-		JTextField textFieldPlayerOne = createTextFieldPlayerOne();
-		JTextField textFieldPlayerTwo = createTextFieldPlayerTwo();
+		final JTextField textFieldPlayerOne = createTextFieldPlayerOne();
+		textFieldPlayerOne.addFocusListener(new FocusAdapter()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				super.focusLost(e);
+				namePlayerOne = textFieldPlayerOne.getText();
+			}
+
+			@Override
+			public void focusGained(FocusEvent e)
+			{
+				super.focusGained(e);
+				textFieldPlayerOne.selectAll();
+			}
+		});
+		final JTextField textFieldPlayerTwo = createTextFieldPlayerTwo();
+		textFieldPlayerTwo.addFocusListener(new FocusAdapter()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				namePlayerTwo = textFieldPlayerTwo.getText();
+			}
+
+			@Override
+			public void focusGained(FocusEvent e)
+			{
+				super.focusGained(e);
+				textFieldPlayerTwo.selectAll();
+			}
+		});
 
 		JPanel textFieldPanel = new JPanel(new FlowLayout());
 		textFieldPanel.add(textFieldPlayerOne);

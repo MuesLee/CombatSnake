@@ -268,12 +268,10 @@ public class World
 		}
 		else if (collisionSnakeOneWithItself || collisionSnakeOneWithSnakeTwo)
 		{
-			System.out.println(GameController.TEXT_SNAKE_TWO_WAS_VICTORIOUS);
 			controller.endGame(snakes.get(1));
 		}
 		else if (collisionSnakeTwoWithItself || collisionSnakeTwoWithSnakeOne)
 		{
-			System.out.println(GameController.TEXT_SNAKE_ONE_WAS_VICTORIOUS);
 			controller.endGame(snakes.get(0));
 		}
 

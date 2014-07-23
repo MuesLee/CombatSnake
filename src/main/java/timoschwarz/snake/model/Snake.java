@@ -47,18 +47,20 @@ public class Snake
 		}
 	}
 
-	public void move()
+	public void move(int i)
 	{
-		for (int i = 0; i < movementSpeed; i++)
+		if (i >= movementSpeed)
 		{
-			SnakePiece tail = getTail();
-			moveSnakePieces(createHeadWithNextPosition(direction));
-			if (!consumedLoosePieces.isEmpty())
-			{
-				consumeLooseSnakePieces(tail);
-			}
-			hasMovedAfterLastDirectionChange = true;
+			return;
 		}
+
+		SnakePiece tail = getTail();
+		moveSnakePieces(createHeadWithNextPosition(direction));
+		if (!consumedLoosePieces.isEmpty())
+		{
+			consumeLooseSnakePieces(tail);
+		}
+		hasMovedAfterLastDirectionChange = true;
 	}
 
 	private void consumeLooseSnakePieces(SnakePiece tail)

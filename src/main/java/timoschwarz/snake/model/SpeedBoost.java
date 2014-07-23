@@ -9,12 +9,12 @@ import javax.swing.Timer;
 
 import timoschwarz.snake.controller.GameController;
 
-public class SpeedBooster extends Piece implements Boost
+public class SpeedBoost extends Piece implements Boost
 {
 
 	private int oldSnakeSpeed;
 
-	public SpeedBooster(int x, int y)
+	public SpeedBoost(int x, int y)
 	{
 		super(x, y);
 	}
@@ -59,7 +59,7 @@ public class SpeedBooster extends Piece implements Boost
 	@Override
 	public String toString()
 	{
-		return "SPEEDBOOSTER";
+		return "SPEEDBOOST";
 	}
 
 	@Override

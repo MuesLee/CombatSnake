@@ -36,9 +36,8 @@ public class GameController
 	private static final int WORLD_SIZE_Y = 50;
 
 	public static final String TEXT_GAME_OVER = "GAME OVER";
-	public static final String TEXT_SNAKE_ONE_WAS_VICTORIOUS = "Snake One has won!";
-	public static final String TEXT_SNAKE_TWO_WAS_VICTORIOUS = "Snake Two has won!";
-	public static final String TEXT_BOTH_SNAKES_DEAD = "BOFS SNAIGS DED!!";
+	public static final String TEXT_ONE_SNAKE_WAS_VICTORIOUS = " has won!";
+	public static final String TEXT_BOTH_SNAKES_DEAD = "BOFS SNAIGS DED!!\nI CRI EVRYTIEM";
 	public static final int DURATION_SPEEDBOOSTER = 5000;
 	public static final int DURATION_PHASEBOOSTER = 7700;
 	public static final int MAX_AMOUNT_OF_BOOSTER = 2;
@@ -75,7 +74,7 @@ public class GameController
 		this.frame = new JFrame("COMBAT SNAKEZ!!!111");
 
 		Snake snakeOne = new Snake(SNAKE_SIZE, SNAKE_SIZE, 0);
-		Snake snakeTwo = new Snake(SNAKE_SIZE, SNAKE_SIZE, 10);
+		Snake snakeTwo = new Snake(SNAKE_SIZE, SNAKE_SIZE, WORLD_SIZE_Y);
 
 		playerOne.setSnake(snakeOne);
 		playerTwo.setSnake(snakeTwo);
@@ -132,7 +131,6 @@ public class GameController
 		boostTimer.stop();
 
 		audioController.stopBackgroundMusic();
-		audioController.playSound("comment_terminated");
 
 		boolean gameEndedInADraw = false;
 		boolean gameEndedWithVictoryOfPlayerOne = false;
@@ -150,16 +148,18 @@ public class GameController
 
 		if (gameEndedInADraw)
 		{
-			audioController.playSound("annoying");
+			audioController.playSound("comment_annoying");
 			text = TEXT_BOTH_SNAKES_DEAD;
 		}
 		else if (gameEndedWithVictoryOfPlayerOne)
 		{
-			text = TEXT_SNAKE_ONE_WAS_VICTORIOUS;
+			audioController.playSound("comment_terminated");
+			text = playerOne.getName() + TEXT_ONE_SNAKE_WAS_VICTORIOUS + "\nScore: " + playerOne.getScore();
 		}
 		else
 		{
-			text = TEXT_SNAKE_TWO_WAS_VICTORIOUS;
+			audioController.playSound("comment_terminated");
+			text = playerTwo.getName() + TEXT_ONE_SNAKE_WAS_VICTORIOUS + "\nScore: " + playerTwo.getScore();
 		}
 
 		JOptionPane.showMessageDialog(frame, text, TEXT_GAME_OVER, JOptionPane.INFORMATION_MESSAGE);
@@ -214,10 +214,23 @@ public class GameController
 
 	public void moveSnakes()
 	{
-		playerOne.getSnake().move();
-		playerTwo.getSnake().move();
+		//		System.out.println("P1: " + playerOne.getSnake().getHead());
+		//		System.out.println("P2: " + playerTwo.getSnake().getHead());
 
-		world.checkForCollisions();
+		final Snake snakeOne = playerOne.getSnake();
+		int movementSpeedOne = snakeOne.getMovementSpeed();
+		final Snake snakeTwo = playerTwo.getSnake();
+		int movementSpeedTwo = snakeOne.getMovementSpeed();
+
+		int maxMovementSpeed = Math.max(movementSpeedOne, movementSpeedTwo);
+
+		for (int i = 0; i < maxMovementSpeed; i++)
+		{
+			snakeOne.move(i);
+			snakeTwo.move(i);
+			world.checkForCollisions();
+		}
+
 	}
 
 	private void configureFrame()

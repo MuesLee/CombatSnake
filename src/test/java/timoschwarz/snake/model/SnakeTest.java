@@ -102,7 +102,7 @@ public class SnakeTest
 		expectedPieces.add(new SnakePiece(2, 0, SnakePieceType.TAIL));
 
 		snake.setDirection(Direction.DOWN);
-		snake.move();
+		snake.move(1);
 
 		List<SnakePiece> actualPieces = snake.getSnakePieces();
 		assertEquals(expectedPieces, actualPieces);
@@ -120,7 +120,7 @@ public class SnakeTest
 
 		snake.setSnakePieces(pieces);
 		snake.setDirection(Direction.DOWN);
-		snake.move();
+		snake.move(1);
 
 		LinkedList<SnakePiece> expectedPieces = new LinkedList<SnakePiece>();
 		expectedPieces.add(new SnakePiece(1, 5, SnakePieceType.HEAD));
@@ -151,7 +151,7 @@ public class SnakeTest
 		expectedPieces.add(new SnakePiece(2, 4, SnakePieceType.TAIL));
 
 		snake.setDirection(Direction.RIGHT);
-		snake.move();
+		snake.move(1);
 
 		List<SnakePiece> actualPieces = snake.getSnakePieces();
 		assertEquals(expectedPieces, actualPieces);

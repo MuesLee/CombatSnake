@@ -7,10 +7,10 @@ import java.util.Timer;
 import timoschwarz.snake.controller.GameController;
 import timoschwarz.snake.util.SnakeTask;
 
-public class PhaseBooster extends Piece implements Boost
+public class PhaseBoost extends Piece implements Boost
 {
 
-	public PhaseBooster(int x, int y)
+	public PhaseBoost(int x, int y)
 	{
 		super(x, y);
 	}
@@ -46,7 +46,7 @@ public class PhaseBooster extends Piece implements Boost
 	@Override
 	public String toString()
 	{
-		return "PHASEBOOSTER";
+		return "PHASEBOOST";
 	}
 
 	@Override

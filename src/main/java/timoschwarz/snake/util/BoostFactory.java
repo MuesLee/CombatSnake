@@ -1,8 +1,8 @@
 package timoschwarz.snake.util;
 
 import timoschwarz.snake.model.Boost;
-import timoschwarz.snake.model.PhaseBooster;
-import timoschwarz.snake.model.SpeedBooster;
+import timoschwarz.snake.model.PhaseBoost;
+import timoschwarz.snake.model.SpeedBoost;
 
 public class BoostFactory
 {
@@ -29,14 +29,14 @@ public class BoostFactory
 
 	private static Boost createSpeedBooster(int x, int y)
 	{
-		Boost booster = new SpeedBooster(x, y);
+		Boost booster = new SpeedBoost(x, y);
 
 		return booster;
 	}
 
 	private static Boost createPhaseBooster(int x, int y)
 	{
-		Boost booster = new PhaseBooster(x, y);
+		Boost booster = new PhaseBoost(x, y);
 
 		return booster;
 	}

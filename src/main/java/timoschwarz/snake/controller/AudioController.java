@@ -110,7 +110,7 @@ public class AudioController
 
 	public void stopBackgroundMusic()
 	{
-		if (!sequencerGame.isRunning())
+		if (sequencerGame == null || !sequencerGame.isRunning())
 		{
 			return;
 		}
@@ -121,6 +121,11 @@ public class AudioController
 
 	public void stopMenuBackgroundMusic()
 	{
+		if (sequencerMenu == null || !sequencerMenu.isRunning())
+		{
+			return;
+		}
+
 		sequencerMenu.stop();
 		sequencerMenu.close();
 	}
