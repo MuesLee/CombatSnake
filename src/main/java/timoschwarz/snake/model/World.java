@@ -69,7 +69,6 @@ public class World
 		Boost boost = BoostFactory.createBooster(randomType, x, y);
 
 		getCurrentBooster().add(boost);
-		System.out.println("Spawn Boost" + boost);
 	}
 
 	public void checkForCollisions()
@@ -263,7 +262,6 @@ public class World
 
 		if (collisionSnakeOneWithSnakeTwo && collisionSnakeTwoWithSnakeOne)
 		{
-			System.out.println(GameController.TEXT_BOTH_SNAKES_DEAD);
 			controller.endGame(null);
 		}
 		else if (collisionSnakeOneWithItself || collisionSnakeOneWithSnakeTwo)

@@ -1,5 +1,6 @@
 package timoschwarz.snake.controller;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -149,30 +150,20 @@ public class AudioController
 				}
 				catch (IOException e)
 				{
-
+					System.out.println(e.getLocalizedMessage());
 				}
 				catch (UnsupportedAudioFileException e)
 				{
+					System.out.println("WRONG AUDIOFILEFORMAT: " + soundName);
 				}
 				catch (LineUnavailableException e)
-
 				{
-
+					System.out.println("LineUnavailableException");
 				}
 				catch (InterruptedException e)
 				{
+					System.out.println("InterruptedException");
 				}
-			}
-
-			private File getFile(String soundName)
-			{
-
-				if (!clips.containsKey(soundName))
-				{
-					File file = new File(prop.getProperty(soundName));
-					clips.put(soundName, file);
-				}
-				return clips.get(soundName);
 			}
 
 			private void playClip(String soundName) throws IOException, UnsupportedAudioFileException,
@@ -202,8 +193,10 @@ public class AudioController
 					}
 				}
 				AudioListener listener = new AudioListener();
-				AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(ClassLoader
-					.getSystemResourceAsStream(prop.getProperty(soundName)));
+				final InputStream systemResourceAsStream = ClassLoader.getSystemResourceAsStream(prop
+					.getProperty(soundName));
+				final BufferedInputStream bufInputStream = new BufferedInputStream(systemResourceAsStream);
+				AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(bufInputStream);
 				try
 				{
 					Clip clip = AudioSystem.getClip();

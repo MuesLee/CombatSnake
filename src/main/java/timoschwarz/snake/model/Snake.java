@@ -144,7 +144,6 @@ public class Snake
 	{
 		snakePieces.getLast().setType(SnakePieceType.BODY);
 		snakePieces.add(new SnakePiece(x, y, SnakePieceType.TAIL));
-		System.out.println("Snake has GROWN!" + snakePieces.size());
 	}
 
 	public LinkedList<SnakePiece> getSnakePieces()
@@ -204,7 +203,7 @@ public class Snake
 
 	public void forceDirection(Direction direction)
 	{
-		direction = direction;
+		this.direction = direction;
 	}
 
 	public LinkedList<SnakePiece> getConsumedLoosePieces()

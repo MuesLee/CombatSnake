@@ -367,10 +367,8 @@ public class GameController
 
 	private void triggerBoostSpawn()
 	{
-		System.out.println("TRIGGER SPAWN");
 		if (MAX_AMOUNT_OF_BOOSTER > world.getAmountOfCurrentBooster())
 		{
-			System.out.println("DO SPAWN");
 			audioController.playSound("boost_spawn");
 			world.spawnNewBooster();
 			updatePlaygroundBooster();
