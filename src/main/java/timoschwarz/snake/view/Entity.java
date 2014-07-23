@@ -7,21 +7,21 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import timoschwarz.snake.controller.GameController;
-import timoschwarz.snake.model.SnakePiece;
+import timoschwarz.snake.model.Piece;
 
 public class Entity extends Animator
 {
 
 	public boolean visible = false;
 	private LinkedList<Rectangle2D.Double> rects;
-	private LinkedList<SnakePiece> pieces;
+	private LinkedList<Piece> pieces;
 	private Rectangle2D.Double snakeHead;
 
-	public Entity(ArrayList<BufferedImage> images, ArrayList<Long> timings, LinkedList<SnakePiece> pieces)
+	public Entity(ArrayList<BufferedImage> images, ArrayList<Long> timings, LinkedList<Piece> pieces)
 	{
 		super(images, timings);
 		visible = true;
-		this.pieces = pieces;
+		this.setPieces(pieces);
 		setRects(new LinkedList<Rectangle2D.Double>());
 		fillRects();
 
@@ -30,12 +30,12 @@ public class Entity extends Animator
 	private void fillRects()
 	{
 		int paintSize = GameController.paintSize;
-		SnakePiece first = pieces.getFirst();
+		Piece first = getPieces().getFirst();
 		setSnakeHead(new Rectangle2D.Double(first.getX() * paintSize + Playground.BORDER_THICKNESS, first.getY()
 			* paintSize + Playground.BORDER_THICKNESS, getCurrentImage().getWidth(), getCurrentImage().getHeight()));
 		first = null;
 
-		for (SnakePiece snakePiece : pieces)
+		for (Piece snakePiece : getPieces())
 		{
 			final Rectangle2D.Double rect = new Rectangle2D.Double(snakePiece.getX() * paintSize
 				+ Playground.BORDER_THICKNESS, snakePiece.getY() * paintSize + Playground.BORDER_THICKNESS,
@@ -46,7 +46,7 @@ public class Entity extends Animator
 
 	}
 
-	void updateRects(LinkedList<SnakePiece> pieces)
+	void updateRects(LinkedList<Piece> pieces)
 	{
 		int paintSize = GameController.paintSize;
 
@@ -197,7 +197,7 @@ public class Entity extends Animator
 
 	public void move()
 	{
-		updateRects(pieces);
+		updateRects(getPieces());
 	}
 
 	public Rectangle2D.Double getSnakeHead()
@@ -214,5 +214,15 @@ public class Entity extends Animator
 	public String toString()
 	{
 		return "KOPF X: " + snakeHead.getX() + " Y: " + snakeHead.getY();
+	}
+
+	public LinkedList<Piece> getPieces()
+	{
+		return pieces;
+	}
+
+	public void setPieces(LinkedList<Piece> pieces)
+	{
+		this.pieces = pieces;
 	}
 }

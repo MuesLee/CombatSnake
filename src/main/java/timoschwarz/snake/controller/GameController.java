@@ -7,16 +7,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
+import timoschwarz.snake.model.Boost;
+import timoschwarz.snake.model.Piece;
 import timoschwarz.snake.model.Player;
 import timoschwarz.snake.model.Snake;
-import timoschwarz.snake.model.SnakePiece;
 import timoschwarz.snake.model.World;
 import timoschwarz.snake.util.EntityHelper;
 import timoschwarz.snake.util.KeyBindings;
@@ -40,7 +43,9 @@ public class GameController
 	public static final String TEXT_SNAKE_TWO_WAS_VICTORIOUS = "Snake Two has won!";
 	public static final String TEXT_BOTH_SNAKES_DEAD = "BOFS SNAIGS DED!!";
 	public static final int DURATION_SPEEDBOOSTER = 4000;
-	public static final int DURATION_PHASEBOOSTER = 3000;
+	public static final int DURATION_PHASEBOOSTER = 7000;
+	public static final int MAX_AMOUNT_OF_BOOSTER = 2;
+	private static final int BOOST_SPAWN_INTERVAL = 10000;
 
 	private Playground playground;
 	private JFrame frame;
@@ -49,6 +54,8 @@ public class GameController
 
 	private Player playerOne;
 	private Player playerTwo;
+
+	private Timer boostTimer;
 
 	private World world;
 
@@ -94,6 +101,10 @@ public class GameController
 	{
 		audioController = new AudioController();
 		audioController.startMenuBackgroundMusic();
+		if (boostTimer != null)
+		{
+			boostTimer.stop();
+		}
 		prepareStartOfGame(namePlayerOne, namePlayerTwo);
 
 	}
@@ -125,6 +136,7 @@ public class GameController
 	public void endGame(Snake snake)
 	{
 		gameIsActive = false;
+		boostTimer.stop();
 
 		audioController.stopBackgroundMusic();
 		audioController.playSound("comment_terminated");
@@ -177,12 +189,12 @@ public class GameController
 		});
 		graphicLoop.start();
 
+		gameIsActive = true;
 		Thread gameLoop = new Thread(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				gameIsActive = true;
 				gameLoop();
 			}
 
@@ -211,8 +223,6 @@ public class GameController
 		playerOne.getSnake().move();
 		playerTwo.getSnake().move();
 
-		//		System.out.println("PlayerTwo AT :" + playerTwo.getSnake().getHead());
-		//		System.out.println("PlayerOne AT :" + playerOne.getSnake().getHead());
 		world.checkForCollisions();
 	}
 
@@ -330,6 +340,55 @@ public class GameController
 	public void startSnakes()
 	{
 		initLooseSnakePieces();
+		initBoostTimer();
+	}
+
+	private void initBoostTimer()
+	{
+
+		this.boostTimer = new Timer(BOOST_SPAWN_INTERVAL, new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				triggerBoostSpawn();
+			}
+		});
+
+		boostTimer.start();
+	}
+
+	private void triggerBoostSpawn()
+	{
+		System.out.println("TRIGGER SPAWN");
+		if (MAX_AMOUNT_OF_BOOSTER > world.getAmountOfCurrentBooster())
+		{
+			System.out.println("DO SPAWN");
+			audioController.playSound("boost_spawn");
+			world.spawnNewBooster();
+			playground.updateBooster(world.getCurrentBooster());
+		}
+	}
+
+	private void updatePlaygroundBooster()
+	{
+		List<Boost> booster = world.getCurrentBooster();
+
+		if (booster.isEmpty())
+		{
+			return;
+		}
+		ArrayList<Entity> entities = new ArrayList<Entity>();
+
+		LinkedList<Piece> pieces = new LinkedList<Piece>();
+		for (Boost boost : booster)
+		{
+			pieces.add((Piece) boost);
+		}
+
+		Entity entity = EntityHelper.createEntity(pieces, "red");
+		entities.add(entity);
+		playground.setBooster(entities);
 	}
 
 	private void initLooseSnakePieces()
@@ -346,6 +405,12 @@ public class GameController
 		}
 		playground.setLooseSnakePieces(looseSnakePieces);
 
+	}
+
+	public void snakeHasConsumedABooster(Boost booster)
+	{
+		audioController.playSound(booster.getSoundFileName());
+		updatePlaygroundBooster();
 	}
 
 	public void snakeHasConsumedALoosePiece(Snake snake)
@@ -376,7 +441,7 @@ public class GameController
 		this.world = world;
 	}
 
-	public LinkedList<SnakePiece> getLooseSnakePieces()
+	public LinkedList<Piece> getLooseSnakePieces()
 	{
 		return world.getLooseSnakePieces();
 

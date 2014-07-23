@@ -40,7 +40,7 @@ public class SnakeEntity extends Entity
 
 	public void checkForNewSnakePieces()
 	{
-		LinkedList<SnakePiece> pieces = snake.getPieces();
+		LinkedList<SnakePiece> pieces = snake.getSnakePieces();
 		int paintSize = GameController.paintSize;
 		final LinkedList<Double> rects = getRects();
 

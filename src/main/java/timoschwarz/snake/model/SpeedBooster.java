@@ -9,8 +9,10 @@ import javax.swing.Timer;
 
 import timoschwarz.snake.controller.GameController;
 
-public class SpeedBooster extends Piece implements Booster
+public class SpeedBooster extends Piece implements Boost
 {
+
+	private int oldSnakeSpeed;
 
 	public SpeedBooster(int x, int y)
 	{
@@ -32,7 +34,7 @@ public class SpeedBooster extends Piece implements Booster
 			}
 		});
 		timer.start();
-
+		oldSnakeSpeed = speed;
 	}
 
 	@Override
@@ -45,5 +47,24 @@ public class SpeedBooster extends Piece implements Booster
 	public Image getImage()
 	{
 		return null;
+	}
+
+	@Override
+	public void restoreSnake(Snake snake)
+	{
+		snake.setMovementSpeed(oldSnakeSpeed);
+
+	}
+
+	@Override
+	public String toString()
+	{
+		return "SPEEDBOOSTER";
+	}
+
+	@Override
+	public String getSoundFileName()
+	{
+		return "boost_speed";
 	}
 }

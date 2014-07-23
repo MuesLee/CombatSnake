@@ -42,7 +42,7 @@ public class SnakeTest
 	@Test
 	public void snakeIsMadeOfFourSnakePieces() throws Exception
 	{
-		List<SnakePiece> pieces = snake.getPieces();
+		List<SnakePiece> pieces = snake.getSnakePieces();
 		boolean snakeIsMadeOfSnakePieces = true;
 		for (SnakePiece snakePiece : pieces)
 		{
@@ -57,7 +57,7 @@ public class SnakeTest
 	@Test
 	public void firstPieceOfSnakeIsHead() throws Exception
 	{
-		SnakePiece piece = snake.getPieces().get(0);
+		SnakePiece piece = snake.getSnakePieces().get(0);
 		SnakePieceType actualType = piece.getType();
 		SnakePieceType expectedType = SnakePieceType.HEAD;
 		assertEquals(expectedType, actualType);
@@ -67,7 +67,7 @@ public class SnakeTest
 	public void lastPieceOfSnakeIsTail() throws Exception
 	{
 		int size = snake.getSize();
-		SnakePiece piece = snake.getPieces().get(size - 1);
+		SnakePiece piece = snake.getSnakePieces().get(size - 1);
 		SnakePieceType actualType = piece.getType();
 		SnakePieceType expectedType = SnakePieceType.TAIL;
 		assertEquals(expectedType, actualType);
@@ -76,7 +76,7 @@ public class SnakeTest
 	@Test
 	public void snakeIsMadeOfBodyPartsEqualToSizeMinusTwo() throws Exception
 	{
-		List<SnakePiece> pieces = snake.getPieces();
+		List<SnakePiece> pieces = snake.getSnakePieces();
 
 		int actualBodyCount = 0;
 		int expectedBodyCount = pieces.size() - 2;
@@ -104,7 +104,7 @@ public class SnakeTest
 		snake.setDirection(Direction.DOWN);
 		snake.move();
 
-		List<SnakePiece> actualPieces = snake.getPieces();
+		List<SnakePiece> actualPieces = snake.getSnakePieces();
 		assertEquals(expectedPieces, actualPieces);
 
 	}
@@ -118,7 +118,7 @@ public class SnakeTest
 		pieces.add(new SnakePiece(1, 2, SnakePieceType.BODY));
 		pieces.add(new SnakePiece(1, 1, SnakePieceType.TAIL));
 
-		snake.setPieces(pieces);
+		snake.setSnakePieces(pieces);
 		snake.setDirection(Direction.DOWN);
 		snake.move();
 
@@ -128,7 +128,7 @@ public class SnakeTest
 		expectedPieces.add(new SnakePiece(1, 3, SnakePieceType.BODY));
 		expectedPieces.add(new SnakePiece(1, 2, SnakePieceType.TAIL));
 
-		List<SnakePiece> actualPieces = snake.getPieces();
+		List<SnakePiece> actualPieces = snake.getSnakePieces();
 		assertEquals(expectedPieces, actualPieces);
 
 	}
@@ -142,7 +142,7 @@ public class SnakeTest
 		pieces.add(new SnakePiece(2, 4, SnakePieceType.BODY));
 		pieces.add(new SnakePiece(1, 4, SnakePieceType.TAIL));
 
-		snake.setPieces(pieces);
+		snake.setSnakePieces(pieces);
 
 		LinkedList<SnakePiece> expectedPieces = new LinkedList<SnakePiece>();
 		expectedPieces.add(new SnakePiece(5, 4, SnakePieceType.HEAD));
@@ -153,7 +153,7 @@ public class SnakeTest
 		snake.setDirection(Direction.RIGHT);
 		snake.move();
 
-		List<SnakePiece> actualPieces = snake.getPieces();
+		List<SnakePiece> actualPieces = snake.getSnakePieces();
 		assertEquals(expectedPieces, actualPieces);
 
 	}
@@ -192,7 +192,7 @@ public class SnakeTest
 		expectedPieces.add(new SnakePiece(2, 0, SnakePieceType.BODY));
 		expectedPieces.add(new SnakePiece(1, 0, SnakePieceType.TAIL));
 
-		List<SnakePiece> actualPieces = snake.getPieces();
+		List<SnakePiece> actualPieces = snake.getSnakePieces();
 		assertEquals(expectedPieces, actualPieces);
 
 	}

@@ -9,7 +9,7 @@ public class Snake
 {
 
 	private Direction direction = Direction.RIGHT;
-	private LinkedList<SnakePiece> pieces;
+	private LinkedList<SnakePiece> snakePieces;
 	private LinkedList<SnakePiece> consumedLoosePieces;
 	private boolean hasMovedAfterLastDirectionChange = false;
 	private int movementSpeed = 1;
@@ -26,7 +26,7 @@ public class Snake
 		int x = startX;
 		int y = startY;
 
-		pieces = new LinkedList<SnakePiece>();
+		snakePieces = new LinkedList<SnakePiece>();
 
 		for (int i = 0; i < size; i++)
 		{
@@ -34,15 +34,15 @@ public class Snake
 
 			if (i == 0)
 			{
-				getPieces().add(new SnakePiece(x, y, SnakePieceType.HEAD));
+				getSnakePieces().add(new SnakePiece(x, y, SnakePieceType.HEAD));
 			}
 			else if (i == size - 1)
 			{
-				getPieces().add(new SnakePiece(x, y, SnakePieceType.TAIL));
+				getSnakePieces().add(new SnakePiece(x, y, SnakePieceType.TAIL));
 			}
 			else
 			{
-				getPieces().add(new SnakePiece(x, y, SnakePieceType.BODY));
+				getSnakePieces().add(new SnakePiece(x, y, SnakePieceType.BODY));
 			}
 		}
 	}
@@ -91,16 +91,16 @@ public class Snake
 
 		SnakePiece previousSnakePiece = null;
 
-		for (int i = 0; i < pieces.size(); i++)
+		for (int i = 0; i < snakePieces.size(); i++)
 		{
 			if (i == 0)
 			{
-				previousSnakePiece = pieces.get(i).clone();
+				previousSnakePiece = snakePieces.get(i).clone();
 				moveSnakePieceToPositionOfGivenSnakePiece(i, headWithNextPosition);
 			}
 			else
 			{
-				SnakePiece temp = pieces.get(i).clone();
+				SnakePiece temp = snakePieces.get(i).clone();
 				moveSnakePieceToPositionOfGivenSnakePiece(i, previousSnakePiece);
 				previousSnakePiece = temp;
 			}
@@ -109,7 +109,7 @@ public class Snake
 
 	private void moveSnakePieceToPositionOfGivenSnakePiece(int indexOfMovingSnakePiece, SnakePiece givenSnakePiece)
 	{
-		SnakePiece currentSnakePiece = getPieces().get(indexOfMovingSnakePiece);
+		SnakePiece currentSnakePiece = getSnakePieces().get(indexOfMovingSnakePiece);
 		currentSnakePiece.setX(givenSnakePiece.getX());
 		currentSnakePiece.setY(givenSnakePiece.getY());
 	}
@@ -121,7 +121,7 @@ public class Snake
 			return null;
 		}
 
-		SnakePiece currentHead = getPieces().get(0);
+		SnakePiece currentHead = getSnakePieces().get(0);
 		SnakePiece nextHead = currentHead.clone();
 		Diff diff = direction.getDifForDirection();
 
@@ -135,24 +135,24 @@ public class Snake
 
 	public int getSize()
 	{
-		return pieces.size();
+		return snakePieces.size();
 	}
 
 	public void addTail(int x, int y)
 	{
-		pieces.getLast().setType(SnakePieceType.BODY);
-		pieces.add(new SnakePiece(x, y, SnakePieceType.TAIL));
-		System.out.println("Snake has GROWN!" + pieces.size());
+		snakePieces.getLast().setType(SnakePieceType.BODY);
+		snakePieces.add(new SnakePiece(x, y, SnakePieceType.TAIL));
+		System.out.println("Snake has GROWN!" + snakePieces.size());
 	}
 
-	public LinkedList<SnakePiece> getPieces()
+	public LinkedList<SnakePiece> getSnakePieces()
 	{
-		return pieces;
+		return snakePieces;
 	}
 
-	public void setPieces(LinkedList<SnakePiece> pieces)
+	public void setSnakePieces(LinkedList<SnakePiece> pieces)
 	{
-		this.pieces = pieces;
+		this.snakePieces = pieces;
 	}
 
 	public Direction getDirection()
@@ -179,17 +179,17 @@ public class Snake
 
 	public SnakePiece getHead()
 	{
-		return pieces.getFirst();
+		return snakePieces.getFirst();
 	}
 
 	public SnakePiece getTail()
 	{
-		return pieces.getLast();
+		return snakePieces.getLast();
 	}
 
 	public boolean snakeBlocksCoordinates(int x, int y)
 	{
-		for (SnakePiece piece : pieces)
+		for (SnakePiece piece : snakePieces)
 		{
 			if (piece.getX() == x && piece.getY() == y)
 			{
@@ -220,7 +220,7 @@ public class Snake
 	{
 		StringBuilder sb = new StringBuilder();
 
-		for (SnakePiece piece : pieces)
+		for (SnakePiece piece : snakePieces)
 		{
 			sb.append(piece);
 		}
@@ -241,6 +241,18 @@ public class Snake
 	public boolean isPhased()
 	{
 		return phased;
+	}
+
+	public LinkedList<Piece> getPieces()
+	{
+		LinkedList<Piece> pieces = new LinkedList<Piece>();
+
+		for (SnakePiece snakepiece : snakePieces)
+		{
+			pieces.add(snakepiece);
+		}
+
+		return pieces;
 	}
 
 	public void setPhased(boolean phased)

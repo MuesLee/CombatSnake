@@ -4,20 +4,19 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
 
 import timoschwarz.snake.controller.GameController;
+import timoschwarz.snake.util.BoostFactory;
+import timoschwarz.snake.util.BoostType;
 
 public class World
 {
 	private List<Snake> snakes;
 	private GameController controller;
-	private LinkedList<SnakePiece> looseSnakePieces;
+	private LinkedList<Piece> looseSnakePieces;
 	private int height;
 	private int width;
-	private List<Booster> allPowerUps;
-	private List<Booster> currentPowerUps;
-	private Timer powerUptimer;
+	private List<Boost> currentBooster;
 
 	public int getHeight()
 	{
@@ -46,14 +45,31 @@ public class World
 		this.looseSnakePieces = new LinkedList<>();
 		this.width = width;
 		this.height = height;
-		this.allPowerUps = new ArrayList<Booster>();
-		this.currentPowerUps = new ArrayList<Booster>();
-		this.powerUptimer = new Timer();
+		this.setCurrentBooster(new ArrayList<Boost>());
 	}
 
-	private void fillAllPowerUps()
+	public void spawnNewBooster()
 	{
-		allPowerUps.add(null);
+		BoostType[] values = BoostType.values();
+		Random random = new Random();
+
+		int randomIndex = random.nextInt(values.length);
+		int x = 0;
+		int y = 0;
+
+		do
+		{
+			x = random.nextInt(width + 1);
+			y = random.nextInt(height + 1);
+		}
+		while (!coordinatesAreFree(x, y));
+
+		BoostType randomType = values[randomIndex];
+
+		Boost boost = BoostFactory.createBooster(randomType, x, y);
+
+		getCurrentBooster().add(boost);
+		System.out.println("Spawn Boost" + boost);
 	}
 
 	public void checkForCollisions()
@@ -61,6 +77,41 @@ public class World
 		checkForOutOfBounds();
 		checkForSnakeCollisions();
 		checkForConsumption();
+		checkForBoosterConsumption();
+	}
+
+	private void checkForBoosterConsumption()
+	{
+		for (Snake snake : snakes)
+		{
+			checkForBoosterConsumptionForSnake(snake);
+		}
+
+	}
+
+	private void checkForBoosterConsumptionForSnake(Snake snake)
+	{
+		int x = snake.getHead().getX();
+		int y = snake.getHead().getY();
+
+		Boost usedBooster = null;
+
+		for (Boost booster : getCurrentBooster())
+		{
+			Piece piece = (Piece) booster;
+
+			if (piece.isAtCoordinates(x, y))
+			{
+				booster.modifySnake(snake);
+				usedBooster = booster;
+			}
+		}
+
+		if (usedBooster != null)
+		{
+			currentBooster.remove(usedBooster);
+			controller.snakeHasConsumedABooster(usedBooster);
+		}
 	}
 
 	private void checkForConsumption()
@@ -78,12 +129,12 @@ public class World
 
 		for (int i = 0; i < looseSnakePieces.size(); i++)
 		{
-			SnakePiece piece = looseSnakePieces.get(i);
+			Piece piece = looseSnakePieces.get(i);
 			if (x == piece.getX() && y == piece.getY())
 			{
-				snake.addLooseSnakePieceToConsumeProcess(piece);
+				snake.addLooseSnakePieceToConsumeProcess((SnakePiece) piece);
 				controller.snakeHasConsumedALoosePiece(snake);
-				removeLooseSnakePiece(piece);
+				removeLooseSnakePiece((SnakePiece) piece);
 			}
 		}
 	}
@@ -121,11 +172,6 @@ public class World
 		return false;
 	}
 
-	public void createNewPowerUp()
-	{
-
-	}
-
 	public void createNewLooseSnakePiece()
 	{
 		Random random = new Random();
@@ -149,24 +195,71 @@ public class World
 		Snake snakeOne = snakes.get(0);
 		Snake snakeTwo = snakes.get(1);
 
-		if (snakeOne.snakeBlocksCoordinates(randomX, randomY) || snakeTwo.snakeBlocksCoordinates(randomX, randomY))
+		if (looseSnakePieceOrBoosterBlocksCoordinates(randomX, randomY)
+			|| snakeOne.snakeBlocksCoordinates(randomX, randomY) || snakeTwo.snakeBlocksCoordinates(randomX, randomY))
 		{
 			return false;
 		}
 		return true;
 	}
 
+	private boolean looseSnakePieceOrBoosterBlocksCoordinates(int x, int y)
+	{
+		for (Piece piece : looseSnakePieces)
+		{
+			if (piece.getX() == x && piece.getY() == y)
+			{
+				return true;
+			}
+		}
+		for (Boost booster : getCurrentBooster())
+		{
+			Piece piece = (Piece) booster;
+
+			if (piece.getX() == x && piece.getY() == y)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private void checkForSnakeCollisions()
 	{
 		Snake snakeOne = snakes.get(0);
 		Snake snakeTwo = snakes.get(1);
+
+		boolean collisionSnakeOneWithItself;
+		boolean collisionSnakeOneWithSnakeTwo;
+		boolean collisionSnakeTwoWithItself;
+		boolean collisionSnakeTwoWithSnakeOne;
+
 		SnakePiece headOne = snakeOne.getHead();
 		SnakePiece headTwo = snakeTwo.getHead();
 
-		boolean collisionSnakeOneWithItself = headIntersectsSnake(headOne, snakeOne);
-		boolean collisionSnakeTwoWithItself = headIntersectsSnake(headTwo, snakeTwo);
-		boolean collisionSnakeOneWithSnakeTwo = headIntersectsSnake(headOne, snakeTwo);
-		boolean collisionSnakeTwoWithSnakeOne = headIntersectsSnake(headTwo, snakeOne);
+		if (snakeOne.isPhased())
+		{
+			collisionSnakeOneWithItself = false;
+			collisionSnakeOneWithSnakeTwo = false;
+		}
+
+		else
+		{
+			collisionSnakeOneWithItself = headIntersectsSnake(headOne, snakeOne);
+			collisionSnakeOneWithSnakeTwo = headIntersectsSnake(headOne, snakeTwo);
+
+		}
+		if (snakeTwo.isPhased())
+		{
+			collisionSnakeTwoWithItself = false;
+			collisionSnakeTwoWithSnakeOne = false;
+		}
+		else
+		{
+			collisionSnakeTwoWithItself = headIntersectsSnake(headTwo, snakeTwo);
+			collisionSnakeTwoWithSnakeOne = headIntersectsSnake(headTwo, snakeOne);
+		}
 
 		if (collisionSnakeOneWithSnakeTwo && collisionSnakeTwoWithSnakeOne)
 		{
@@ -183,6 +276,7 @@ public class World
 			System.out.println(GameController.TEXT_SNAKE_ONE_WAS_VICTORIOUS);
 			controller.endGame(snakes.get(0));
 		}
+
 	}
 
 	private boolean headIntersectsSnake(SnakePiece head, Snake snake)
@@ -190,7 +284,7 @@ public class World
 		int xHead = head.getX();
 		int yHead = head.getY();
 
-		LinkedList<SnakePiece> pieces = snake.getPieces();
+		LinkedList<SnakePiece> pieces = snake.getSnakePieces();
 
 		for (SnakePiece piece : pieces)
 		{
@@ -222,7 +316,7 @@ public class World
 		this.controller = controller;
 	}
 
-	public LinkedList<SnakePiece> getLooseSnakePieces()
+	public LinkedList<Piece> getLooseSnakePieces()
 	{
 		return looseSnakePieces;
 	}
@@ -236,6 +330,21 @@ public class World
 	public void removeLooseSnakePiece(SnakePiece piece)
 	{
 		looseSnakePieces.remove(piece);
+	}
+
+	public int getAmountOfCurrentBooster()
+	{
+		return getCurrentBooster().size();
+	}
+
+	public List<Boost> getCurrentBooster()
+	{
+		return currentBooster;
+	}
+
+	public void setCurrentBooster(List<Boost> currentBooster)
+	{
+		this.currentBooster = currentBooster;
 	}
 
 }

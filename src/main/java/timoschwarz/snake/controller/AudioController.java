@@ -122,6 +122,11 @@ public class AudioController
 
 	public synchronized void playSound(final String soundName)
 	{
+		if (soundName == null || soundName.isEmpty())
+		{
+			return;
+		}
+
 		new Thread(new Runnable()
 		{
 

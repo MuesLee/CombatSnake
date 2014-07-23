@@ -2,14 +2,12 @@ package timoschwarz.snake.model;
 
 import java.awt.Color;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.Timer;
+import java.util.Timer;
 
 import timoschwarz.snake.controller.GameController;
+import timoschwarz.snake.util.SnakeTask;
 
-public class PhaseBooster extends Piece implements Booster
+public class PhaseBooster extends Piece implements Boost
 {
 
 	public PhaseBooster(int x, int y)
@@ -22,15 +20,9 @@ public class PhaseBooster extends Piece implements Booster
 	{
 		snake.setPhased(true);
 
-		Timer timer = new Timer(GameController.DURATION_SPEEDBOOSTER, new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
-				snake.setPhased(false);
-			}
-		});
-		timer.start();
+		Timer timer = new Timer();
+
+		timer.schedule(new SnakeTask(snake, this), GameController.DURATION_PHASEBOOSTER);
 	}
 
 	@Override
@@ -43,6 +35,24 @@ public class PhaseBooster extends Piece implements Booster
 	public Image getImage()
 	{
 		return null;
+	}
+
+	@Override
+	public void restoreSnake(Snake snake)
+	{
+		snake.setPhased(false);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "PHASEBOOSTER";
+	}
+
+	@Override
+	public String getSoundFileName()
+	{
+		return "boost_phase";
 	}
 
 }
