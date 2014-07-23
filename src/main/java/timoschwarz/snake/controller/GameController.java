@@ -231,7 +231,6 @@ public class GameController
 			snakeTwo.move(i);
 			world.checkForCollisions();
 		}
-
 	}
 
 	private void configureFrame()

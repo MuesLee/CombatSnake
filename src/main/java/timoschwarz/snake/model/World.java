@@ -42,7 +42,7 @@ public class World
 	{
 		this.controller = controller;
 		this.snakes = snakes;
-		this.looseSnakePieces = new LinkedList<>();
+		this.looseSnakePieces = new LinkedList<Piece>();
 		this.width = width;
 		this.height = height;
 		this.setCurrentBooster(new ArrayList<Boost>());

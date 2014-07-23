@@ -31,7 +31,7 @@ public class LANLobby
 	{
 		this.controller = controller;
 		players = new Player[2];
-		playerJList = new JList<>(players);
+		playerJList = new JList<Player>(players);
 		configureFrame();
 	}
 
