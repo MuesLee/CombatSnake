@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,11 +20,9 @@ import timoschwarz.snake.model.Piece;
 import timoschwarz.snake.model.Player;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.World;
-import timoschwarz.snake.util.EntityHelper;
 import timoschwarz.snake.util.KeyBindings;
 import timoschwarz.snake.util.VideoUtils;
-import timoschwarz.snake.view.Entity;
-import timoschwarz.snake.view.Playground;
+import timoschwarz.snake.view.SnakePanel;
 
 public class GameController
 {
@@ -47,7 +44,7 @@ public class GameController
 	public static final int MAX_AMOUNT_OF_BOOSTER = 2;
 	private static final int BOOST_SPAWN_INTERVAL = 10000;
 
-	private Playground playground;
+	private SnakePanel playground;
 	private JFrame frame;
 
 	private AudioController audioController;
@@ -88,11 +85,8 @@ public class GameController
 		snakes.add(snakeTwo);
 
 		this.world = new World(snakes, this, WORLD_SIZE_X, WORLD_SIZE_Y);
-		this.playground = new Playground(this, WORLD_SIZE_X * paintSize, WORLD_SIZE_Y * paintSize);
-
-		playground.addEntity(EntityHelper.createSnakeEntity(snakeOne, "white"));
-		playground.addEntity(EntityHelper.createSnakeEntity(snakeTwo, "red"));
-
+		this.playground = new SnakePanel(this, WORLD_SIZE_X * paintSize, WORLD_SIZE_Y * paintSize, paintSize);
+		playground.getCanvas().setSnakes(snakes);
 		KeyBindings keyBindings = new KeyBindings(playground, snakeOne, snakeTwo);
 		configureFrame();
 	}
@@ -169,7 +163,7 @@ public class GameController
 		}
 
 		JOptionPane.showMessageDialog(frame, text, TEXT_GAME_OVER, JOptionPane.INFORMATION_MESSAGE);
-		Playground.running.set(false);
+		SnakePanel.running.set(false);
 	}
 
 	void startGame()
@@ -185,6 +179,8 @@ public class GameController
 			}
 
 		});
+
+		playground.running.set(true);
 		graphicLoop.start();
 
 		gameIsActive = true;
@@ -277,7 +273,7 @@ public class GameController
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				Playground.running.set(true);
+				SnakePanel.running.set(true);
 				startGame();
 				startSnakes();
 			}
@@ -364,7 +360,7 @@ public class GameController
 			System.out.println("DO SPAWN");
 			audioController.playSound("boost_spawn");
 			world.spawnNewBooster();
-			playground.updateBooster(world.getCurrentBooster());
+			updatePlaygroundBooster();
 		}
 	}
 
@@ -374,35 +370,20 @@ public class GameController
 
 		if (booster.isEmpty())
 		{
-			playground.clearBooster();
+			playground.getCanvas().clearBooster();
 			return;
 		}
-		ArrayList<Entity> entities = new ArrayList<Entity>();
-
-		LinkedList<Piece> pieces = new LinkedList<Piece>();
-		for (Boost boost : booster)
-		{
-			pieces.add((Piece) boost);
-		}
-
-		Entity entity = EntityHelper.createEntity(pieces, "red");
-		entities.add(entity);
-		playground.setBooster(entities);
+		playground.getCanvas().updateBooster(booster);
 	}
 
 	private void initLooseSnakePieces()
 	{
-		ArrayList<Entity> looseSnakePieces = new ArrayList<Entity>();
 
 		for (int i = 0; i < AMOUNT_OF_LOOSE_SNAKEPIECES; i++)
 		{
 			world.createNewLooseSnakePiece();
-			world.getLooseSnakePieces();
-
-			Entity entity = EntityHelper.createEntity(world.getLooseSnakePieces(), "red");
-			looseSnakePieces.add(entity);
 		}
-		playground.setLooseSnakePieces(looseSnakePieces);
+		playground.getCanvas().setLooseSnakePieces(world.getLooseSnakePieces());
 
 	}
 
@@ -427,7 +408,7 @@ public class GameController
 		}
 
 		world.createNewLooseSnakePiece();
-		playground.updateLooseSnakePieceEntities();
+		playground.getCanvas().updateLooseSnakePieceEntities();
 	}
 
 	public World getWorld()
@@ -443,6 +424,12 @@ public class GameController
 	public LinkedList<Piece> getLooseSnakePieces()
 	{
 		return world.getLooseSnakePieces();
+
+	}
+
+	public List<Boost> getCurrentBooster()
+	{
+		return world.getCurrentBooster();
 
 	}
 

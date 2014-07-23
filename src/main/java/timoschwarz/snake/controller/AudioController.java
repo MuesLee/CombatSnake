@@ -110,6 +110,11 @@ public class AudioController
 
 	public void stopBackgroundMusic()
 	{
+		if (!sequencerGame.isRunning())
+		{
+			return;
+		}
+
 		sequencerGame.stop();
 		sequencerGame.close();
 	}
