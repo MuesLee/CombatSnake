@@ -219,8 +219,9 @@ public class GameController
 
 		final Snake snakeOne = playerOne.getSnake();
 		int movementSpeedOne = snakeOne.getMovementSpeed();
+
 		final Snake snakeTwo = playerTwo.getSnake();
-		int movementSpeedTwo = snakeOne.getMovementSpeed();
+		int movementSpeedTwo = snakeTwo.getMovementSpeed();
 
 		int maxMovementSpeed = Math.max(movementSpeedOne, movementSpeedTwo);
 
