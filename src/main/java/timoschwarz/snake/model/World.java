@@ -126,7 +126,7 @@ public class World
 		for (int i = 0; i < looseSnakePieces.size(); i++)
 		{
 			Piece piece = looseSnakePieces.get(i);
-			if (x == piece.getX() && y == piece.getY())
+			if (piece.isAtCoordinates(x, y))
 			{
 				snake.addLooseSnakePieceToConsumeProcess((SnakePiece) piece);
 				controller.snakeHasConsumedALoosePiece(snake);
@@ -203,7 +203,7 @@ public class World
 	{
 		for (Piece piece : looseSnakePieces)
 		{
-			if (piece.getX() == x && piece.getY() == y)
+			if (piece.isAtCoordinates(x, y))
 			{
 				return true;
 			}
@@ -274,8 +274,8 @@ public class World
 
 	private boolean headIntersectsSnake(SnakePiece head, Snake snake)
 	{
-		int xHead = head.getX();
-		int yHead = head.getY();
+		int x = head.getX();
+		int y = head.getY();
 
 		LinkedList<SnakePiece> pieces = snake.getSnakePieces();
 
@@ -286,10 +286,7 @@ public class World
 				continue;
 			}
 
-			int xPiece = piece.getX();
-			int yPiece = piece.getY();
-
-			if (xHead == xPiece && yHead == yPiece)
+			if (piece.isAtCoordinates(x, y))
 			{
 				return true;
 			}
