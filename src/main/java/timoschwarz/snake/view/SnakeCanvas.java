@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +44,8 @@ public class SnakeCanvas extends Canvas
 
 	private Image backBuffer;
 	private Graphics bBG;
+	private BufferedImage overlayImage;
+	private boolean paintWorldChangerEvent = false;
 
 	public SnakeCanvas(GameController controller, SnakePanel panel, int width, int height, int paintSize)
 	{
@@ -56,6 +59,7 @@ public class SnakeCanvas extends Canvas
 		this.looseSnakePieces = new ArrayList<Piece>();
 		this.setSnakes(new ArrayList<Snake>());
 		this.setWorldChangers(new ArrayList<WorldChanger>());
+		this.overlayImage = controller.createOverlayImage();
 		setBackground(Color.black);
 		setVisible(true);
 	}
@@ -95,6 +99,7 @@ public class SnakeCanvas extends Canvas
 		applyRenderHints(g2d);
 		g2d.clearRect(0, 0, width, height);
 		drawEntitiesToScreen(g2d);
+		//paintWorldChangerSpawn(g2d);
 	}
 
 	private void drawEntitiesToScreen(Graphics2D graphics)
@@ -228,6 +233,24 @@ public class SnakeCanvas extends Canvas
 	public void setWorldChangers(List<WorldChanger> worldChangers)
 	{
 		this.worldChangers = worldChangers;
+	}
+
+	public void paintWorldChangerSpawn(Graphics g)
+	{
+		if (isPaintWorldChangerEvent())
+		{
+			g.drawImage(overlayImage, 0, 0, null);
+		}
+	}
+
+	public boolean isPaintWorldChangerEvent()
+	{
+		return paintWorldChangerEvent;
+	}
+
+	public void setPaintWorldChangerEvent(boolean paintWorldChangerEvent)
+	{
+		this.paintWorldChangerEvent = paintWorldChangerEvent;
 	}
 
 }

@@ -1,17 +1,11 @@
 package timoschwarz.snake.view;
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.BorderFactory;
@@ -40,8 +34,6 @@ public class SnakePanel extends JPanel
 	private int width, height, fps, frameCount;
 
 	private SnakeCanvas canvas;
-	private Image overlayImage;
-	private Image backgroundImage;
 
 	public SnakePanel(GameController controller, int w, int h, int paintSize)
 	{
@@ -55,74 +47,13 @@ public class SnakePanel extends JPanel
 		setPreferredSize(getPreferredSize());
 		setBorder(BorderFactory.createLineBorder(Color.RED, BORDER_THICKNESS));
 		add(canvas, BorderLayout.CENTER);
-		overlayImage = createOverlayImage();
-		backgroundImage = createBackGroundImage();
-	}
 
-	public void paintWorldChangerSpawn(Graphics g)
-	{
-		g.drawImage(overlayImage, 0, 0, null);
-		g.drawImage(backgroundImage, 0, 0, null);
 	}
 
 	@Override
 	public Dimension getPreferredSize()
 	{
 		return new Dimension(width, height);
-	}
-
-	private BufferedImage createBackGroundImage()
-	{
-		int PREF_W = 50;
-		int PREF_H = 50;
-
-		BufferedImage img = new BufferedImage(PREF_W, PREF_H, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2 = img.createGraphics();
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.setStroke(new BasicStroke(6f));
-		g2.setColor(Color.blue);
-		int circleCount = 10;
-		for (int i = 0; i < circleCount; i++)
-		{
-			int x = i * PREF_W / (2 * circleCount);
-			int y = x;
-			int w = PREF_W - 2 * x;
-			int h = w;
-			g2.drawOval(x, y, w, h);
-		}
-		g2.dispose();
-		return img;
-	}
-
-	private BufferedImage createOverlayImage()
-	{
-		int PREF_W = 50;
-		int PREF_H = 50;
-		BufferedImage img = new BufferedImage(PREF_W, PREF_H, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2 = img.createGraphics();
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.setColor(Color.red);
-		g2.setStroke(new BasicStroke(6f));
-		int circleCount = 10;
-		for (int i = 0; i < circleCount + 1; i++)
-		{
-			int x1 = i * PREF_W / circleCount;
-			int y1 = 0;
-			int x2 = PREF_W - x1;
-			int y2 = PREF_H;
-			float alpha = (float) i / circleCount;
-			if (alpha > 1f)
-			{
-				alpha = 1f;
-			}
-			// int rule = AlphaComposite.CLEAR;
-			int rule = AlphaComposite.SRC_OVER;
-			Composite comp = AlphaComposite.getInstance(rule, alpha);
-			g2.setComposite(comp);
-			g2.drawLine(x1, y1, x2, y2);
-		}
-		g2.dispose();
-		return img;
 	}
 
 	public void gameLoop()
@@ -198,7 +129,6 @@ public class SnakePanel extends JPanel
 	protected void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
-		paintWorldChangerSpawn(g);
 	}
 
 	private void drawGame()

@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -48,7 +49,7 @@ public class GameController
 	public static int DURATION_PHASEBOOSTER = 7700;
 	public static int MAX_AMOUNT_OF_BOOSTER = 2;
 	public static int BOOST_SPAWN_INTERVAL = 10000;
-	public static int WORLDCHANGER_SPAWN_INTERVAL = 6000;
+	public static int WORLDCHANGER_SPAWN_INTERVAL = 60000;
 	public static int SNAKE_GROW_SIZE = 1;
 
 	private SnakePanel playground;
@@ -440,9 +441,10 @@ public class GameController
 
 	private void triggerWorldChangerSpawn()
 	{
-		if (!worldChangerEventIsRunning)
+		if (!isWorldChangerEventIsRunning())
 		{
-			worldChangerEventIsRunning = true;
+			setWorldChangerEventIsRunning(true);
+			stopPaintingWorldChangerEvent();
 			audioController.playSound("worldChanger_spawn");
 			java.util.Timer timer = new java.util.Timer();
 			Random random = new Random();
@@ -451,11 +453,17 @@ public class GameController
 		}
 	}
 
+	public void stopPaintingWorldChangerEvent()
+	{
+		playground.getCanvas().setPaintWorldChangerEvent(true);
+	}
+
 	public void spawnNewWorldChanger()
 	{
 		world.spawnNewWorldChanger();
 		updateWorldChangerOfCanvas();
-		worldChangerEventIsRunning = false;
+		setWorldChangerEventIsRunning(false);
+		stopPaintingWorldChangerEvent();
 	}
 
 	private void updateWorldChangerOfCanvas()
@@ -585,6 +593,22 @@ public class GameController
 	public List<WorldChanger> getCurrentWorldChangers()
 	{
 		return world.getWorldChangers();
+	}
+
+	public boolean isWorldChangerEventIsRunning()
+	{
+		return worldChangerEventIsRunning;
+	}
+
+	public void setWorldChangerEventIsRunning(boolean worldChangerEventIsRunning)
+	{
+		this.worldChangerEventIsRunning = worldChangerEventIsRunning;
+	}
+
+	public BufferedImage createOverlayImage()
+	{
+		GraphicsController graphicsController = new GraphicsController();
+		return graphicsController.createLightningImage();
 	}
 
 }

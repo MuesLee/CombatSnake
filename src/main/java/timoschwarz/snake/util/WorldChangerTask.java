@@ -21,6 +21,7 @@ public class WorldChangerTask extends TimerTask
 	public void run()
 	{
 		world.spawnNewWorldChanger();
+		System.out.println("TIMER SPAWNS!");
 		timer.cancel();
 		cancel();
 	}
