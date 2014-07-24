@@ -22,13 +22,13 @@ public class PhaseBoost extends Piece implements Boost
 
 		Timer timer = new Timer();
 
-		timer.schedule(new SnakeTask(snake, this), GameController.DURATION_PHASEBOOSTER);
+		timer.schedule(new SnakeTask(snake, this, timer), GameController.DURATION_PHASEBOOSTER);
 	}
 
 	@Override
 	public Color getColor()
 	{
-		return Color.blue;
+		return Color.YELLOW;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package timoschwarz.snake.util;
 
 import timoschwarz.snake.model.Boost;
+import timoschwarz.snake.model.GrowBoost;
 import timoschwarz.snake.model.PhaseBoost;
 import timoschwarz.snake.model.SpeedBoost;
 

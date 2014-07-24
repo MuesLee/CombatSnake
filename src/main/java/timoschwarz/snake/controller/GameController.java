@@ -24,11 +24,13 @@ import timoschwarz.snake.model.World;
 import timoschwarz.snake.model.WorldChanger;
 import timoschwarz.snake.util.KeyBindings;
 import timoschwarz.snake.util.VideoUtils;
+import timoschwarz.snake.util.WorldChangerTask;
 import timoschwarz.snake.view.SnakePanel;
 
 public class GameController
 {
 	public static final int POINTS_FOR_WORLDCHANGER_CONSUMPTION = 150;
+	private static final int DURATION_SOUND_WORLDCHANGER = 20000;
 	public static int SNAKE_SIZE = 15;
 	public static int paintSize = 15;
 	private static double MAX_PERCENTAGE_OF_SCREEN_SIZE = 0.7;
@@ -45,9 +47,8 @@ public class GameController
 	public static int DURATION_SPEEDBOOSTER = 5000;
 	public static int DURATION_PHASEBOOSTER = 7700;
 	public static int MAX_AMOUNT_OF_BOOSTER = 2;
-	public static int MAX_AMOUNT_OF_WORLDCHANGER = 2;
 	public static int BOOST_SPAWN_INTERVAL = 10000;
-	public static int WORLDCHANGER_SPAWN_INTERVAL = 600;
+	public static int WORLDCHANGER_SPAWN_INTERVAL = 6000;
 	public static int SNAKE_GROW_SIZE = 1;
 
 	private SnakePanel playground;
@@ -66,12 +67,12 @@ public class GameController
 	private boolean gameIsActive = false;
 	private JLabel scorePlayerOne;
 	private JLabel scorePlayerTwo;
+	private boolean worldChangerEventIsRunning = false;
 	public static int PENALTY_FOR_FAILURE = 4;
 
 	public GameController(String namePlayerOne, String namePlayerTwo)
 	{
 		initGame(namePlayerOne, namePlayerTwo);
-
 	}
 
 	protected void prepareStartOfGame(String namePlayerOne, String namePlayerTwo)
@@ -439,13 +440,22 @@ public class GameController
 
 	private void triggerWorldChangerSpawn()
 	{
-		if (world.getAmountOfCurrentWorldChanger() < MAX_AMOUNT_OF_WORLDCHANGER)
+		if (!worldChangerEventIsRunning)
 		{
-			world.spawnNewWorldChanger();
+			worldChangerEventIsRunning = true;
 			audioController.playSound("worldChanger_spawn");
-			updateWorldChangerOfCanvas();
+			java.util.Timer timer = new java.util.Timer();
+			Random random = new Random();
+			int delay = random.nextInt(DURATION_SOUND_WORLDCHANGER + 1);
+			timer.schedule(new WorldChangerTask(this, timer), delay);
 		}
+	}
 
+	public void spawnNewWorldChanger()
+	{
+		world.spawnNewWorldChanger();
+		updateWorldChangerOfCanvas();
+		worldChangerEventIsRunning = false;
 	}
 
 	private void updateWorldChangerOfCanvas()
@@ -570,7 +580,6 @@ public class GameController
 		player.increaseScore(POINTS_FOR_WORLDCHANGER_CONSUMPTION);
 		updatePlayerScoreLabel();
 		audioController.playSound(usedWorldChanger.getSoundFile());
-
 	}
 
 	public List<WorldChanger> getCurrentWorldChangers()

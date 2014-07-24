@@ -14,6 +14,7 @@ public class FoodExplosion extends Piece implements WorldChanger
 	@Override
 	public void modifyWorld(World world)
 	{
+
 		for (int i = 0; i < 15; i++)
 		{
 			world.createNewLooseSnakePiece();
