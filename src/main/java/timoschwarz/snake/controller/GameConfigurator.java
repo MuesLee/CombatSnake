@@ -75,6 +75,14 @@ public class GameConfigurator
 		final JComboBox<Integer> comboBoxGrowSize = new JComboBox<>(items);
 		comboBoxGrowSize.setSelectedIndex(0);
 		comboBoxGrowSize.setMaximumRowCount(5);
+		comboBoxGrowSize.addFocusListener(new FocusAdapter()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				snakeGrowSize = (int) comboBoxGrowSize.getSelectedItem();
+			}
+		});
 
 		final JLabel labelGrowSize = new JLabel("Snake Grow Size");
 		labelGrowSize.setLabelFor(comboBoxGrowSize);
@@ -171,7 +179,7 @@ public class GameConfigurator
 
 	public void startLocalGame(String namePlayerOne, String namePlayerTwo)
 	{
-		GameController.SNAKE_GROW_SIZE = snakeGrowSize;
+		GameController.SNAKE_GROW_SIZE = snakeGrowSize - 1;
 		GameController gc = new GameController(namePlayerOne, namePlayerTwo);
 	}
 }

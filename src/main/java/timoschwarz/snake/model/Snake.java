@@ -15,7 +15,7 @@ public class Snake
 	private boolean hasMovedAfterLastDirectionChange = false;
 	private int movementSpeed = 1;
 	private boolean phased = false;
-	private boolean isConsuming;
+	private boolean isConsuming = false;
 	private int timesGrown = 0;
 
 	public Snake(int size, int startX, int startY)
@@ -77,6 +77,7 @@ public class Snake
 			consumeLooseSnakePieces(tail);
 		}
 		hasMovedAfterLastDirectionChange = true;
+		System.out.println("MY NEW SIZE IS: " + snakePieces.size());
 	}
 
 	private void consumeLooseSnakePieces(SnakePiece tail)
