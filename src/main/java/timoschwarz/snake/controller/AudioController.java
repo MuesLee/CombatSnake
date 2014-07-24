@@ -1,11 +1,8 @@
 package timoschwarz.snake.controller;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -26,7 +23,6 @@ public class AudioController
 	private Properties prop;
 	private Sequencer sequencerGame;
 	private Sequencer sequencerMenu;
-	private Map<String, File> clips = new HashMap<String, File>();
 	private InputStream midiFileGameBackGround;
 	private InputStream midiFileMenuBackGround;
 
@@ -66,7 +62,7 @@ public class AudioController
 			sequencerGame = MidiSystem.getSequencer();
 			sequencerGame.open();
 			sequencerGame.setSequence(MidiSystem.getSequence(midiFileGameBackGround));
-			sequencerGame.setLoopCount(sequencerGame.LOOP_CONTINUOUSLY);
+			sequencerGame.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
 			sequencerGame.start();
 		}
 		catch (MidiUnavailableException e2)
@@ -91,7 +87,7 @@ public class AudioController
 			sequencerMenu = MidiSystem.getSequencer();
 			sequencerMenu.open();
 			sequencerMenu.setSequence(MidiSystem.getSequence(midiFileMenuBackGround));
-			sequencerMenu.setLoopCount(sequencerMenu.LOOP_CONTINUOUSLY);
+			sequencerMenu.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
 			sequencerMenu.start();
 		}
 		catch (MidiUnavailableException e2)

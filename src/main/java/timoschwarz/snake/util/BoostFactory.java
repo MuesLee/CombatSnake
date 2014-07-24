@@ -6,6 +6,7 @@ import timoschwarz.snake.model.SpeedBoost;
 
 public class BoostFactory
 {
+	//"FACTORY", he said... 
 
 	public static Boost createBooster(BoostType type, int x, int y)
 	{
@@ -13,18 +14,27 @@ public class BoostFactory
 
 		switch (type)
 		{
-			case phaseBooster:
+			case PHASEBOOST:
 				booster = createPhaseBooster(x, y);
 			break;
-			case speedBooster:
+			case SPEEDBOOST:
 				booster = createSpeedBooster(x, y);
 			break;
+			case GROWBOOST:
+				booster = createGrowBooster(x, y);
 			default:
 			break;
 		}
 
 		return booster;
 
+	}
+
+	private static Boost createGrowBooster(int x, int y)
+	{
+		Boost booster = new GrowBoost(x, y);
+
+		return booster;
 	}
 
 	private static Boost createSpeedBooster(int x, int y)

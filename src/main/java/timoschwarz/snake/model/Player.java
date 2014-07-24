@@ -31,7 +31,7 @@ public class Player
 		this.points = points;
 	}
 
-	public void increasePoints(int points)
+	public void increaseScore(int points)
 	{
 		this.points += points;
 	}

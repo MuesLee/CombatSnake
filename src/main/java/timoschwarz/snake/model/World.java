@@ -50,13 +50,10 @@ public class World
 
 	public void spawnNewBooster()
 	{
-		BoostType[] values = BoostType.values();
-		Random random = new Random();
-
-		int randomIndex = random.nextInt(values.length);
 		int x = 0;
 		int y = 0;
 
+		Random random = new Random();
 		do
 		{
 			x = random.nextInt(width + 1);
@@ -64,7 +61,7 @@ public class World
 		}
 		while (!coordinatesAreFree(x, y));
 
-		BoostType randomType = values[randomIndex];
+		BoostType randomType = BoostType.getBoostTypeByPercentage(random.nextInt(101));
 
 		Boost boost = BoostFactory.createBooster(randomType, x, y);
 
@@ -109,7 +106,7 @@ public class World
 		if (usedBooster != null)
 		{
 			currentBooster.remove(usedBooster);
-			controller.snakeHasConsumedABooster(usedBooster);
+			controller.snakeHasConsumedABooster(snake, usedBooster);
 		}
 	}
 

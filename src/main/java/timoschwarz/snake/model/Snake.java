@@ -17,6 +17,7 @@ public class Snake
 	private boolean phased = false;
 	private boolean isConsuming = false;
 	private int timesGrown = 0;
+	private int growSize = GameController.SNAKE_GROW_SIZE;
 
 	public Snake(int size, int startX, int startY)
 	{
@@ -60,12 +61,12 @@ public class Snake
 		SnakePiece tail = getTail();
 		moveSnakePieces(createHeadWithNextPosition(direction));
 
-		if (isConsuming && GameController.SNAKE_GROW_SIZE > timesGrown)
+		if (isConsuming && growSize > timesGrown)
 		{
 			addTail(tail.x, tail.y);
 			timesGrown++;
 
-			if (GameController.SNAKE_GROW_SIZE == timesGrown)
+			if (growSize == timesGrown)
 			{
 				timesGrown = 0;
 				isConsuming = false;
@@ -77,7 +78,6 @@ public class Snake
 			consumeLooseSnakePieces(tail);
 		}
 		hasMovedAfterLastDirectionChange = true;
-		System.out.println("MY NEW SIZE IS: " + snakePieces.size());
 	}
 
 	private void consumeLooseSnakePieces(SnakePiece tail)
@@ -277,5 +277,15 @@ public class Snake
 	public void setPhased(boolean phased)
 	{
 		this.phased = phased;
+	}
+
+	public int getGrowSize()
+	{
+		return growSize;
+	}
+
+	public void setGrowSize(int growSize)
+	{
+		this.growSize = growSize;
 	}
 }

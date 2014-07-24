@@ -30,7 +30,8 @@ public class GameController
 	public static int paintSize = 15;
 	private static double MAX_PERCENTAGE_OF_SCREEN_SIZE = 0.7;
 	private static final int AMOUNT_OF_LOOSE_SNAKEPIECES = 1;
-	private static final int POINTS_FOR_CONSUMPTION = 10;
+	private static final int POINTS_FOR_FOOD_CONSUMPTION = 10;
+	private static final int POINTS_FOR_BOOSTER_CONSUMPTION = 50;
 	private static final int GAME_SPEED = 100;
 	private static final int WORLD_SIZE_X = 50;
 	private static final int WORLD_SIZE_Y = 50;
@@ -87,6 +88,7 @@ public class GameController
 		this.world = new World(snakes, this, WORLD_SIZE_X, WORLD_SIZE_Y);
 		this.playground = new SnakePanel(this, WORLD_SIZE_X * paintSize, WORLD_SIZE_Y * paintSize, paintSize);
 		playground.getCanvas().setSnakes(snakes);
+		@SuppressWarnings("unused")
 		KeyBindings keyBindings = new KeyBindings(playground, snakeOne, snakeTwo);
 		configureFrame();
 	}
@@ -181,7 +183,7 @@ public class GameController
 
 		});
 
-		playground.running.set(true);
+		SnakePanel.running.set(true);
 		graphicLoop.start();
 
 		gameIsActive = true;
@@ -271,7 +273,7 @@ public class GameController
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				playground.running.set(true);
+				SnakePanel.running.set(true);
 				resetGame();
 			}
 		});
@@ -399,10 +401,25 @@ public class GameController
 
 	}
 
-	public void snakeHasConsumedABooster(Boost booster)
+	public void snakeHasConsumedABooster(Snake snake, Boost booster)
 	{
+		Player player = getPlayerForSnake(snake);
+		player.increaseScore(POINTS_FOR_BOOSTER_CONSUMPTION);
+
 		audioController.playSound(booster.getSoundFileName());
 		updatePlaygroundBooster();
+	}
+
+	private Player getPlayerForSnake(Snake snake)
+	{
+		if (playerOne.getSnake() == snake)
+		{
+			return playerOne;
+		}
+		else
+		{
+			return playerTwo;
+		}
 	}
 
 	public void snakeHasConsumedALoosePiece(Snake snake)
@@ -410,17 +427,22 @@ public class GameController
 		audioController.playSound("bite");
 		if (playerOne.getSnake() == snake)
 		{
-			playerOne.increasePoints(POINTS_FOR_CONSUMPTION);
+			playerOne.increaseScore(calculatePointsForGrowing(snake));
 			scorePlayerOne.setText(getScoreTextForPlayer(playerOne));
 		}
 		else
 		{
-			playerTwo.increasePoints(POINTS_FOR_CONSUMPTION);
+			playerTwo.increaseScore(calculatePointsForGrowing(playerTwo.getSnake()));
 			scorePlayerTwo.setText(getScoreTextForPlayer(playerTwo));
 		}
 
 		world.createNewLooseSnakePiece();
 		playground.getCanvas().updateLooseSnakePieceEntities();
+	}
+
+	private int calculatePointsForGrowing(Snake snake)
+	{
+		return POINTS_FOR_FOOD_CONSUMPTION * (snake.getGrowSize() + 1);
 	}
 
 	public World getWorld()
