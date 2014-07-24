@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -26,23 +27,23 @@ import timoschwarz.snake.view.SnakePanel;
 
 public class GameController
 {
-	public static final int SNAKE_SIZE = 15;
+	public static int SNAKE_SIZE = 15;
 	public static int paintSize = 15;
 	private static double MAX_PERCENTAGE_OF_SCREEN_SIZE = 0.7;
-	private static final int AMOUNT_OF_LOOSE_SNAKEPIECES = 1;
-	private static final int POINTS_FOR_FOOD_CONSUMPTION = 10;
-	private static final int POINTS_FOR_BOOSTER_CONSUMPTION = 50;
-	private static final int GAME_SPEED = 100;
-	private static final int WORLD_SIZE_X = 50;
-	private static final int WORLD_SIZE_Y = 50;
+	private static int AMOUNT_OF_LOOSE_SNAKEPIECES = 1;
+	private static int POINTS_FOR_FOOD_CONSUMPTION = 10;
+	private static int POINTS_FOR_BOOSTER_CONSUMPTION = 50;
+	private static int GAME_SPEED = 100;
+	private static int WORLD_SIZE_X = 50;
+	private static int WORLD_SIZE_Y = 50;
 
-	public static final String TEXT_GAME_OVER = "GAME OVER";
-	public static final String TEXT_ONE_SNAKE_WAS_VICTORIOUS = " has won!";
-	public static final String TEXT_BOTH_SNAKES_DEAD = "BOFS SNAIGS DED!!\nI CRI EVRYTIEM";
-	public static final int DURATION_SPEEDBOOSTER = 5000;
-	public static final int DURATION_PHASEBOOSTER = 7700;
-	public static final int MAX_AMOUNT_OF_BOOSTER = 2;
-	public static final int BOOST_SPAWN_INTERVAL = 10000;
+	public static String TEXT_GAME_OVER = "GAME OVER";
+	public static String TEXT_ONE_SNAKE_WAS_VICTORIOUS = " has won!";
+	public static String TEXT_BOTH_SNAKES_DEAD = "BOFS SNAIGS DED!!\nI CRI EVRYTIEM";
+	public static int DURATION_SPEEDBOOSTER = 5000;
+	public static int DURATION_PHASEBOOSTER = 7700;
+	public static int MAX_AMOUNT_OF_BOOSTER = 2;
+	public static int BOOST_SPAWN_INTERVAL = 10000;
 	public static int SNAKE_GROW_SIZE = 1;
 
 	private SnakePanel playground;
@@ -60,6 +61,7 @@ public class GameController
 	private boolean gameIsActive = false;
 	private JLabel scorePlayerOne;
 	private JLabel scorePlayerTwo;
+	public static int PENALTY_FOR_FAILURE = 4;
 
 	public GameController(String namePlayerOne, String namePlayerTwo)
 	{
@@ -86,7 +88,8 @@ public class GameController
 		snakes.add(snakeTwo);
 
 		this.world = new World(snakes, this, WORLD_SIZE_X, WORLD_SIZE_Y);
-		this.playground = new SnakePanel(this, WORLD_SIZE_X * paintSize, WORLD_SIZE_Y * paintSize, paintSize);
+		this.playground = new SnakePanel(this, WORLD_SIZE_X * paintSize, WORLD_SIZE_Y * paintSize,
+			paintSize);
 		playground.getCanvas().setSnakes(snakes);
 		@SuppressWarnings("unused")
 		KeyBindings keyBindings = new KeyBindings(playground, snakeOne, snakeTwo);
@@ -136,7 +139,7 @@ public class GameController
 		audioController.stopBackgroundMusic();
 
 		boolean gameEndedInADraw = false;
-		boolean gameEndedWithVictoryOfPlayerOne = false;
+		boolean gameEndedWithFailureOfPlayerTwo = false;
 
 		if (snake == null)
 		{
@@ -144,29 +147,61 @@ public class GameController
 		}
 		else if (snake == playerOne.getSnake())
 		{
-			gameEndedWithVictoryOfPlayerOne = true;
+			gameEndedWithFailureOfPlayerTwo = true;
 		}
 
 		String text = "";
+
+		Random random = new Random();
 
 		if (gameEndedInADraw)
 		{
 			audioController.playSound("comment_annoying");
 			text = TEXT_BOTH_SNAKES_DEAD;
 		}
-		else if (gameEndedWithVictoryOfPlayerOne)
+		else if (gameEndedWithFailureOfPlayerTwo)
 		{
 			audioController.playSound("comment_terminated");
-			text = playerOne.getName() + TEXT_ONE_SNAKE_WAS_VICTORIOUS + "\nScore: " + playerOne.getScore();
+			int score = playerTwo.getScore() / random.nextInt(GameController.PENALTY_FOR_FAILURE);
+			playerTwo.setScore(score);
 		}
 		else
 		{
+			//PLAYER ONE FAILED
 			audioController.playSound("comment_terminated");
-			text = playerTwo.getName() + TEXT_ONE_SNAKE_WAS_VICTORIOUS + "\nScore: " + playerTwo.getScore();
+			int score = playerOne.getScore() / (random.nextInt(GameController.PENALTY_FOR_FAILURE) + 1);
+			playerOne.setScore(score);
+		}
+		Player playerWithHighestScore = getPlayerWithHighestScore();
+
+		if (playerWithHighestScore != null)
+		{
+			text = text + "\n" + playerWithHighestScore.getName() + " WON WITH A SCORE OF: "
+				+ playerWithHighestScore.getScore();
+		}
+		else
+		{
+			text = text + "NO ONE WON!\nNO ONE LOST!BORING...";
 		}
 
 		JOptionPane.showMessageDialog(frame, text, TEXT_GAME_OVER, JOptionPane.INFORMATION_MESSAGE);
 		SnakePanel.running.set(false);
+	}
+
+	private Player getPlayerWithHighestScore()
+	{
+		final int scorePlayerOne = playerOne.getScore();
+		final int scorePlayerTwo = playerTwo.getScore();
+		if (scorePlayerOne > scorePlayerTwo)
+		{
+			return playerOne;
+		}
+		else if (scorePlayerOne < scorePlayerTwo)
+		{
+			return playerTwo;
+		}
+		return null;
+
 	}
 
 	void startGame()

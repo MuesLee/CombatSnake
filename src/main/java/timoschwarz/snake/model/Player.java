@@ -26,7 +26,7 @@ public class Player
 		return points;
 	}
 
-	public void setPoints(int points)
+	public void setScore(int points)
 	{
 		this.points = points;
 	}

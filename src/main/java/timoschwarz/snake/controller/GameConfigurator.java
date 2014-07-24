@@ -174,12 +174,14 @@ public class GameConfigurator
 
 	private void startLanGame(String namePlayerOne, String namePlayerTwo)
 	{
+		@SuppressWarnings("unused")
 		LANController mc = new LANController(namePlayerOne, namePlayerTwo);
 	}
 
 	public void startLocalGame(String namePlayerOne, String namePlayerTwo)
 	{
 		GameController.SNAKE_GROW_SIZE = snakeGrowSize - 1;
+		@SuppressWarnings("unused")
 		GameController gc = new GameController(namePlayerOne, namePlayerTwo);
 	}
 }
