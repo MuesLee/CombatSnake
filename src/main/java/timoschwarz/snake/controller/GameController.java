@@ -441,7 +441,7 @@ public class GameController
 
 	private void triggerWorldChangerSpawn()
 	{
-		if (!isWorldChangerEventIsRunning())
+		if (!isWorldChangerEventIsRunning() && world.getAmountOfCurrentWorldChanger() == 0)
 		{
 			setWorldChangerEventIsRunning(true);
 			stopPaintingWorldChangerEvent();
