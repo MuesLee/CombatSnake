@@ -15,6 +15,7 @@ import timoschwarz.snake.model.Boost;
 import timoschwarz.snake.model.Piece;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.SnakePiece;
+import timoschwarz.snake.model.WorldChanger;
 
 public class SnakeCanvas extends Canvas
 {
@@ -38,6 +39,7 @@ public class SnakeCanvas extends Canvas
 	private List<Snake> snakes;
 	private List<Piece> looseSnakePieces;
 	private List<Boost> booster;
+	private List<WorldChanger> worldChangers;
 
 	private Image backBuffer;
 	private Graphics bBG;
@@ -53,6 +55,7 @@ public class SnakeCanvas extends Canvas
 		this.setBooster(new ArrayList<Boost>());
 		this.looseSnakePieces = new ArrayList<Piece>();
 		this.setSnakes(new ArrayList<Snake>());
+		this.setWorldChangers(new ArrayList<WorldChanger>());
 		setBackground(Color.black);
 		setVisible(true);
 	}
@@ -129,9 +132,17 @@ public class SnakeCanvas extends Canvas
 		for (Boost boost : getBooster())
 		{
 			Piece e = (Piece) boost;
-			graphics.setColor(Color.yellow);
+			graphics.setColor(boost.getColor());
 			graphics.fillRect(e.getX() * paintSize, e.getY() * paintSize, paintSize, paintSize);
 		}
+
+		for (WorldChanger worldChanger : getWorldChangers())
+		{
+			Piece e = (Piece) worldChanger;
+			graphics.setColor(worldChanger.getColor());
+			graphics.fillRect(e.getX() * paintSize, e.getY() * paintSize, paintSize, paintSize);
+		}
+
 	}
 
 	private Color getColorForSnake(int i)
@@ -161,6 +172,11 @@ public class SnakeCanvas extends Canvas
 	public void updateLooseSnakePieceEntities()
 	{
 		looseSnakePieces = controller.getLooseSnakePieces();
+	}
+
+	public void updateWorldChangerEntities()
+	{
+		worldChangers = controller.getCurrentWorldChangers();
 	}
 
 	public List<Piece> getLooseSnakePieces()
@@ -202,6 +218,16 @@ public class SnakeCanvas extends Canvas
 	public void setBooster(List<Boost> booster)
 	{
 		this.booster = booster;
+	}
+
+	public List<WorldChanger> getWorldChangers()
+	{
+		return worldChangers;
+	}
+
+	public void setWorldChangers(List<WorldChanger> worldChangers)
+	{
+		this.worldChangers = worldChangers;
 	}
 
 }

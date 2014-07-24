@@ -8,6 +8,7 @@ import java.util.Random;
 import timoschwarz.snake.controller.GameController;
 import timoschwarz.snake.util.BoostFactory;
 import timoschwarz.snake.util.BoostType;
+import timoschwarz.snake.util.WorldChangerType;
 
 public class World
 {
@@ -17,6 +18,7 @@ public class World
 	private int height;
 	private int width;
 	private List<Boost> currentBooster;
+	private List<WorldChanger> worldChangers;
 
 	public int getHeight()
 	{
@@ -43,9 +45,29 @@ public class World
 		this.controller = controller;
 		this.snakes = snakes;
 		this.looseSnakePieces = new LinkedList<Piece>();
+		this.setWorldChangers(new ArrayList<WorldChanger>());
 		this.width = width;
 		this.height = height;
 		this.setCurrentBooster(new ArrayList<Boost>());
+	}
+
+	public void spawnNewWorldChanger()
+	{
+		int x = 0;
+		int y = 0;
+
+		Random random = new Random();
+		do
+		{
+			x = random.nextInt(width + 1);
+			y = random.nextInt(height + 1);
+		}
+		while (!coordinatesAreFree(x, y));
+
+		WorldChangerType type = WorldChangerType.getWorldChangerByPercentage(random.nextInt(101));
+		WorldChanger worldChanger = WorldChangerFactory.createWorldChanger(type, x, y);
+		getWorldChangers().add(worldChanger);
+
 	}
 
 	public void spawnNewBooster()
@@ -74,6 +96,41 @@ public class World
 		checkForSnakeCollisions();
 		checkForConsumption();
 		checkForBoosterConsumption();
+		checkForWorldChangerConsumption();
+	}
+
+	private void checkForWorldChangerConsumption()
+	{
+		for (Snake snake : snakes)
+		{
+			checkForWorldChangerConsumptionForSnake(snake);
+		}
+
+	}
+
+	private void checkForWorldChangerConsumptionForSnake(Snake snake)
+	{
+		int x = snake.getHead().getX();
+		int y = snake.getHead().getY();
+
+		WorldChanger usedWorldChanger = null;
+
+		for (WorldChanger worldChanger : getWorldChangers())
+		{
+			Piece piece = (Piece) worldChanger;
+
+			if (piece.isAtCoordinates(x, y))
+			{
+				worldChanger.modifyWorld(this);
+				usedWorldChanger = worldChanger;
+			}
+		}
+
+		if (usedWorldChanger != null)
+		{
+			getWorldChangers().remove(usedWorldChanger);
+			controller.snakeHasConsumedAWorldChanger(snake, usedWorldChanger);
+		}
 	}
 
 	private void checkForBoosterConsumption()
@@ -335,6 +392,22 @@ public class World
 	public void setCurrentBooster(List<Boost> currentBooster)
 	{
 		this.currentBooster = currentBooster;
+	}
+
+	public int getAmountOfCurrentWorldChanger()
+	{
+		return getWorldChangers().size();
+
+	}
+
+	public List<WorldChanger> getWorldChangers()
+	{
+		return worldChangers;
+	}
+
+	public void setWorldChangers(List<WorldChanger> worldChangers)
+	{
+		this.worldChangers = worldChangers;
 	}
 
 }

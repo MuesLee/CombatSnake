@@ -21,12 +21,14 @@ import timoschwarz.snake.model.Piece;
 import timoschwarz.snake.model.Player;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.World;
+import timoschwarz.snake.model.WorldChanger;
 import timoschwarz.snake.util.KeyBindings;
 import timoschwarz.snake.util.VideoUtils;
 import timoschwarz.snake.view.SnakePanel;
 
 public class GameController
 {
+	public static final int POINTS_FOR_WORLDCHANGER_CONSUMPTION = 150;
 	public static int SNAKE_SIZE = 15;
 	public static int paintSize = 15;
 	private static double MAX_PERCENTAGE_OF_SCREEN_SIZE = 0.7;
@@ -43,7 +45,9 @@ public class GameController
 	public static int DURATION_SPEEDBOOSTER = 5000;
 	public static int DURATION_PHASEBOOSTER = 7700;
 	public static int MAX_AMOUNT_OF_BOOSTER = 2;
+	public static int MAX_AMOUNT_OF_WORLDCHANGER = 2;
 	public static int BOOST_SPAWN_INTERVAL = 10000;
+	public static int WORLDCHANGER_SPAWN_INTERVAL = 600;
 	public static int SNAKE_GROW_SIZE = 1;
 
 	private SnakePanel playground;
@@ -54,6 +58,7 @@ public class GameController
 	private Player playerOne;
 	private Player playerTwo;
 
+	private Timer worldChangerTimer;
 	private Timer boostTimer;
 
 	private World world;
@@ -88,8 +93,7 @@ public class GameController
 		snakes.add(snakeTwo);
 
 		this.world = new World(snakes, this, WORLD_SIZE_X, WORLD_SIZE_Y);
-		this.playground = new SnakePanel(this, WORLD_SIZE_X * paintSize, WORLD_SIZE_Y * paintSize,
-			paintSize);
+		this.playground = new SnakePanel(this, WORLD_SIZE_X * paintSize, WORLD_SIZE_Y * paintSize, paintSize);
 		playground.getCanvas().setSnakes(snakes);
 		@SuppressWarnings("unused")
 		KeyBindings keyBindings = new KeyBindings(playground, snakeOne, snakeTwo);
@@ -134,7 +138,8 @@ public class GameController
 	public void endGame(Snake snake)
 	{
 		gameIsActive = false;
-		boostTimer.stop();
+
+		stopTimer();
 
 		audioController.stopBackgroundMusic();
 
@@ -176,16 +181,23 @@ public class GameController
 
 		if (playerWithHighestScore != null)
 		{
-			text = text + "\n" + playerWithHighestScore.getName() + " WON WITH A SCORE OF: "
+			text = text + "\n" + playerWithHighestScore.getName() + " won with a Score: "
 				+ playerWithHighestScore.getScore();
 		}
 		else
 		{
-			text = text + "NO ONE WON!\nNO ONE LOST!BORING...";
+			text = text + "\nNO ONE WON!\nNO ONE LOST! BORING...";
 		}
 
 		JOptionPane.showMessageDialog(frame, text, TEXT_GAME_OVER, JOptionPane.INFORMATION_MESSAGE);
 		SnakePanel.running.set(false);
+	}
+
+	private void stopTimer()
+	{
+		boostTimer.stop();
+		worldChangerTimer.stop();
+
 	}
 
 	private Player getPlayerWithHighestScore()
@@ -385,7 +397,13 @@ public class GameController
 	public void startSnakes()
 	{
 		initLooseSnakePieces();
+		initTimer();
+	}
+
+	private void initTimer()
+	{
 		initBoostTimer();
+		initWorldChangerTimer();
 	}
 
 	private void initBoostTimer()
@@ -401,6 +419,39 @@ public class GameController
 		});
 
 		boostTimer.start();
+	}
+
+	private void initWorldChangerTimer()
+	{
+
+		this.worldChangerTimer = new Timer(WORLDCHANGER_SPAWN_INTERVAL, new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				triggerWorldChangerSpawn();
+			}
+
+		});
+
+		worldChangerTimer.start();
+	}
+
+	private void triggerWorldChangerSpawn()
+	{
+		if (world.getAmountOfCurrentWorldChanger() < MAX_AMOUNT_OF_WORLDCHANGER)
+		{
+			world.spawnNewWorldChanger();
+			audioController.playSound("worldChanger_spawn");
+			updateWorldChangerOfCanvas();
+		}
+
+	}
+
+	private void updateWorldChangerOfCanvas()
+	{
+		playground.getCanvas().updateWorldChangerEntities();
+
 	}
 
 	private void triggerBoostSpawn()
@@ -440,7 +491,7 @@ public class GameController
 	{
 		Player player = getPlayerForSnake(snake);
 		player.increaseScore(POINTS_FOR_BOOSTER_CONSUMPTION);
-
+		updatePlayerScoreLabel();
 		audioController.playSound(booster.getSoundFileName());
 		updatePlaygroundBooster();
 	}
@@ -463,15 +514,26 @@ public class GameController
 		if (playerOne.getSnake() == snake)
 		{
 			playerOne.increaseScore(calculatePointsForGrowing(snake));
-			scorePlayerOne.setText(getScoreTextForPlayer(playerOne));
 		}
 		else
 		{
 			playerTwo.increaseScore(calculatePointsForGrowing(playerTwo.getSnake()));
-			scorePlayerTwo.setText(getScoreTextForPlayer(playerTwo));
 		}
 
+		updatePlayerScoreLabel();
+
 		world.createNewLooseSnakePiece();
+		updateLooseSnakePiecesOfCanvas();
+	}
+
+	private void updatePlayerScoreLabel()
+	{
+		scorePlayerTwo.setText(getScoreTextForPlayer(playerTwo));
+		scorePlayerOne.setText(getScoreTextForPlayer(playerOne));
+	}
+
+	public void updateLooseSnakePiecesOfCanvas()
+	{
 		playground.getCanvas().updateLooseSnakePieceEntities();
 	}
 
@@ -500,6 +562,20 @@ public class GameController
 	{
 		return world.getCurrentBooster();
 
+	}
+
+	public void snakeHasConsumedAWorldChanger(Snake snake, WorldChanger usedWorldChanger)
+	{
+		Player player = getPlayerForSnake(snake);
+		player.increaseScore(POINTS_FOR_WORLDCHANGER_CONSUMPTION);
+		updatePlayerScoreLabel();
+		audioController.playSound(usedWorldChanger.getSoundFile());
+
+	}
+
+	public List<WorldChanger> getCurrentWorldChangers()
+	{
+		return world.getWorldChangers();
 	}
 
 }
