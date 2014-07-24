@@ -10,7 +10,9 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -20,6 +22,7 @@ public class GameConfigurator
 {
 	private String namePlayerOne;
 	private String namePlayerTwo;
+	private int snakeGrowSize = 1;
 
 	private static final String TITLE_GAME_CONFIGURATION = "Combat Snakez Konfigurator";
 	private static final String TEXT_BUTTON_START_LOCAL_GAME = "Start Local Game";
@@ -63,6 +66,19 @@ public class GameConfigurator
 		Dimension preferredSize = new Dimension(width, height);
 		frame.setPreferredSize(preferredSize);
 
+		Integer[] items = new Integer[5];
+		items[0] = 1;
+		items[1] = 2;
+		items[2] = 3;
+		items[3] = 4;
+		items[4] = 5;
+		final JComboBox<Integer> comboBoxGrowSize = new JComboBox<>(items);
+		comboBoxGrowSize.setSelectedIndex(0);
+		comboBoxGrowSize.setMaximumRowCount(5);
+
+		final JLabel labelGrowSize = new JLabel("Snake Grow Size");
+		labelGrowSize.setLabelFor(comboBoxGrowSize);
+
 		JButton startLocalGame = createStartLocalGameButton();
 		JButton startLanGame = createStartLanGameButton();
 		final JTextField textFieldPlayerOne = createTextFieldPlayerOne();
@@ -99,6 +115,10 @@ public class GameConfigurator
 			}
 		});
 
+		JPanel configPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		configPanel.add(labelGrowSize);
+		configPanel.add(comboBoxGrowSize);
+
 		JPanel textFieldPanel = new JPanel(new FlowLayout());
 		textFieldPanel.add(textFieldPlayerOne);
 		textFieldPanel.add(textFieldPlayerTwo);
@@ -106,6 +126,7 @@ public class GameConfigurator
 		frame.add(textFieldPanel, BorderLayout.NORTH);
 		frame.add(startLocalGame, BorderLayout.WEST);
 		frame.add(startLanGame, BorderLayout.EAST);
+		frame.add(configPanel, BorderLayout.CENTER);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 	}
@@ -150,6 +171,7 @@ public class GameConfigurator
 
 	public void startLocalGame(String namePlayerOne, String namePlayerTwo)
 	{
+		GameController.SNAKE_GROW_SIZE = snakeGrowSize;
 		GameController gc = new GameController(namePlayerOne, namePlayerTwo);
 	}
 }

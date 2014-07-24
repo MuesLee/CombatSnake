@@ -41,7 +41,8 @@ public class GameController
 	public static final int DURATION_SPEEDBOOSTER = 5000;
 	public static final int DURATION_PHASEBOOSTER = 7700;
 	public static final int MAX_AMOUNT_OF_BOOSTER = 2;
-	private static final int BOOST_SPAWN_INTERVAL = 10000;
+	public static final int BOOST_SPAWN_INTERVAL = 10000;
+	public static int SNAKE_GROW_SIZE = 1;
 
 	private SnakePanel playground;
 	private JFrame frame;

@@ -2,6 +2,7 @@ package timoschwarz.snake.model;
 
 import java.util.LinkedList;
 
+import timoschwarz.snake.controller.GameController;
 import timoschwarz.snake.util.Diff;
 import timoschwarz.snake.util.Direction;
 
@@ -14,6 +15,8 @@ public class Snake
 	private boolean hasMovedAfterLastDirectionChange = false;
 	private int movementSpeed = 1;
 	private boolean phased = false;
+	private boolean isConsuming;
+	private int timesGrown = 0;
 
 	public Snake(int size, int startX, int startY)
 	{
@@ -56,6 +59,19 @@ public class Snake
 
 		SnakePiece tail = getTail();
 		moveSnakePieces(createHeadWithNextPosition(direction));
+
+		if (isConsuming && GameController.SNAKE_GROW_SIZE > timesGrown)
+		{
+			addTail(tail.x, tail.y);
+			timesGrown++;
+
+			if (GameController.SNAKE_GROW_SIZE == timesGrown)
+			{
+				timesGrown = 0;
+				isConsuming = false;
+			}
+		}
+
 		if (!consumedLoosePieces.isEmpty())
 		{
 			consumeLooseSnakePieces(tail);
@@ -73,6 +89,7 @@ public class Snake
 		final int looseY = first.getY();
 		if (x == looseX && y == looseY)
 		{
+			isConsuming = true;
 			addTail(looseX, looseY);
 			consumedLoosePieces.removeFirst();
 		}
