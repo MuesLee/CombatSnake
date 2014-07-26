@@ -25,19 +25,20 @@ import timoschwarz.snake.model.World;
 import timoschwarz.snake.model.WorldChanger;
 import timoschwarz.snake.util.KeyBindings;
 import timoschwarz.snake.util.VideoUtils;
-import timoschwarz.snake.util.WorldChangerTask;
+import timoschwarz.snake.util.WorldChangerEventTask;
 import timoschwarz.snake.view.SnakePanel;
 
 public class GameController {
 	public static final int POINTS_FOR_WORLDCHANGER_CONSUMPTION = 150;
 	private static final int DURATION_SOUND_WORLDCHANGER = 20000;
+	public static final int DEFAULT_GAME_SPEED = 100;
 	public static int SNAKE_SIZE = 15;
 	public static int paintSize = 15;
 	private static double MAX_PERCENTAGE_OF_SCREEN_SIZE = 0.7;
 	private static int AMOUNT_OF_LOOSE_SNAKEPIECES = 1;
 	private static int POINTS_FOR_FOOD_CONSUMPTION = 10;
 	private static int POINTS_FOR_BOOSTER_CONSUMPTION = 50;
-	private static int GAME_SPEED = 100;
+	public static int GAME_SPEED = 100;
 	private static int WORLD_SIZE_X = 50;
 	private static int WORLD_SIZE_Y = 50;
 
@@ -46,9 +47,10 @@ public class GameController {
 	public static String TEXT_BOTH_SNAKES_DEAD = "BOFS SNAIGS DED!!\nI CRI EVRYTIEM";
 	public static int DURATION_SPEEDBOOSTER = 5000;
 	public static int DURATION_PHASEBOOSTER = 7700;
+	public static final int WORLD_CHANGER_SPEED_INCREASE_DURATION = 15500;
 	public static int MAX_AMOUNT_OF_BOOSTER = 2;
 	public static int BOOST_SPAWN_INTERVAL = 10000;
-	public static int WORLDCHANGER_SPAWN_INTERVAL = 30000;
+	public static int WORLDCHANGER_SPAWN_INTERVAL = 45000;
 	public static int SNAKE_GROW_SIZE = 1;
 
 	private SnakePanel playground;
@@ -396,7 +398,7 @@ public class GameController {
 			java.util.Timer timer = new java.util.Timer();
 			Random random = new Random();
 			int delay = random.nextInt(DURATION_SOUND_WORLDCHANGER + 1);
-			timer.schedule(new WorldChangerTask(this, timer), delay);
+			timer.schedule(new WorldChangerEventTask(this, timer), delay);
 		}
 	}
 

@@ -3,26 +3,27 @@ package timoschwarz.snake.util;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import timoschwarz.snake.controller.GameController;
+import timoschwarz.snake.model.World;
+import timoschwarz.snake.model.WorldChanger;
 
-public class WorldChangerTask extends TimerTask
-{
+public class WorldChangerTask extends TimerTask {
 
-	private GameController world;
+	private WorldChanger worldChanger;
 	private Timer timer;
+	private World world;
 
-	public WorldChangerTask(GameController world, Timer timer)
-	{
-		this.world = world;
+	public WorldChangerTask(WorldChanger worldChanger, Timer timer, World world) {
+		super();
+		this.worldChanger = worldChanger;
 		this.timer = timer;
+		this.world = world;
 	}
 
 	@Override
-	public void run()
-	{
-		world.spawnNewWorldChanger();
-		System.out.println("TIMER SPAWNS!");
+	public void run() {
+		worldChanger.restoreWorld(world);
 		timer.cancel();
 		cancel();
 	}
+
 }
