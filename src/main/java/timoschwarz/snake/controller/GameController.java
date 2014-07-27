@@ -48,6 +48,7 @@ public class GameController {
 	public static int DURATION_SPEEDBOOSTER = 5000;
 	public static int DURATION_PHASEBOOSTER = 7700;
 	public static final int WORLD_CHANGER_SPEED_INCREASE_DURATION = 15500;
+	public static int PLAYERS_LIFES = 3;
 	public static int MAX_AMOUNT_OF_BOOSTER = 2;
 	public static int BOOST_SPAWN_INTERVAL = 10000;
 	public static int WORLDCHANGER_SPAWN_INTERVAL = 45000;
@@ -132,33 +133,29 @@ public class GameController {
 	 *            The victorious Snake
 	 */
 
-	public void endGame(Snake snake) {
-		gameIsActive = false;
-
-		stopTimer();
-
-		audioController.stopBackgroundMusic();
-
-		boolean gameEndedInADraw = false;
-		boolean gameEndedWithFailureOfPlayerTwo = false;
+	public void processFailureOfSnake(Snake snake) {
+		boolean bothSnakesFailed = false;
+		boolean failureOfPlayerTwo = false;
 
 		if (snake == null) {
-			gameEndedInADraw = true;
+			bothSnakesFailed = true;
 		} else if (snake == playerOne.getSnake()) {
-			gameEndedWithFailureOfPlayerTwo = true;
+			failureOfPlayerTwo = true;
 		}
-
-		String text = "";
 
 		Random random = new Random();
 
-		if (gameEndedInADraw) {
+		int lifesLeftPlayerTwo = 3;
+		int lifesLeftPlayerOne = 3;
+		if (bothSnakesFailed) {
 			audioController.playSound("comment_annoying");
-			text = TEXT_BOTH_SNAKES_DEAD;
-		} else if (gameEndedWithFailureOfPlayerTwo) {
+		} else if (failureOfPlayerTwo) {
 			audioController.playSound("comment_terminated");
+			lifesLeftPlayerTwo = playerTwo.getLifesLeft();
+			lifesLeftPlayerTwo--;
+			playerTwo.setLifesLeft(lifesLeftPlayerTwo);
 			int score = playerTwo.getScore()
-					/ random.nextInt(GameController.PENALTY_FOR_FAILURE) + 1;
+					/ (random.nextInt(GameController.PENALTY_FOR_FAILURE) + 1);
 			playerTwo.setScore(score);
 		} else {
 			// PLAYER ONE FAILED
@@ -166,7 +163,28 @@ public class GameController {
 			int score = playerOne.getScore()
 					/ (random.nextInt(GameController.PENALTY_FOR_FAILURE) + 1);
 			playerOne.setScore(score);
+			lifesLeftPlayerOne = playerOne.getLifesLeft();
+			lifesLeftPlayerOne--;
+			playerOne.setLifesLeft(lifesLeftPlayerOne);
 		}
+		updatePlayerScoreLabel();
+
+		if (lifesLeftPlayerTwo == -1 || lifesLeftPlayerOne == -1) {
+			endGame();
+		}
+
+	}
+
+	public void punishSnakeForHittingTheBounds(Snake snake) {
+
+	}
+
+	private void endGame() {
+		stopTimer();
+		gameIsActive = false;
+		String text = "";
+		audioController.stopBackgroundMusic();
+		// TODO Auto-generated method stub
 		Player playerWithHighestScore = getPlayerWithHighestScore();
 
 		if (playerWithHighestScore != null) {
@@ -275,6 +293,7 @@ public class GameController {
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		updatePlayerScoreLabel();
 	}
 
 	private JPanel createButtonPanel(JButton startButton, JButton resetButton) {
@@ -477,8 +496,10 @@ public class GameController {
 	}
 
 	private void updatePlayerScoreLabel() {
-		scorePlayerTwo.setText(getScoreTextForPlayer(playerTwo));
-		scorePlayerOne.setText(getScoreTextForPlayer(playerOne));
+		scorePlayerTwo.setText(getScoreTextForPlayer(playerTwo) + " Lifes: "
+				+ playerOne.getLifesLeft());
+		scorePlayerOne.setText(getScoreTextForPlayer(playerOne) + " Lifes: "
+				+ playerTwo.getLifesLeft());
 	}
 
 	public void updateLooseSnakePiecesOfCanvas() {

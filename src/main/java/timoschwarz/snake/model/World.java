@@ -204,11 +204,11 @@ public class World
 
 		if (snakeOneIsOutOfBounds)
 		{
-			controller.endGame(snakeTwo);
+			controller.processFailureOfSnake(snakeTwo);
 		}
 		else if (snakeTwoIsOutOfBounds)
 		{
-			controller.endGame(snakeOne);
+			controller.processFailureOfSnake(snakeOne);
 		}
 
 	}
@@ -317,15 +317,15 @@ public class World
 
 		if (collisionSnakeOneWithSnakeTwo && collisionSnakeTwoWithSnakeOne)
 		{
-			controller.endGame(null);
+			controller.processFailureOfSnake(null);
 		}
 		else if (collisionSnakeOneWithItself || collisionSnakeOneWithSnakeTwo)
 		{
-			controller.endGame(snakes.get(1));
+			controller.processFailureOfSnake(snakes.get(1));
 		}
 		else if (collisionSnakeTwoWithItself || collisionSnakeTwoWithSnakeOne)
 		{
-			controller.endGame(snakes.get(0));
+			controller.processFailureOfSnake(snakes.get(0));
 		}
 
 	}
