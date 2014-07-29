@@ -8,6 +8,8 @@ import java.util.Random;
 import timoschwarz.snake.controller.GameController;
 import timoschwarz.snake.util.BoostFactory;
 import timoschwarz.snake.util.BoostType;
+import timoschwarz.snake.util.Diff;
+import timoschwarz.snake.util.Direction;
 import timoschwarz.snake.util.WorldChangerFactory;
 import timoschwarz.snake.util.WorldChangerType;
 
@@ -195,22 +197,14 @@ public class World
 
 	private void checkForOutOfBounds()
 	{
-
-		Snake snakeOne = snakes.get(0);
-		Snake snakeTwo = snakes.get(1);
-
-		boolean snakeOneIsOutOfBounds = checkForOutOfBoundsForSnake(snakeOne);
-		boolean snakeTwoIsOutOfBounds = checkForOutOfBoundsForSnake(snakeTwo);
-
-		if (snakeOneIsOutOfBounds)
+		for (Snake snake : snakes)
 		{
-			controller.processFailureOfSnake(snakeTwo);
+			if (checkForOutOfBoundsForSnake(snake))
+			{
+				controller.punishSnakeForHittingTheBounds(snake);
+				controller.processFailureOfSnake(snake);
+			}
 		}
-		else if (snakeTwoIsOutOfBounds)
-		{
-			controller.processFailureOfSnake(snakeOne);
-		}
-
 	}
 
 	private boolean checkForOutOfBoundsForSnake(Snake snake)
@@ -246,14 +240,19 @@ public class World
 
 	private boolean coordinatesAreFree(int randomX, int randomY)
 	{
-		Snake snakeOne = snakes.get(0);
-		Snake snakeTwo = snakes.get(1);
-
-		if (looseSnakePieceOrBoosterBlocksCoordinates(randomX, randomY)
-			|| snakeOne.snakeBlocksCoordinates(randomX, randomY) || snakeTwo.snakeBlocksCoordinates(randomX, randomY))
+		if (looseSnakePieceOrBoosterBlocksCoordinates(randomX, randomY))
 		{
 			return false;
 		}
+
+		for (Snake snake : snakes)
+		{
+			if (snake.snakeBlocksCoordinates(randomX, randomY))
+			{
+				return false;
+			}
+		}
+
 		return true;
 	}
 
@@ -281,6 +280,8 @@ public class World
 
 	private void checkForSnakeCollisions()
 	{
+		//TODO Refactoring
+
 		Snake snakeOne = snakes.get(0);
 		Snake snakeTwo = snakes.get(1);
 
@@ -409,6 +410,33 @@ public class World
 	public void setWorldChangers(List<WorldChanger> worldChangers)
 	{
 		this.worldChangers = worldChangers;
+	}
+
+	public void moveWholeSnakeAgainstCurrentDirection(Snake snake, int units)
+	{
+		Direction direction = snake.getDirection();
+		Direction opposite = null;
+		Direction[] values = Direction.values();
+		for (int i = 0; i < values.length; i++)
+		{
+			opposite = values[i];
+			if (opposite.isOppositeOf(direction))
+			{
+				break;
+			}
+		}
+		shiftWholeSnakeIntoDirection(snake, opposite, units);
+
+	}
+
+	public void shiftWholeSnakeIntoDirection(Snake snake, Direction direction, int units)
+	{
+		Diff difForDirection = direction.getDifForDirection();
+		for (Piece piece : snake.getSnakePieces())
+		{
+			piece.x += difForDirection.getDifX() * units;
+			piece.y += difForDirection.getDifY() * units;
+		}
 	}
 
 }

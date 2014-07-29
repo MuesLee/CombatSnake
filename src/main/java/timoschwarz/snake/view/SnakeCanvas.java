@@ -1,5 +1,6 @@
 package timoschwarz.snake.view;
 
+import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -10,9 +11,11 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import timoschwarz.snake.controller.GameController;
 import timoschwarz.snake.model.Boost;
+import timoschwarz.snake.model.Coordinates;
 import timoschwarz.snake.model.Piece;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.SnakePiece;
@@ -45,7 +48,9 @@ public class SnakeCanvas extends Canvas
 	private Image backBuffer;
 	private Graphics bBG;
 	private BufferedImage overlayImage;
-	private boolean paintWorldChangerEvent = false;
+
+	private Random random = new Random();
+	private List<Lightning> lightnings = new ArrayList<Lightning>();
 
 	public SnakeCanvas(GameController controller, SnakePanel panel, int width, int height, int paintSize)
 	{
@@ -97,9 +102,10 @@ public class SnakeCanvas extends Canvas
 	{
 		Graphics2D g2d = (Graphics2D) g;
 		applyRenderHints(g2d);
-		g2d.clearRect(0, 0, width, height);
+		g2d.setColor(Color.BLACK);
+		g2d.fillRect(0, 0, width, height);
 		drawEntitiesToScreen(g2d);
-		//paintWorldChangerSpawn(g2d);
+		//paintLightning(g2d);
 	}
 
 	private void drawEntitiesToScreen(Graphics2D graphics)
@@ -148,6 +154,38 @@ public class SnakeCanvas extends Canvas
 			graphics.fillRect(e.getX() * paintSize, e.getY() * paintSize, paintSize, paintSize);
 		}
 
+	}
+
+	private void paintLightning(Graphics g)
+	{
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setColor(Color.YELLOW);
+
+		for (Lightning lightning : lightnings)
+		{
+			if (lightning.isDone())
+			{
+				System.out.println("done");
+				continue;
+			}
+
+			List<LightningSegment> segments = lightning.getSegments();
+
+			for (LightningSegment lightningSegment : segments)
+			{
+
+				g2d.setStroke(new BasicStroke(3F));
+
+				final Coordinates start = lightningSegment.getStart();
+				final Coordinates end = lightningSegment.getEnd();
+
+				if (lightningSegment.isTrunk())
+				{
+					g2d.setStroke(new BasicStroke(6F));
+				}
+				g2d.drawLine(start.getX(), start.getY(), end.getX(), end.getY());
+			}
+		}
 	}
 
 	private Color getColorForSnake(int i)
@@ -235,22 +273,22 @@ public class SnakeCanvas extends Canvas
 		this.worldChangers = worldChangers;
 	}
 
-	public void paintWorldChangerSpawn(Graphics g)
+	public void addLightning(int x, int y)
 	{
-		if (isPaintWorldChangerEvent())
-		{
-			g.drawImage(overlayImage, 0, 0, null);
-		}
+		Lightning seg = new Lightning(new Coordinates(x, 0), new Coordinates(x, y));
+		lightnings.add(seg);
 	}
 
-	public boolean isPaintWorldChangerEvent()
+	public void clearLightnings()
 	{
-		return paintWorldChangerEvent;
+		lightnings.clear();
 	}
 
-	public void setPaintWorldChangerEvent(boolean paintWorldChangerEvent)
+	public void addRandomLightning()
 	{
-		this.paintWorldChangerEvent = paintWorldChangerEvent;
+		int y = random.nextInt(height);
+		int x = random.nextInt(width);
+		addLightning(x, y);
 	}
 
 }
