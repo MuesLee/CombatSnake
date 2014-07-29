@@ -26,6 +26,8 @@ import timoschwarz.snake.model.WorldChanger;
 import timoschwarz.snake.util.KeyBindings;
 import timoschwarz.snake.util.VideoUtils;
 import timoschwarz.snake.util.WorldChangerEventTask;
+import timoschwarz.snake.view.Clock;
+import timoschwarz.snake.view.GameFrame;
 import timoschwarz.snake.view.SnakePanel;
 
 public class GameController
@@ -60,7 +62,7 @@ public class GameController
 	public static int SNAKE_GROW_SIZE = 1;
 
 	private SnakePanel playground;
-	private JFrame frame;
+	private GameFrame frame;
 
 	private AudioController audioController;
 
@@ -79,7 +81,7 @@ public class GameController
 	private boolean worldChangerEventIsRunning = false;
 	public static int PENALTY_FOR_FAILURE = 4;
 	private KeyBindings keyBindings;
-	private int nEW_LIGHTNING_SPAWN;
+	private Clock clock;
 
 	public GameController(String namePlayerOne, String namePlayerTwo)
 	{
@@ -92,7 +94,7 @@ public class GameController
 
 		this.setPlayerOne(new Player(namePlayerOne));
 		this.setPlayerTwo(new Player(namePlayerTwo));
-		this.frame = new JFrame("COMBAT SNAKEZ!!!111");
+		this.frame = new GameFrame("COMBAT SNAKEZ!!!111");
 		Snake snakeOne = new Snake(SNAKE_SIZE, SNAKE_SIZE, 0);
 		Snake snakeTwo = new Snake(SNAKE_SIZE, SNAKE_SIZE, WORLD_SIZE_Y);
 
@@ -105,9 +107,37 @@ public class GameController
 
 		this.world = new World(snakes, this, WORLD_SIZE_X, WORLD_SIZE_Y);
 		this.playground = new SnakePanel(this, WORLD_SIZE_X * paintSize, WORLD_SIZE_Y * paintSize, paintSize);
-		playground.getCanvas().setSnakes(snakes);
+
+		System.out.println(WORLD_SIZE_X);
+		System.out.println(paintSize);
+		System.out.println(WORLD_SIZE_X * paintSize);
+		playground.setSnakes(snakes);
 		keyBindings = new KeyBindings(playground);
 		configureFrame();
+	}
+
+	private void configureFrame()
+	{
+		JPanel scorePanel = createScorePanel();
+		JButton startButton = createStartButton();
+		JButton resetButton = createResetButton();
+		JPanel buttonPanel = createButtonPanel(startButton, resetButton);
+		Dimension size = playground.getSize();
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setSize(size.height, size.width);
+		frame.setLayout(new BorderLayout());
+		frame.setResizable(true);
+		frame.add(playground, BorderLayout.CENTER);
+		frame.add(buttonPanel, BorderLayout.SOUTH);
+		frame.add(scorePanel, BorderLayout.NORTH);
+		frame.setVisible(true);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		clock = new Clock(60);
+		frame.setClock(clock);
+		updatePlayerScoreLabel();
+		System.out.println(playground.getPreferredSize());
+		System.out.println(playground.getSize());
 	}
 
 	private void initGame(String namePlayerOne, String namePlayerTwo)
@@ -118,7 +148,6 @@ public class GameController
 			boostTimer.stop();
 		}
 		prepareStartOfGame(namePlayerOne, namePlayerTwo);
-
 	}
 
 	private void calculatePaintSize()
@@ -201,7 +230,6 @@ public class GameController
 		gameIsActive = false;
 		String text = "";
 		audioController.stopBackgroundMusic();
-		// TODO Auto-generated method stub
 		Player playerWithHighestScore = getPlayerWithHighestScore();
 
 		if (playerWithHighestScore != null)
@@ -251,7 +279,7 @@ public class GameController
 			@Override
 			public void run()
 			{
-				playground.gameLoop();
+				clock.start();
 			}
 
 		});
@@ -311,26 +339,6 @@ public class GameController
 			snakeTwo.move(i);
 			world.checkForCollisions();
 		}
-	}
-
-	private void configureFrame()
-	{
-		JPanel scorePanel = createScorePanel();
-		JButton startButton = createStartButton();
-		JButton resetButton = createResetButton();
-		JPanel buttonPanel = createButtonPanel(startButton, resetButton);
-		Dimension size = playground.getSize();
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setSize(size.height, size.width);
-		frame.setLayout(new BorderLayout());
-		frame.setResizable(false);
-		frame.add(playground, BorderLayout.CENTER);
-		frame.add(buttonPanel, BorderLayout.SOUTH);
-		frame.add(scorePanel, BorderLayout.NORTH);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-		updatePlayerScoreLabel();
 	}
 
 	private JPanel createButtonPanel(JButton startButton, JButton resetButton)
@@ -488,7 +496,7 @@ public class GameController
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				playground.getCanvas().addRandomLightning();
+				playground.addRandomLightning();
 			}
 
 		});
@@ -502,7 +510,7 @@ public class GameController
 		int x = worldChanger.getX();
 		int y = worldChanger.getY();
 
-		playground.getCanvas().addLightning(x, y);
+		playground.addLightning(x, y);
 	}
 
 	public void spawnNewWorldChanger()
@@ -511,14 +519,14 @@ public class GameController
 		spawnLightningWhichStrikesIntoWorldChanger();
 		updateWorldChangerOfCanvas();
 		setWorldChangerEventIsRunning(false);
-		playground.getCanvas().clearLightnings();
+		playground.clearLightnings();
 		lightningTimer.stop();
 		lightningTimer = null;
 	}
 
 	private void updateWorldChangerOfCanvas()
 	{
-		playground.getCanvas().updateWorldChangerEntities();
+		playground.updateWorldChangerEntities();
 
 	}
 
@@ -538,10 +546,10 @@ public class GameController
 
 		if (booster.isEmpty())
 		{
-			playground.getCanvas().clearBooster();
+			playground.clearBooster();
 			return;
 		}
-		playground.getCanvas().updateBooster(booster);
+		playground.updateBooster(booster);
 	}
 
 	private void initLooseSnakePieces()
@@ -551,7 +559,7 @@ public class GameController
 		{
 			world.createNewLooseSnakePiece();
 		}
-		playground.getCanvas().setLooseSnakePieces(world.getLooseSnakePieces());
+		playground.setLooseSnakePieces(world.getLooseSnakePieces());
 
 	}
 
@@ -602,7 +610,7 @@ public class GameController
 
 	public void updateLooseSnakePiecesOfCanvas()
 	{
-		playground.getCanvas().updateLooseSnakePieceEntities();
+		playground.updateLooseSnakePieceEntities();
 	}
 
 	private int calculatePointsForGrowing(Snake snake)
