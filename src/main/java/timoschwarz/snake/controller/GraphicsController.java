@@ -32,7 +32,7 @@ public class GraphicsController
 
 	public BufferedImage createLightningImage()
 	{
-		URL systemResourceAsStream = ClassLoader.getSystemResource(prop.getProperty("lightning"));
+		URL systemResourceAsStream = getImageAsURL("lightning");
 		BufferedImage read = null;
 		try
 		{
@@ -44,5 +44,10 @@ public class GraphicsController
 		}
 
 		return read;
+	}
+
+	public URL getImageAsURL(String name)
+	{
+		return ClassLoader.getSystemResource(prop.getProperty(name));
 	}
 }

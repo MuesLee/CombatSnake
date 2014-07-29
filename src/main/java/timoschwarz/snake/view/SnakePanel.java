@@ -68,17 +68,15 @@ public class SnakePanel extends JPanel
 		setPreferredSize(getPreferredSize());
 		setMinimumSize(getPreferredSize());
 		setBorder(BorderFactory.createLineBorder(Color.RED, BORDER_THICKNESS));
-
 		this.paintSize = paintSize;
 		this.controller = controller;
-
+		setIgnoreRepaint(true);
 		this.setBooster(new ArrayList<Boost>());
 		this.looseSnakePieces = new ArrayList<Piece>();
 		this.setSnakes(new ArrayList<Snake>());
 		this.setWorldChangers(new ArrayList<WorldChanger>());
 		setBackground(Color.black);
 		setVisible(true);
-		System.out.println(getSize());
 	}
 
 	@Override
@@ -117,7 +115,8 @@ public class SnakePanel extends JPanel
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(0, 0, width, height);
 		drawEntitiesToScreen(g2d);
-		//paintLightning(g2d);
+		drawLightning(g2d);
+		drawFPS(g2d);
 	}
 
 	private void drawEntitiesToScreen(Graphics2D graphics)
@@ -142,7 +141,6 @@ public class SnakePanel extends JPanel
 				}
 				else
 				{
-					System.out.println("VIEW:  X:" + piece.getX() * paintSize + " Y:" + piece.getY() * paintSize);
 					graphics.fillRect(piece.getX() * paintSize, piece.getY() * paintSize, paintSize, paintSize);
 				}
 			}
@@ -170,7 +168,7 @@ public class SnakePanel extends JPanel
 
 	}
 
-	private void paintLightning(Graphics g)
+	private void drawLightning(Graphics g)
 	{
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(Color.YELLOW);
@@ -303,6 +301,12 @@ public class SnakePanel extends JPanel
 		int y = random.nextInt(height);
 		int x = random.nextInt(width);
 		addLightning(x, y);
+	}
+
+	private void drawFPS(Graphics g)
+	{
+		g.setColor(Color.GREEN);
+		g.drawString("FPS: " + GameController.REAL_FPS, BORDER_THICKNESS, BORDER_THICKNESS + 5);
 	}
 
 	void drawGame()

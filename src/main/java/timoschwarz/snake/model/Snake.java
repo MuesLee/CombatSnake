@@ -53,9 +53,6 @@ public class Snake
 
 	public void move(int i)
 	{
-
-		System.out.println("WORLD: X:" + getHead().getX() + " y: " + getHead().getY());
-
 		if (i >= movementSpeed)
 		{
 			return;

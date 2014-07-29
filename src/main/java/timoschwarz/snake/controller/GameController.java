@@ -3,6 +3,8 @@ package timoschwarz.snake.controller;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -10,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -65,6 +68,7 @@ public class GameController
 	private GameFrame frame;
 
 	private AudioController audioController;
+	private GraphicsController graphicsController;
 
 	private Player playerOne;
 	private Player playerTwo;
@@ -80,8 +84,11 @@ public class GameController
 	private JLabel scorePlayerTwo;
 	private boolean worldChangerEventIsRunning = false;
 	public static int PENALTY_FOR_FAILURE = 4;
+	public static int REAL_FPS = 0;
 	private KeyBindings keyBindings;
 	private Clock clock;
+	private JLabel lifesPlayerOne;
+	private JLabel lifesPlayerTwo;
 
 	public GameController(String namePlayerOne, String namePlayerTwo)
 	{
@@ -94,6 +101,7 @@ public class GameController
 
 		this.setPlayerOne(new Player(namePlayerOne));
 		this.setPlayerTwo(new Player(namePlayerTwo));
+		this.graphicsController = new GraphicsController();
 		this.frame = new GameFrame("COMBAT SNAKEZ!!!111");
 		Snake snakeOne = new Snake(SNAKE_SIZE, SNAKE_SIZE, 0);
 		Snake snakeTwo = new Snake(SNAKE_SIZE, SNAKE_SIZE, WORLD_SIZE_Y);
@@ -108,9 +116,6 @@ public class GameController
 		this.world = new World(snakes, this, WORLD_SIZE_X, WORLD_SIZE_Y);
 		this.playground = new SnakePanel(this, WORLD_SIZE_X * paintSize, WORLD_SIZE_Y * paintSize, paintSize);
 
-		System.out.println(WORLD_SIZE_X);
-		System.out.println(paintSize);
-		System.out.println(WORLD_SIZE_X * paintSize);
 		playground.setSnakes(snakes);
 		keyBindings = new KeyBindings(playground);
 		configureFrame();
@@ -136,8 +141,6 @@ public class GameController
 		clock = new Clock(60);
 		frame.setClock(clock);
 		updatePlayerScoreLabel();
-		System.out.println(playground.getPreferredSize());
-		System.out.println(playground.getSize());
 	}
 
 	private void initGame(String namePlayerOne, String namePlayerTwo)
@@ -220,6 +223,7 @@ public class GameController
 
 	public void punishSnakeForHittingTheBounds(Snake snake)
 	{
+		audioController.playSound("snakeHitsBounds");
 		world.moveWholeSnakeAgainstCurrentDirection(snake, BOUNCE_FROM_BOUNDS_DISTANCE);
 	}
 
@@ -387,12 +391,41 @@ public class GameController
 	{
 		String textPlayerOne = getScoreTextForPlayer(playerOne);
 		String textPlayerTwo = getScoreTextForPlayer(playerTwo);
-		JPanel scorePanel = new JPanel();
+
+		ImageIcon icon = new ImageIcon(graphicsController.getImageAsURL("pixelHeart"));
+		icon.setImage(icon.getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+
+		lifesPlayerOne = new JLabel(icon);
+		lifesPlayerTwo = new JLabel(icon);
 		scorePlayerOne = new JLabel(textPlayerOne);
 		scorePlayerTwo = new JLabel(textPlayerTwo);
-		scorePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-		scorePanel.add(scorePlayerOne);
-		scorePanel.add(scorePlayerTwo);
+		lifesPlayerOne.setText(":" + playerOne.getLifesLeft());
+		lifesPlayerTwo.setText(":" + playerTwo.getLifesLeft());
+
+		JPanel scorePanel = new JPanel();
+		JPanel scorePanelPlayerOne = new JPanel();
+		JPanel scorePanelPlayerTwo = new JPanel();
+
+		Font font = getFontForScores();
+		lifesPlayerOne.setFont(font);
+		lifesPlayerTwo.setFont(font);
+		scorePlayerOne.setFont(font);
+		scorePlayerTwo.setFont(font);
+
+		scorePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 100, 0));
+
+		scorePanelPlayerOne.setLayout(new FlowLayout(FlowLayout.LEADING));
+		scorePanelPlayerTwo.setLayout(new FlowLayout(FlowLayout.TRAILING));
+
+		scorePanelPlayerOne.add(lifesPlayerOne);
+		scorePanelPlayerOne.add(scorePlayerOne);
+
+		scorePanelPlayerTwo.add(lifesPlayerTwo);
+		scorePanelPlayerTwo.add(scorePlayerTwo);
+
+		scorePanel.add(scorePanelPlayerOne);
+		scorePanel.add(scorePanelPlayerTwo);
+
 		return scorePanel;
 	}
 
@@ -604,8 +637,16 @@ public class GameController
 
 	private void updatePlayerScoreLabel()
 	{
-		scorePlayerTwo.setText(getScoreTextForPlayer(playerTwo) + " Lifes: " + playerTwo.getLifesLeft());
-		scorePlayerOne.setText(getScoreTextForPlayer(playerOne) + " Lifes: " + playerOne.getLifesLeft());
+		scorePlayerTwo.setText(getScoreTextForPlayer(playerTwo));
+		scorePlayerOne.setText(getScoreTextForPlayer(playerOne));
+		lifesPlayerOne.setText(": " + playerOne.getLifesLeft());
+		lifesPlayerTwo.setText(": " + playerTwo.getLifesLeft());
+	}
+
+	public Font getFontForScores()
+	{
+		return new Font("ScoreFont", Font.PLAIN, 15);
+
 	}
 
 	public void updateLooseSnakePiecesOfCanvas()
@@ -667,6 +708,12 @@ public class GameController
 	{
 		GraphicsController graphicsController = new GraphicsController();
 		return graphicsController.createLightningImage();
+	}
+
+	public void punishSnakeForHittingSnake(Snake snakeTwo)
+	{
+		audioController.playSound("snakeHitsSnake");
+
 	}
 
 }

@@ -322,11 +322,13 @@ public class World
 		}
 		else if (collisionSnakeOneWithItself || collisionSnakeOneWithSnakeTwo)
 		{
-			controller.processFailureOfSnake(snakes.get(1));
+			controller.processFailureOfSnake(snakeTwo);
+			controller.punishSnakeForHittingSnake(snakeTwo);
 		}
 		else if (collisionSnakeTwoWithItself || collisionSnakeTwoWithSnakeOne)
 		{
-			controller.processFailureOfSnake(snakes.get(0));
+			controller.processFailureOfSnake(snakeOne);
+			controller.punishSnakeForHittingSnake(snakeOne);
 		}
 
 	}
