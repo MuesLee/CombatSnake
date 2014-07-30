@@ -55,13 +55,13 @@ public class GameController
 	public static int DURATION_PHASEBOOSTER = 7700;
 	public static final int WORLD_CHANGER_SPEED_INCREASE_DURATION = 15500;
 	public static final int BOUNCE_FROM_BOUNDS_DISTANCE = 2;
-	public static final int MAX_LIGHTNING_GENERATIONS = 3;
+	public static final int MAX_LIGHTNING_GENERATIONS = 5;
 	public static final int REPAINTS_TILL_NEXT_GENERATIONS_OF_LIGHTNINGS = 20;
 	private static final int NEW_LIGHTNING_SPAWN_INTERVAL = 2000;
 	public static int PLAYERS_LIFES = 3;
 	public static int MAX_AMOUNT_OF_BOOSTER = 2;
 	public static int BOOST_SPAWN_INTERVAL = 10000;
-	public static int WORLDCHANGER_SPAWN_INTERVAL = 40000;
+	public static int WORLDCHANGER_SPAWN_INTERVAL = 4000;
 	public static int SNAKE_GROW_SIZE = 1;
 
 	private SnakePanel playground;
@@ -431,7 +431,7 @@ public class GameController
 
 	private String getScoreTextForPlayer(Player player)
 	{
-		String scoreText = player.getName() + ": " + player.getScore();
+		String scoreText = player.getName() + " Score: " + player.getScore();
 		return scoreText;
 	}
 

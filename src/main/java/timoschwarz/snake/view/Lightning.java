@@ -14,6 +14,7 @@ public class Lightning
 	private int offsetY = 5;
 	private Random random = new Random();
 	private int generation = 0;
+	private int frameCount = 0;
 
 	public Lightning(Coordinates start, Coordinates end)
 	{
@@ -146,5 +147,20 @@ public class Lightning
 	public void setGeneration(int generation)
 	{
 		this.generation = generation;
+	}
+
+	public int getFrameCount()
+	{
+		return frameCount;
+	}
+
+	public void setFrameCount(int frameCount)
+	{
+		this.frameCount = frameCount;
+	}
+
+	public void increaseFrameCount()
+	{
+		this.frameCount++;
 	}
 }

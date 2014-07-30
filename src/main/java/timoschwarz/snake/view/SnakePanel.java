@@ -177,7 +177,6 @@ public class SnakePanel extends JPanel
 		{
 			if (lightning.isDone())
 			{
-				System.out.println("done");
 				continue;
 			}
 
@@ -196,6 +195,12 @@ public class SnakePanel extends JPanel
 					g2d.setStroke(new BasicStroke(6F));
 				}
 				g2d.drawLine(start.getX(), start.getY(), end.getX(), end.getY());
+			}
+
+			lightning.increaseFrameCount();
+			if (lightning.getFrameCount() % 10 == 0)
+			{
+				lightning.nextGeneration();
 			}
 		}
 	}
