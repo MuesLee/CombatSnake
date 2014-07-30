@@ -1,8 +1,8 @@
 package timoschwarz.snake.util;
 
-import timoschwarz.snake.model.FoodExplosion;
-import timoschwarz.snake.model.GameSpeedIncrease;
-import timoschwarz.snake.model.WorldChanger;
+import timoschwarz.snake.model.boosts.FoodExplosion;
+import timoschwarz.snake.model.boosts.GameSpeedIncrease;
+import timoschwarz.snake.model.boosts.WorldChanger;
 
 public class WorldChangerFactory {
 

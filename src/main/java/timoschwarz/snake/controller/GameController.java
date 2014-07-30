@@ -20,13 +20,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import timoschwarz.snake.model.Boost;
 import timoschwarz.snake.model.Piece;
 import timoschwarz.snake.model.Player;
-import timoschwarz.snake.model.RuleSet;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.World;
-import timoschwarz.snake.model.WorldChanger;
+import timoschwarz.snake.model.boosts.Boost;
+import timoschwarz.snake.model.boosts.WorldChanger;
+import timoschwarz.snake.model.rules.RuleSet;
 import timoschwarz.snake.util.KeyBindings;
 import timoschwarz.snake.util.VideoUtils;
 import timoschwarz.snake.util.WorldChangerEventTask;

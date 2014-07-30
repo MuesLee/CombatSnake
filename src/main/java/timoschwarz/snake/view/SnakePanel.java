@@ -19,12 +19,12 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import timoschwarz.snake.controller.GameController;
-import timoschwarz.snake.model.Boost;
 import timoschwarz.snake.model.Coordinates;
 import timoschwarz.snake.model.Piece;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.SnakePiece;
-import timoschwarz.snake.model.WorldChanger;
+import timoschwarz.snake.model.boosts.Boost;
+import timoschwarz.snake.model.boosts.WorldChanger;
 
 public class SnakePanel extends JPanel
 {
@@ -343,7 +343,6 @@ public class SnakePanel extends JPanel
 						e.printStackTrace();
 					}
 				}
-
 			}
 		});
 

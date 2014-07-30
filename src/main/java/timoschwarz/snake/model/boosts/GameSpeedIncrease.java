@@ -1,10 +1,12 @@
-package timoschwarz.snake.model;
+package timoschwarz.snake.model.boosts;
 
 import java.awt.Color;
 import java.awt.Image;
 import java.util.Timer;
 
 import timoschwarz.snake.controller.GameController;
+import timoschwarz.snake.model.Piece;
+import timoschwarz.snake.model.World;
 import timoschwarz.snake.util.WorldChangerTask;
 
 public class GameSpeedIncrease extends Piece implements WorldChanger {

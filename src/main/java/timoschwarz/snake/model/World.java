@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Random;
 
 import timoschwarz.snake.controller.GameController;
+import timoschwarz.snake.model.boosts.Boost;
+import timoschwarz.snake.model.boosts.WorldChanger;
 import timoschwarz.snake.util.BoostFactory;
 import timoschwarz.snake.util.BoostType;
 import timoschwarz.snake.util.Diff;

@@ -1,8 +1,10 @@
-package timoschwarz.snake.model;
+package timoschwarz.snake.model.rules;
 
 import java.util.Random;
 
 import timoschwarz.snake.controller.GameController;
+import timoschwarz.snake.model.Player;
+import timoschwarz.snake.model.Snake;
 
 public class DefaultGameRules implements RuleSet
 {

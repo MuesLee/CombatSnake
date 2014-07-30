@@ -1,4 +1,4 @@
-package timoschwarz.snake.controller;
+package timoschwarz.snake.configurator;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,7 +16,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import timoschwarz.snake.model.DefaultGameRules;
+import timoschwarz.snake.controller.GameController;
+import timoschwarz.snake.controller.LANController;
+import timoschwarz.snake.model.rules.DefaultGameRules;
 import timoschwarz.snake.util.VideoUtils;
 
 public class GameConfigurator

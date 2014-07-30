@@ -2,7 +2,7 @@ package timoschwarz.snake.main;
 
 import javax.swing.UIManager;
 
-import timoschwarz.snake.controller.GameConfigurator;
+import timoschwarz.snake.configurator.GameConfigurator;
 
 public class Main
 {

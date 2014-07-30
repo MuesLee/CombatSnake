@@ -3,8 +3,8 @@ package timoschwarz.snake.util;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import timoschwarz.snake.model.Boost;
 import timoschwarz.snake.model.Snake;
+import timoschwarz.snake.model.boosts.Boost;
 
 public class SnakeTask extends TimerTask
 {

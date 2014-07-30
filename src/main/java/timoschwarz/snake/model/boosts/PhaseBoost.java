@@ -1,10 +1,12 @@
-package timoschwarz.snake.model;
+package timoschwarz.snake.model.boosts;
 
 import java.awt.Color;
 import java.awt.Image;
 import java.util.Timer;
 
 import timoschwarz.snake.controller.GameController;
+import timoschwarz.snake.model.Piece;
+import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.util.SnakeTask;
 
 public class PhaseBoost extends Piece implements Boost

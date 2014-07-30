@@ -9,8 +9,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import timoschwarz.snake.model.DefaultGameRules;
+import timoschwarz.snake.configurator.LANConfigurator;
 import timoschwarz.snake.model.Player;
+import timoschwarz.snake.model.rules.DefaultGameRules;
 import timoschwarz.snake.util.Direction;
 import timoschwarz.snake.util.OPCode;
 

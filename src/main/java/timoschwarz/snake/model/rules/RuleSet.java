@@ -1,6 +1,8 @@
-package timoschwarz.snake.model;
+package timoschwarz.snake.model.rules;
 
 import timoschwarz.snake.controller.GameController;
+import timoschwarz.snake.model.Player;
+import timoschwarz.snake.model.Snake;
 
 public interface RuleSet
 {

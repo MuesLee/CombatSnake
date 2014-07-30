@@ -1,7 +1,10 @@
-package timoschwarz.snake.model;
+package timoschwarz.snake.model.boosts;
 
 import java.awt.Color;
 import java.awt.Image;
+
+import timoschwarz.snake.model.Piece;
+import timoschwarz.snake.model.Snake;
 
 public class GrowBoost extends Piece implements Boost
 {
