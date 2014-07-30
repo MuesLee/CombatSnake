@@ -8,6 +8,8 @@ import timoschwarz.snake.model.Snake;
 
 public class DefaultGameRules implements RuleSet
 {
+	private static int VARIABLE_PENALTY_FOR_FAILURE = 4;
+	private static int STATIC_PENALTY_FOR_FAILURE = 4;
 	private static int BOUNCE_FROM_BOUNDS_DISTANCE = 2;
 	private static int POINTS_FOR_FOOD_CONSUMPTION = 10;
 	private static int POINTS_FOR_BOOSTER_CONSUMPTION = 50;
@@ -67,26 +69,16 @@ public class DefaultGameRules implements RuleSet
 	@Override
 	public void processFailureOfSnake(Player player, GameController controller)
 	{
-		Random random = new Random();
-
 		if (player == null)
 		{
 			Player playerTwo = controller.getPlayerTwo();
 			Player playerOne = controller.getPlayerOne();
 
-			int lifesLeftPlayerTwo = playerTwo.getLifesLeft();
-			lifesLeftPlayerTwo--;
-			playerTwo.setLifesLeft(lifesLeftPlayerTwo);
-			int score = playerTwo.getScore() / (random.nextInt(GameController.PENALTY_FOR_FAILURE) + 1);
-			playerTwo.setScore(score);
+			applyPenaltyToPlayer(playerOne);
 
-			score = playerOne.getScore() / (random.nextInt(GameController.PENALTY_FOR_FAILURE) + 1);
-			playerOne.setScore(score);
-			int lifesLeftPlayerOne = playerOne.getLifesLeft();
-			lifesLeftPlayerOne--;
-			playerOne.setLifesLeft(lifesLeftPlayerOne);
+			applyPenaltyToPlayer(playerTwo);
 
-			if (lifesLeftPlayerTwo == 0 || lifesLeftPlayerOne == 0)
+			if (playerOne.getLifesLeft() == 0 || playerTwo.getLifesLeft() == 0)
 			{
 				controller.updatePlayerScoreLabel();
 				controller.endGame();
@@ -94,13 +86,9 @@ public class DefaultGameRules implements RuleSet
 		}
 		else
 		{
-			int lifesLeft = player.getLifesLeft();
-			lifesLeft--;
-			player.setLifesLeft(lifesLeft);
-			int score = player.getScore() / (random.nextInt(GameController.PENALTY_FOR_FAILURE) + 1);
-			player.setScore(score);
+			applyPenaltyToPlayer(player);
 
-			if (lifesLeft == 0)
+			if (player.getLifesLeft() == 0)
 			{
 				controller.updatePlayerScoreLabel();
 				controller.endGame();
@@ -108,6 +96,17 @@ public class DefaultGameRules implements RuleSet
 		}
 
 		controller.updatePlayerScoreLabel();
-
 	}
+
+	private void applyPenaltyToPlayer(Player player)
+	{
+		Random random = new Random();
+
+		int lifesLeft = player.getLifesLeft();
+		lifesLeft--;
+		player.setLifesLeft(lifesLeft);
+		int score = player.getScore() / (random.nextInt(VARIABLE_PENALTY_FOR_FAILURE) + 1) - STATIC_PENALTY_FOR_FAILURE;
+		player.setScore(score);
+	}
+
 }

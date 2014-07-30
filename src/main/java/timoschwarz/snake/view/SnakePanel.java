@@ -57,8 +57,8 @@ public class SnakePanel extends JPanel
 
 	public static AtomicBoolean running = new AtomicBoolean(false), paused = new AtomicBoolean(false);
 	public static final int BORDER_THICKNESS = 5;
-	private static final int SPACE_LEFTRIGHT = (int) (VideoUtils.getScreenWidth() * 0.05);
-	private static final int SPACE_TOPBOT = (int) (VideoUtils.getScreenHeight() * 0.05);
+	private static int SPACE_LEFTRIGHT;
+	private static int SPACE_TOPBOT;
 
 	private int width, height;
 
@@ -67,6 +67,7 @@ public class SnakePanel extends JPanel
 	public SnakePanel(GameController controller, int w, int h, int paintSize)
 	{
 		super(true);
+		initSideSpaces();
 		this.setPaintSize(paintSize);
 		this.controller = controller;
 		this.setBooster(new ArrayList<Boost>());
@@ -477,7 +478,12 @@ public class SnakePanel extends JPanel
 		this.width = calculatePanelWidth();
 		this.height = calculatePanelHeight();
 		repaint();
+	}
 
+	private void initSideSpaces()
+	{
+		SPACE_LEFTRIGHT = (int) (VideoUtils.getScreenWidth() * 0.05);
+		SPACE_TOPBOT = (int) (VideoUtils.getScreenHeight() * 0.02);
 	}
 
 }

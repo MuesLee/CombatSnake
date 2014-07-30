@@ -39,7 +39,7 @@ public class GameController
 	public static final int DEFAULT_GAME_SPEED = 100;
 	public static int SNAKE_SIZE = 15;
 	public static int paintSize = 15;
-	private static double MAX_PERCENTAGE_OF_SCREEN_SIZE = 0.7;
+	private static double MAX_PERCENTAGE_OF_SCREEN_SIZE = 0.6;
 	private static int AMOUNT_OF_LOOSE_SNAKEPIECES = 1;
 	public static int GAME_SPEED = 100;
 	private static int WORLD_SIZE_X = 50;
@@ -82,7 +82,6 @@ public class GameController
 	private JLabel scorePlayerOne;
 	private JLabel scorePlayerTwo;
 	private boolean worldChangerEventIsRunning = false;
-	public static int PENALTY_FOR_FAILURE = 4;
 	public static int REAL_FPS = 0;
 	private KeyBindings keyBindings;
 	private Clock clock;
@@ -119,6 +118,7 @@ public class GameController
 		this.snakePanel = new SnakePanel(this, WORLD_SIZE_X, WORLD_SIZE_Y, paintSize);
 
 		snakePanel.setSnakes(snakes);
+		snakePanel.setLayout(new BorderLayout());
 		keyBindings = new KeyBindings(snakePanel);
 		configureFrame();
 	}
@@ -137,10 +137,6 @@ public class GameController
 		frame.add(scorePanel, BorderLayout.NORTH);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		Dimension size = snakePanel.getSize();
-		frame.setSize(size.height, size.width);
-		size.setSize(size.getWidth() + VideoUtils.getScreenWidth() * 0.1,
-			size.getHeight() + VideoUtils.getScreenHeight() * 0.1);
 		frame.pack();
 
 		clock = new Clock(60);

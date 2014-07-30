@@ -17,7 +17,6 @@ public class VideoUtils
 	{
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		return gd.getDisplayMode().getHeight();
-
 	}
 
 }
