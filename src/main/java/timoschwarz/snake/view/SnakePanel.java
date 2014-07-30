@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import timoschwarz.snake.controller.GameController;
@@ -25,6 +24,7 @@ import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.SnakePiece;
 import timoschwarz.snake.model.powerups.Boost;
 import timoschwarz.snake.model.powerups.WorldChanger;
+import timoschwarz.snake.util.VideoUtils;
 
 public class SnakePanel extends JPanel
 {
@@ -57,6 +57,8 @@ public class SnakePanel extends JPanel
 
 	public static AtomicBoolean running = new AtomicBoolean(false), paused = new AtomicBoolean(false);
 	public static final int BORDER_THICKNESS = 5;
+	private static final int SPACE_LEFTRIGHT = (int) (VideoUtils.getScreenWidth() * 0.05);
+	private static final int SPACE_TOPBOT = (int) (VideoUtils.getScreenHeight() * 0.05);
 
 	private int width, height;
 
@@ -80,7 +82,6 @@ public class SnakePanel extends JPanel
 
 		setPreferredSize(getPreferredSize());
 		setMinimumSize(getPreferredSize());
-		setBorder(BorderFactory.createLineBorder(Color.RED, BORDER_THICKNESS));
 		setIgnoreRepaint(true);
 		setBackground(Color.black);
 		setVisible(true);
@@ -90,14 +91,16 @@ public class SnakePanel extends JPanel
 	{
 		Insets insets = getInsets();
 
-		return getWorldHeight() * paintSize + 2 * BORDER_THICKNESS + insets.bottom + insets.top + paintSize;
+		return getWorldHeight() * paintSize + 2 * BORDER_THICKNESS + insets.bottom + insets.top + paintSize + 2
+			* SPACE_LEFTRIGHT + 2 * SPACE_TOPBOT;
 	}
 
 	private int calculatePanelWidth()
 	{
 		Insets insets = getInsets();
 
-		return getWorldWidth() * paintSize + 2 * BORDER_THICKNESS + insets.left + insets.right + paintSize;
+		return getWorldWidth() * paintSize + 2 * BORDER_THICKNESS + insets.left + insets.right + paintSize + 2
+			* SPACE_LEFTRIGHT + 2 * SPACE_TOPBOT;
 
 	}
 
@@ -117,8 +120,7 @@ public class SnakePanel extends JPanel
 		}
 
 		paintEntities(bBG);
-
-		g.drawImage(backBuffer, BORDER_THICKNESS, BORDER_THICKNESS, this);
+		g.drawImage(backBuffer, 0, 0, this);
 	}
 
 	public static void applyRenderHints(Graphics2D g2d)
@@ -137,8 +139,27 @@ public class SnakePanel extends JPanel
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
 		drawEntitiesToScreen(g2d);
+		drawBorders(g2d);
 		drawLightning(g2d);
 		drawFPS(g2d);
+	}
+
+	private void drawBorders(Graphics2D graphics)
+	{
+		graphics.setColor(Color.MAGENTA);
+
+		//TOP
+		graphics.fillRect(SPACE_LEFTRIGHT - BORDER_THICKNESS, SPACE_TOPBOT - BORDER_THICKNESS, paintSize + worldWidth
+			* paintSize + 2 * BORDER_THICKNESS, BORDER_THICKNESS);
+		//BOT
+		graphics.fillRect(SPACE_LEFTRIGHT - BORDER_THICKNESS, SPACE_TOPBOT + worldHeight * paintSize + paintSize,
+			paintSize + worldWidth * paintSize + 2 * BORDER_THICKNESS, BORDER_THICKNESS);
+		//RIGHT
+		graphics.fillRect(paintSize + SPACE_LEFTRIGHT + worldWidth * paintSize, SPACE_TOPBOT - BORDER_THICKNESS,
+			BORDER_THICKNESS, paintSize + worldHeight * paintSize + 2 * BORDER_THICKNESS);
+		//LEFT
+		graphics.fillRect(SPACE_LEFTRIGHT - BORDER_THICKNESS, SPACE_TOPBOT - BORDER_THICKNESS, BORDER_THICKNESS,
+			paintSize + worldHeight * paintSize + 2 * BORDER_THICKNESS);
 	}
 
 	private void drawEntitiesToScreen(Graphics2D graphics)
@@ -158,13 +179,13 @@ public class SnakePanel extends JPanel
 				{
 
 					graphics.setColor(Color.blue);
-					graphics.fillRect(piece.getX() * getPaintSize(), piece.getY() * getPaintSize(), getPaintSize(),
+					graphics.fillRect(getShiftedXCoordForPiece(piece), getShiftedYCoordForPiece(piece), getPaintSize(),
 						getPaintSize());
 					graphics.setColor(c);
 				}
 				else
 				{
-					graphics.fillRect(piece.getX() * getPaintSize(), piece.getY() * getPaintSize(), getPaintSize(),
+					graphics.fillRect(getShiftedXCoordForPiece(piece), getShiftedYCoordForPiece(piece), getPaintSize(),
 						getPaintSize());
 				}
 			}
@@ -173,23 +194,33 @@ public class SnakePanel extends JPanel
 		for (Piece e : looseSnakePieces)
 		{
 			graphics.setColor(Color.RED);
-			graphics.fillRect(e.getX() * getPaintSize(), e.getY() * getPaintSize(), getPaintSize(), getPaintSize());
+			graphics.fillRect(getShiftedXCoordForPiece(e), getShiftedYCoordForPiece(e), getPaintSize(), getPaintSize());
 		}
 
 		for (Boost boost : getBooster())
 		{
 			Piece e = (Piece) boost;
 			graphics.setColor(boost.getColor());
-			graphics.fillRect(e.getX() * getPaintSize(), e.getY() * getPaintSize(), getPaintSize(), getPaintSize());
+			graphics.fillRect(getShiftedXCoordForPiece(e), getShiftedYCoordForPiece(e), getPaintSize(), getPaintSize());
 		}
 
 		for (WorldChanger worldChanger : getWorldChangers())
 		{
 			Piece e = (Piece) worldChanger;
 			graphics.setColor(worldChanger.getColor());
-			graphics.fillRect(e.getX() * getPaintSize(), e.getY() * getPaintSize(), getPaintSize(), getPaintSize());
+			graphics.fillRect(getShiftedXCoordForPiece(e), getShiftedYCoordForPiece(e), getPaintSize(), getPaintSize());
 		}
 
+	}
+
+	private int getShiftedXCoordForPiece(Piece piece)
+	{
+		return piece.getX() * paintSize + SPACE_LEFTRIGHT;
+	}
+
+	private int getShiftedYCoordForPiece(Piece piece)
+	{
+		return piece.getY() * paintSize + SPACE_TOPBOT;
 	}
 
 	private void drawLightning(Graphics g)

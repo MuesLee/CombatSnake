@@ -1,7 +1,6 @@
 package timoschwarz.snake.controller;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -30,7 +29,6 @@ import timoschwarz.snake.model.rules.RuleSet;
 import timoschwarz.snake.util.KeyBindings;
 import timoschwarz.snake.util.VideoUtils;
 import timoschwarz.snake.util.WorldChangerEventTask;
-import timoschwarz.snake.view.CenteredLayout;
 import timoschwarz.snake.view.Clock;
 import timoschwarz.snake.view.GameFrame;
 import timoschwarz.snake.view.SnakePanel;
@@ -92,7 +90,6 @@ public class GameController
 	private JLabel lifesPlayerTwo;
 
 	private RuleSet gameRules;
-	private JPanel backPanel;
 
 	public GameController(String namePlayerOne, String namePlayerTwo, RuleSet gameRules)
 	{
@@ -128,8 +125,6 @@ public class GameController
 
 	private void configureFrame()
 	{
-		JPanel backPanel = createBackPanel();
-
 		JPanel scorePanel = createScorePanel();
 		JButton startButton = createStartButton();
 		JButton resetButton = createResetButton();
@@ -137,7 +132,7 @@ public class GameController
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		frame.setResizable(true);
-		frame.add(backPanel, BorderLayout.CENTER);
+		frame.add(snakePanel, BorderLayout.CENTER);
 		frame.add(buttonPanel, BorderLayout.SOUTH);
 		frame.add(scorePanel, BorderLayout.NORTH);
 		frame.setLocationRelativeTo(null);
@@ -146,27 +141,12 @@ public class GameController
 		frame.setSize(size.height, size.width);
 		size.setSize(size.getWidth() + VideoUtils.getScreenWidth() * 0.1,
 			size.getHeight() + VideoUtils.getScreenHeight() * 0.1);
-		backPanel.setSize(size);
-		backPanel.setPreferredSize(size);
-		backPanel.setMinimumSize(size);
-		backPanel.setMaximumSize(size);
-
 		frame.pack();
 
 		clock = new Clock(60);
 
 		frame.setClock(clock);
 		updatePlayerScoreLabel();
-	}
-
-	private JPanel createBackPanel()
-	{
-		backPanel = new JPanel();
-		backPanel.setLayout(new CenteredLayout(backPanel));
-		backPanel.setBackground(Color.black);
-		backPanel.add(snakePanel);
-		backPanel.setVisible(true);
-		return backPanel;
 	}
 
 	private void initGame(String namePlayerOne, String namePlayerTwo)
@@ -694,7 +674,5 @@ public class GameController
 		snakePanel.setWorldHeight(world.getHeight());
 		snakePanel.setWorldWidth(world.getWidth());
 		snakePanel.updateSize();
-		backPanel.invalidate();
-		backPanel.repaint();
 	}
 }
