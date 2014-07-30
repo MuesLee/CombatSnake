@@ -17,4 +17,6 @@ public interface RuleSet
 	public int getPointsForFoodConsumption();
 
 	public int calculatePointsForGrowing(Snake snake);
+
+	public void processFailureOfSnake(Player player, GameController controller);
 }

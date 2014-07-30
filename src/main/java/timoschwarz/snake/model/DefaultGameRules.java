@@ -1,5 +1,7 @@
 package timoschwarz.snake.model;
 
+import java.util.Random;
+
 import timoschwarz.snake.controller.GameController;
 
 public class DefaultGameRules implements RuleSet
@@ -8,6 +10,7 @@ public class DefaultGameRules implements RuleSet
 	private static int POINTS_FOR_FOOD_CONSUMPTION = 10;
 	private static int POINTS_FOR_BOOSTER_CONSUMPTION = 50;
 	private static int POINTS_FOR_WORLDCHANGER_CONSUMPTION = 150;
+	public static int PLAYERS_LIFES = 3;
 
 	@Override
 	public void punishSnakeForHittingSnake(Snake snake, GameController controller)
@@ -59,4 +62,50 @@ public class DefaultGameRules implements RuleSet
 		return getPointsForFoodConsumption() * (snake.getGrowSize() + 1);
 	}
 
+	@Override
+	public void processFailureOfSnake(Player player, GameController controller)
+	{
+		Random random = new Random();
+
+		if (player == null)
+		{
+			Player playerTwo = controller.getPlayerTwo();
+			Player playerOne = controller.getPlayerOne();
+
+			int lifesLeftPlayerTwo = playerTwo.getLifesLeft();
+			lifesLeftPlayerTwo--;
+			playerTwo.setLifesLeft(lifesLeftPlayerTwo);
+			int score = playerTwo.getScore() / (random.nextInt(GameController.PENALTY_FOR_FAILURE) + 1);
+			playerTwo.setScore(score);
+
+			score = playerOne.getScore() / (random.nextInt(GameController.PENALTY_FOR_FAILURE) + 1);
+			playerOne.setScore(score);
+			int lifesLeftPlayerOne = playerOne.getLifesLeft();
+			lifesLeftPlayerOne--;
+			playerOne.setLifesLeft(lifesLeftPlayerOne);
+
+			if (lifesLeftPlayerTwo == 0 || lifesLeftPlayerOne == 0)
+			{
+				controller.updatePlayerScoreLabel();
+				controller.endGame();
+			}
+		}
+		else
+		{
+			int lifesLeft = player.getLifesLeft();
+			lifesLeft--;
+			player.setLifesLeft(lifesLeft);
+			int score = player.getScore() / (random.nextInt(GameController.PENALTY_FOR_FAILURE) + 1);
+			player.setScore(score);
+
+			if (lifesLeft == 0)
+			{
+				controller.updatePlayerScoreLabel();
+				controller.endGame();
+			}
+		}
+
+		controller.updatePlayerScoreLabel();
+
+	}
 }

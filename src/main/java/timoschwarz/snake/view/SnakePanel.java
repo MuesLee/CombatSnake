@@ -313,7 +313,40 @@ public class SnakePanel extends JPanel
 
 	public void clearLightnings()
 	{
-		lightnings.clear();
+		Thread t = new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				boolean allLightningsWereAnimated = true;
+
+				for (Lightning l : lightnings)
+				{
+					if (!l.isDone())
+					{
+						allLightningsWereAnimated = false;
+					}
+				}
+				if (allLightningsWereAnimated)
+				{
+					lightnings.clear();
+				}
+				else
+				{
+					try
+					{
+						Thread.sleep(1000);
+					}
+					catch (InterruptedException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+			}
+		});
+
 	}
 
 	public void addRandomLightning()
