@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -170,8 +171,19 @@ public class SnakePanel extends JPanel
 
 	private void drawLightning(Graphics g)
 	{
+		if (lightnings.isEmpty())
+		{
+			return;
+		}
+
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(Color.YELLOW);
+
+		final Stroke bigStroke = new BasicStroke(6F);
+		final Stroke smallStroke = new BasicStroke(3F);
+		Stroke actualStroke = smallStroke;
+
+		final Color mainColor = new Color(255, 243, 60);
+		final Color shadeColor = new Color(255, 250, 168);
 
 		for (Lightning lightning : lightnings)
 		{
@@ -185,16 +197,19 @@ public class SnakePanel extends JPanel
 			for (LightningSegment lightningSegment : segments)
 			{
 
-				g2d.setStroke(new BasicStroke(3F));
+				g2d.setStroke(smallStroke);
 
 				final Coordinates start = lightningSegment.getStart();
 				final Coordinates end = lightningSegment.getEnd();
 
 				if (lightningSegment.isTrunk())
 				{
-					g2d.setStroke(new BasicStroke(6F));
+					g2d.setStroke(bigStroke);
 				}
+				g2d.setColor(mainColor);
 				g2d.drawLine(start.getX(), start.getY(), end.getX(), end.getY());
+				g2d.setColor(shadeColor);
+				g2d.drawLine(start.getX() + 2, start.getY(), end.getX() + 2, end.getY());
 			}
 
 			lightning.increaseFrameCount();
