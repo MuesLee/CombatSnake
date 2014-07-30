@@ -33,8 +33,7 @@ import timoschwarz.snake.view.Clock;
 import timoschwarz.snake.view.GameFrame;
 import timoschwarz.snake.view.SnakePanel;
 
-public class GameController
-{
+public class GameController {
 	private static final int DURATION_SOUND_WORLDCHANGER = 20000;
 	public static final int DEFAULT_GAME_SPEED = 100;
 	public static int SNAKE_SIZE = 15;
@@ -60,7 +59,7 @@ public class GameController
 	public static int PLAYERS_LIFES = 3;
 	public static int MAX_AMOUNT_OF_BOOSTER = 2;
 	public static int BOOST_SPAWN_INTERVAL = 10000;
-	public static int WORLDCHANGER_SPAWN_INTERVAL = 4000;
+	public static int WORLDCHANGER_SPAWN_INTERVAL = 40000;
 	public static int SNAKE_GROW_SIZE = 1;
 
 	private SnakePanel snakePanel;
@@ -90,14 +89,13 @@ public class GameController
 
 	private RuleSet gameRules;
 
-	public GameController(String namePlayerOne, String namePlayerTwo, RuleSet gameRules)
-	{
+	public GameController(String namePlayerOne, String namePlayerTwo,
+			RuleSet gameRules) {
 		this.gameRules = gameRules;
 		initGame(namePlayerOne, namePlayerTwo);
 	}
 
-	protected void prepareStartOfGame(String namePlayerOne, String namePlayerTwo)
-	{
+	protected void prepareStartOfGame(String namePlayerOne, String namePlayerTwo) {
 		this.setPlayerOne(new Player(namePlayerOne));
 		this.setPlayerTwo(new Player(namePlayerTwo));
 		this.graphicsController = new GraphicsController();
@@ -115,16 +113,17 @@ public class GameController
 		this.world = new World(snakes, this, WORLD_SIZE_X, WORLD_SIZE_Y);
 
 		calculatePaintSize();
-		this.snakePanel = new SnakePanel(this, WORLD_SIZE_X, WORLD_SIZE_Y, paintSize);
+		this.snakePanel = new SnakePanel(this, WORLD_SIZE_X, WORLD_SIZE_Y,
+				paintSize);
 
 		snakePanel.setSnakes(snakes);
 		snakePanel.setLayout(new BorderLayout());
 		keyBindings = new KeyBindings(snakePanel);
 		configureFrame();
+		snakePanel.updateSize();
 	}
 
-	private void configureFrame()
-	{
+	private void configureFrame() {
 		JPanel scorePanel = createScorePanel();
 		JButton startButton = createStartButton();
 		JButton resetButton = createResetButton();
@@ -146,25 +145,23 @@ public class GameController
 		updatePlayerScoreLabel();
 	}
 
-	private void initGame(String namePlayerOne, String namePlayerTwo)
-	{
+	private void initGame(String namePlayerOne, String namePlayerTwo) {
 		audioController = new AudioController();
 		prepareStartOfGame(namePlayerOne, namePlayerTwo);
 	}
 
-	private void calculatePaintSize()
-	{
+	private void calculatePaintSize() {
 
 		int width = VideoUtils.getScreenWidth();
 		width = (int) (width * MAX_PERCENTAGE_OF_SCREEN_SIZE / world.getWidth());
 		int height = VideoUtils.getScreenHeight();
-		height = (int) (height * MAX_PERCENTAGE_OF_SCREEN_SIZE / world.getHeight());
+		height = (int) (height * MAX_PERCENTAGE_OF_SCREEN_SIZE / world
+				.getHeight());
 
 		paintSize = Math.min(width, height);
 	}
 
-	private void resetGame()
-	{
+	private void resetGame() {
 		frame.dispose();
 		initGame(playerOne.getName(), playerTwo.getName());
 
@@ -172,30 +169,27 @@ public class GameController
 
 	/**
 	 * 
-	 * @param snake The victorious Snake
+	 * @param snake
+	 *            The victorious Snake
 	 */
 
-	public void processFailureOfSnake(Snake snake)
-	{
+	public void processFailureOfSnake(Snake snake) {
 		gameRules.processFailureOfSnake(getPlayerForSnake(snake), this);
 	}
 
-	public void punishSnakeForHittingTheBounds(Snake snake)
-	{
+	public void punishSnakeForHittingTheBounds(Snake snake) {
 		audioController.playSound("snakeHitsBounds");
 		gameRules.punishSnakeForHittingBounds(snake, this);
 	}
 
-	private void stopTimer()
-	{
+	private void stopTimer() {
 		boostTimer.stop();
 		worldChangerTimer.stop();
 		lightningTimer.stop();
 
 	}
 
-	public void endGame()
-	{
+	public void endGame() {
 		audioController.playSound("comment_terminated");
 		stopTimer();
 		gameIsActive = false;
@@ -203,46 +197,37 @@ public class GameController
 		audioController.stopBackgroundMusic();
 		Player playerWithHighestScore = getPlayerWithHighestScore();
 
-		if (playerWithHighestScore != null)
-		{
-			text = text + "\n" + playerWithHighestScore.getName() + " won with a Score: "
-				+ playerWithHighestScore.getScore();
-		}
-		else
-		{
+		if (playerWithHighestScore != null) {
+			text = text + "\n" + playerWithHighestScore.getName()
+					+ " won with a Score: " + playerWithHighestScore.getScore();
+		} else {
 			audioController.playSound("comment_annoying");
 			text = text + "\nNO ONE WON!\nNO ONE LOST! BORING...";
 		}
 
-		JOptionPane.showMessageDialog(frame, text, TEXT_GAME_OVER, JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(frame, text, TEXT_GAME_OVER,
+				JOptionPane.INFORMATION_MESSAGE);
 		SnakePanel.running.set(false);
 	}
 
-	private Player getPlayerWithHighestScore()
-	{
+	private Player getPlayerWithHighestScore() {
 		final int scorePlayerOne = playerOne.getScore();
 		final int scorePlayerTwo = playerTwo.getScore();
-		if (scorePlayerOne > scorePlayerTwo)
-		{
+		if (scorePlayerOne > scorePlayerTwo) {
 			return playerOne;
-		}
-		else if (scorePlayerOne < scorePlayerTwo)
-		{
+		} else if (scorePlayerOne < scorePlayerTwo) {
 			return playerTwo;
 		}
 		return null;
 
 	}
 
-	void startGame()
-	{
+	void startGame() {
 		audioController.startBackgroundMusic();
 
-		Thread graphicLoop = new Thread(new Runnable()
-		{
+		Thread graphicLoop = new Thread(new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				clock.start();
 			}
 
@@ -252,11 +237,9 @@ public class GameController
 		graphicLoop.start();
 
 		gameIsActive = true;
-		Thread gameLoop = new Thread(new Runnable()
-		{
+		Thread gameLoop = new Thread(new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				gameLoop();
 			}
 
@@ -264,31 +247,26 @@ public class GameController
 		gameLoop.start();
 	}
 
-	private void gameLoop()
-	{
-		while (gameIsActive)
-		{
-			try
-			{
+	private void gameLoop() {
+		while (gameIsActive) {
+			try {
 				Thread.sleep(GAME_SPEED);
 				processInput();
 				moveSnakes();
-			}
-			catch (InterruptedException e)
-			{
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	private void processInput()
-	{
-		playerOne.getSnake().setDirection(keyBindings.getDirectionForPlayerOne());
-		playerTwo.getSnake().setDirection(keyBindings.getDirectionForPlayerTwo());
+	private void processInput() {
+		playerOne.getSnake().setDirection(
+				keyBindings.getDirectionForPlayerOne());
+		playerTwo.getSnake().setDirection(
+				keyBindings.getDirectionForPlayerTwo());
 	}
 
-	public void moveSnakes()
-	{
+	public void moveSnakes() {
 		final Snake snakeOne = playerOne.getSnake();
 		int movementSpeedOne = snakeOne.getMovementSpeed();
 
@@ -297,16 +275,14 @@ public class GameController
 
 		int maxMovementSpeed = Math.max(movementSpeedOne, movementSpeedTwo);
 
-		for (int i = 0; i < maxMovementSpeed; i++)
-		{
+		for (int i = 0; i < maxMovementSpeed; i++) {
 			snakeOne.move(i);
 			snakeTwo.move(i);
 			world.checkForCollisions();
 		}
 	}
 
-	private JPanel createButtonPanel(JButton startButton, JButton resetButton)
-	{
+	private JPanel createButtonPanel(JButton startButton, JButton resetButton) {
 		JPanel buttonPanel = new JPanel(new FlowLayout(1));
 
 		buttonPanel.add(startButton);
@@ -314,14 +290,11 @@ public class GameController
 		return buttonPanel;
 	}
 
-	private JButton createResetButton()
-	{
+	private JButton createResetButton() {
 		JButton resetButton = new JButton("Reset");
-		resetButton.addActionListener(new ActionListener()
-		{
+		resetButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
+			public void actionPerformed(ActionEvent arg0) {
 				SnakePanel.running.set(true);
 				resetGame();
 			}
@@ -330,14 +303,11 @@ public class GameController
 		return resetButton;
 	}
 
-	private JButton createStartButton()
-	{
+	private JButton createStartButton() {
 		JButton startButton = new JButton("Start");
-		startButton.addActionListener(new ActionListener()
-		{
+		startButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
+			public void actionPerformed(ActionEvent arg0) {
 				SnakePanel.running.set(true);
 				startGame();
 				startSnakes();
@@ -347,13 +317,14 @@ public class GameController
 		return startButton;
 	}
 
-	private JPanel createScorePanel()
-	{
+	private JPanel createScorePanel() {
 		String textPlayerOne = getScoreTextForPlayer(playerOne);
 		String textPlayerTwo = getScoreTextForPlayer(playerTwo);
 
-		ImageIcon icon = new ImageIcon(graphicsController.getImageAsURL("pixelHeart"));
-		icon.setImage(icon.getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+		ImageIcon icon = new ImageIcon(
+				graphicsController.getImageAsURL("pixelHeart"));
+		icon.setImage(icon.getImage().getScaledInstance(20, 20,
+				Image.SCALE_DEFAULT));
 
 		lifesPlayerOne = new JLabel(icon);
 		lifesPlayerTwo = new JLabel(icon);
@@ -389,76 +360,62 @@ public class GameController
 		return scorePanel;
 	}
 
-	private String getScoreTextForPlayer(Player player)
-	{
+	private String getScoreTextForPlayer(Player player) {
 		String scoreText = player.getName() + " Score: " + player.getScore();
 		return scoreText;
 	}
 
-	public void checkSnakes()
-	{
+	public void checkSnakes() {
 		playerOne.getSnake();
 	}
 
-	public void setPlaygroundSize(Dimension size)
-	{
+	public void setPlaygroundSize(Dimension size) {
 		snakePanel.setSize(size);
 	}
 
-	public Player getPlayerOne()
-	{
+	public Player getPlayerOne() {
 		return playerOne;
 	}
 
-	public void setPlayerOne(Player playerOne)
-	{
+	public void setPlayerOne(Player playerOne) {
 		this.playerOne = playerOne;
 	}
 
-	public Player getPlayerTwo()
-	{
+	public Player getPlayerTwo() {
 		return playerTwo;
 	}
 
-	public void setPlayerTwo(Player playerTwo)
-	{
+	public void setPlayerTwo(Player playerTwo) {
 		this.playerTwo = playerTwo;
 	}
 
-	public void startSnakes()
-	{
+	public void startSnakes() {
 		initLooseSnakePieces();
 		initTimer();
 	}
 
-	private void initTimer()
-	{
+	private void initTimer() {
 		initBoostTimer();
 		initWorldChangerTimer();
 		initLightningTimer();
 	}
 
-	private void initLightningTimer()
-	{
-		lightningTimer = new Timer(NEW_LIGHTNING_SPAWN_INTERVAL, new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				snakePanel.addRandomLightning();
-			}
+	private void initLightningTimer() {
+		lightningTimer = new Timer(NEW_LIGHTNING_SPAWN_INTERVAL,
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						snakePanel.addRandomLightning();
+					}
 
-		});
+				});
 	}
 
-	private void initBoostTimer()
-	{
+	private void initBoostTimer() {
 
-		this.boostTimer = new Timer(BOOST_SPAWN_INTERVAL, new ActionListener()
-		{
+		this.boostTimer = new Timer(BOOST_SPAWN_INTERVAL, new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
+			public void actionPerformed(ActionEvent arg0) {
 				triggerBoostSpawn();
 			}
 		});
@@ -466,26 +423,23 @@ public class GameController
 		boostTimer.start();
 	}
 
-	private void initWorldChangerTimer()
-	{
+	private void initWorldChangerTimer() {
 
-		this.worldChangerTimer = new Timer(WORLDCHANGER_SPAWN_INTERVAL, new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
-				triggerWorldChangerSpawn();
-			}
+		this.worldChangerTimer = new Timer(WORLDCHANGER_SPAWN_INTERVAL,
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						triggerWorldChangerSpawn();
+					}
 
-		});
+				});
 
 		worldChangerTimer.start();
 	}
 
-	private void triggerWorldChangerSpawn()
-	{
-		if (!isWorldChangerEventIsRunning() && world.getAmountOfCurrentWorldChanger() == 0)
-		{
+	private void triggerWorldChangerSpawn() {
+		if (!isWorldChangerEventIsRunning()
+				&& world.getAmountOfCurrentWorldChanger() == 0) {
 			setWorldChangerEventIsRunning(true);
 			audioController.playSound("worldChanger_spawn");
 			java.util.Timer timer = new java.util.Timer();
@@ -496,23 +450,21 @@ public class GameController
 		}
 	}
 
-	private void spawnRandomLightnings()
-	{
+	private void spawnRandomLightnings() {
 		lightningTimer.start();
 	}
 
-	private void spawnLightningWhichStrikesIntoWorldChanger()
-	{
+	private void spawnLightningWhichStrikesIntoWorldChanger() {
 		List<WorldChanger> worldChangers = world.getWorldChangers();
-		Piece worldChanger = (Piece) worldChangers.get(worldChangers.size() - 1);
+		Piece worldChanger = (Piece) worldChangers
+				.get(worldChangers.size() - 1);
 		int x = worldChanger.getX();
 		int y = worldChanger.getY();
 
 		snakePanel.addLightning(x, y);
 	}
 
-	public void spawnNewWorldChanger()
-	{
+	public void spawnNewWorldChanger() {
 		world.spawnNewWorldChanger();
 		spawnLightningWhichStrikesIntoWorldChanger();
 
@@ -522,47 +474,39 @@ public class GameController
 		snakePanel.clearLightnings();
 	}
 
-	private void updateWorldChangerOfCanvas()
-	{
+	private void updateWorldChangerOfCanvas() {
 		snakePanel.updateWorldChangerEntities();
 
 	}
 
-	private void triggerBoostSpawn()
-	{
-		if (MAX_AMOUNT_OF_BOOSTER > world.getAmountOfCurrentBooster())
-		{
+	private void triggerBoostSpawn() {
+		if (MAX_AMOUNT_OF_BOOSTER > world.getAmountOfCurrentBooster()) {
 			audioController.playSound("boost_spawn");
 			world.spawnNewBooster();
 			updatePlaygroundBooster();
 		}
 	}
 
-	private void updatePlaygroundBooster()
-	{
+	private void updatePlaygroundBooster() {
 		List<Boost> booster = world.getCurrentBooster();
 
-		if (booster.isEmpty())
-		{
+		if (booster.isEmpty()) {
 			snakePanel.clearBooster();
 			return;
 		}
 		snakePanel.updateBooster(booster);
 	}
 
-	private void initLooseSnakePieces()
-	{
+	private void initLooseSnakePieces() {
 
-		for (int i = 0; i < AMOUNT_OF_LOOSE_SNAKEPIECES; i++)
-		{
+		for (int i = 0; i < AMOUNT_OF_LOOSE_SNAKEPIECES; i++) {
 			world.createNewLooseSnakePiece();
 		}
 		snakePanel.setLooseSnakePieces(world.getLooseSnakePieces());
 
 	}
 
-	public void snakeHasConsumedABooster(Snake snake, Boost booster)
-	{
+	public void snakeHasConsumedABooster(Snake snake, Boost booster) {
 		audioController.playSound(booster.getSoundFileName());
 		gameRules.snakeHasConsumedABooster(snake, this);
 
@@ -570,25 +514,19 @@ public class GameController
 		updatePlaygroundBooster();
 	}
 
-	public Player getPlayerForSnake(Snake snake)
-	{
-		if (snake == null)
-		{
+	public Player getPlayerForSnake(Snake snake) {
+		if (snake == null) {
 			return null;
 		}
 
-		if (playerOne.getSnake() == snake)
-		{
+		if (playerOne.getSnake() == snake) {
 			return playerOne;
-		}
-		else
-		{
+		} else {
 			return playerTwo;
 		}
 	}
 
-	public void snakeHasConsumedALoosePiece(Snake snake)
-	{
+	public void snakeHasConsumedALoosePiece(Snake snake) {
 		audioController.playSound("bite");
 		gameRules.snakeHasConsumedALoosePiece(snake, this);
 
@@ -596,47 +534,40 @@ public class GameController
 		updateLooseSnakePiecesInView();
 	}
 
-	public void updatePlayerScoreLabel()
-	{
+	public void updatePlayerScoreLabel() {
 		scorePlayerTwo.setText(getScoreTextForPlayer(playerTwo));
 		scorePlayerOne.setText(getScoreTextForPlayer(playerOne));
 		lifesPlayerOne.setText(": " + playerOne.getLifesLeft());
 		lifesPlayerTwo.setText(": " + playerTwo.getLifesLeft());
 	}
 
-	public Font getFontForScores()
-	{
+	public Font getFontForScores() {
 		return new Font("ScoreFont", Font.PLAIN, 15);
 
 	}
 
-	public void updateLooseSnakePiecesInView()
-	{
+	public void updateLooseSnakePiecesInView() {
 		snakePanel.updateLooseSnakePieceEntities();
 	}
 
-	public World getWorld()
-	{
+	public World getWorld() {
 		return world;
 	}
 
-	public void setWorld(World world)
-	{
+	public void setWorld(World world) {
 		this.world = world;
 	}
 
-	public LinkedList<Piece> getLooseSnakePieces()
-	{
+	public LinkedList<Piece> getLooseSnakePieces() {
 		return world.getLooseSnakePieces();
 	}
 
-	public List<Boost> getCurrentBooster()
-	{
+	public List<Boost> getCurrentBooster() {
 		return world.getCurrentBooster();
 	}
 
-	public void snakeHasConsumedAWorldChanger(Snake snake, WorldChanger usedWorldChanger)
-	{
+	public void snakeHasConsumedAWorldChanger(Snake snake,
+			WorldChanger usedWorldChanger) {
 		audioController.playSound(usedWorldChanger.getSoundFile());
 
 		gameRules.snakeHasConsumedAWorldChanger(snake, this);
@@ -644,29 +575,24 @@ public class GameController
 		updatePlayerScoreLabel();
 	}
 
-	public List<WorldChanger> getCurrentWorldChangers()
-	{
+	public List<WorldChanger> getCurrentWorldChangers() {
 		return world.getWorldChangers();
 	}
 
-	public boolean isWorldChangerEventIsRunning()
-	{
+	public boolean isWorldChangerEventIsRunning() {
 		return worldChangerEventIsRunning;
 	}
 
-	public void setWorldChangerEventIsRunning(boolean worldChangerEventIsRunning)
-	{
+	public void setWorldChangerEventIsRunning(boolean worldChangerEventIsRunning) {
 		this.worldChangerEventIsRunning = worldChangerEventIsRunning;
 	}
 
-	public void punishSnakeForHittingSnake(Snake snake)
-	{
+	public void punishSnakeForHittingSnake(Snake snake) {
 		audioController.playSound("snakeHitsSnake");
 		gameRules.punishSnakeForHittingSnake(snake, this);
 	}
 
-	public void worldSizeHasBeenUpdated()
-	{
+	public void worldSizeHasBeenUpdated() {
 		calculatePaintSize();
 		snakePanel.setWorldHeight(world.getHeight());
 		snakePanel.setWorldWidth(world.getWidth());
