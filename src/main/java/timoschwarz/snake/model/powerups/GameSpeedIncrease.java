@@ -1,4 +1,4 @@
-package timoschwarz.snake.model.boosts;
+package timoschwarz.snake.model.powerups;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -23,7 +23,7 @@ public class GameSpeedIncrease extends Piece implements WorldChanger {
 
 		Timer timer = new Timer();
 		timer.schedule(new WorldChangerTask(this, timer, world),
-				GameController.WORLD_CHANGER_SPEED_INCREASE_DURATION);
+				GameController.WORLD_GAME_SPEED_INCREASE_DURATION);
 	}
 
 	@Override

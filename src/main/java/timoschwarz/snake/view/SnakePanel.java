@@ -23,8 +23,8 @@ import timoschwarz.snake.model.Coordinates;
 import timoschwarz.snake.model.Piece;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.SnakePiece;
-import timoschwarz.snake.model.boosts.Boost;
-import timoschwarz.snake.model.boosts.WorldChanger;
+import timoschwarz.snake.model.powerups.Boost;
+import timoschwarz.snake.model.powerups.WorldChanger;
 
 public class SnakePanel extends JPanel
 {
@@ -60,30 +60,51 @@ public class SnakePanel extends JPanel
 
 	private int width, height;
 
+	private int worldWidth, worldHeight;
+
 	public SnakePanel(GameController controller, int w, int h, int paintSize)
 	{
 		super(true);
-		Insets insets = getInsets();
-		width = w + 2 * BORDER_THICKNESS + insets.left + insets.right + paintSize;
-		height = h + 2 * BORDER_THICKNESS + insets.bottom + insets.top + paintSize;
-		setPreferredSize(getPreferredSize());
-		setMinimumSize(getPreferredSize());
-		setBorder(BorderFactory.createLineBorder(Color.RED, BORDER_THICKNESS));
-		this.paintSize = paintSize;
+		this.setPaintSize(paintSize);
 		this.controller = controller;
-		setIgnoreRepaint(true);
 		this.setBooster(new ArrayList<Boost>());
 		this.looseSnakePieces = new ArrayList<Piece>();
 		this.setSnakes(new ArrayList<Snake>());
 		this.setWorldChangers(new ArrayList<WorldChanger>());
+
+		setWorldWidth(w);
+		setWorldHeight(h);
+
+		setWidth(calculatePanelWidth());
+		setHeight(calculatePanelHeight());
+
+		setPreferredSize(getPreferredSize());
+		setMinimumSize(getPreferredSize());
+		setBorder(BorderFactory.createLineBorder(Color.RED, BORDER_THICKNESS));
+		setIgnoreRepaint(true);
 		setBackground(Color.black);
 		setVisible(true);
+	}
+
+	private int calculatePanelHeight()
+	{
+		Insets insets = getInsets();
+
+		return getWorldHeight() * paintSize + 2 * BORDER_THICKNESS + insets.bottom + insets.top + paintSize;
+	}
+
+	private int calculatePanelWidth()
+	{
+		Insets insets = getInsets();
+
+		return getWorldWidth() * paintSize + 2 * BORDER_THICKNESS + insets.left + insets.right + paintSize;
+
 	}
 
 	@Override
 	public Dimension getPreferredSize()
 	{
-		return new Dimension(width, height);
+		return new Dimension(getWidth(), getHeight());
 	}
 
 	@Override
@@ -114,7 +135,7 @@ public class SnakePanel extends JPanel
 		Graphics2D g2d = (Graphics2D) g;
 		applyRenderHints(g2d);
 		g2d.setColor(Color.BLACK);
-		g2d.fillRect(0, 0, width, height);
+		g2d.fillRect(0, 0, getWidth(), getHeight());
 		drawEntitiesToScreen(g2d);
 		drawLightning(g2d);
 		drawFPS(g2d);
@@ -137,12 +158,14 @@ public class SnakePanel extends JPanel
 				{
 
 					graphics.setColor(Color.blue);
-					graphics.fillRect(piece.getX() * paintSize, piece.getY() * paintSize, paintSize, paintSize);
+					graphics.fillRect(piece.getX() * getPaintSize(), piece.getY() * getPaintSize(), getPaintSize(),
+						getPaintSize());
 					graphics.setColor(c);
 				}
 				else
 				{
-					graphics.fillRect(piece.getX() * paintSize, piece.getY() * paintSize, paintSize, paintSize);
+					graphics.fillRect(piece.getX() * getPaintSize(), piece.getY() * getPaintSize(), getPaintSize(),
+						getPaintSize());
 				}
 			}
 		}
@@ -150,21 +173,21 @@ public class SnakePanel extends JPanel
 		for (Piece e : looseSnakePieces)
 		{
 			graphics.setColor(Color.RED);
-			graphics.fillRect(e.getX() * paintSize, e.getY() * paintSize, paintSize, paintSize);
+			graphics.fillRect(e.getX() * getPaintSize(), e.getY() * getPaintSize(), getPaintSize(), getPaintSize());
 		}
 
 		for (Boost boost : getBooster())
 		{
 			Piece e = (Piece) boost;
 			graphics.setColor(boost.getColor());
-			graphics.fillRect(e.getX() * paintSize, e.getY() * paintSize, paintSize, paintSize);
+			graphics.fillRect(e.getX() * getPaintSize(), e.getY() * getPaintSize(), getPaintSize(), getPaintSize());
 		}
 
 		for (WorldChanger worldChanger : getWorldChangers())
 		{
 			Piece e = (Piece) worldChanger;
 			graphics.setColor(worldChanger.getColor());
-			graphics.fillRect(e.getX() * paintSize, e.getY() * paintSize, paintSize, paintSize);
+			graphics.fillRect(e.getX() * getPaintSize(), e.getY() * getPaintSize(), getPaintSize(), getPaintSize());
 		}
 
 	}
@@ -350,8 +373,8 @@ public class SnakePanel extends JPanel
 
 	public void addRandomLightning()
 	{
-		int y = random.nextInt(height);
-		int x = random.nextInt(width);
+		int y = random.nextInt(getHeight());
+		int x = random.nextInt(getWidth());
 		addLightning(x, y);
 	}
 
@@ -365,4 +388,65 @@ public class SnakePanel extends JPanel
 	{
 		repaint();
 	}
+
+	public int getPaintSize()
+	{
+		return paintSize;
+	}
+
+	public void setPaintSize(int paintSize)
+	{
+		this.paintSize = paintSize;
+	}
+
+	@Override
+	public int getWidth()
+	{
+		return width;
+	}
+
+	public void setWidth(int width)
+	{
+		this.width = width;
+	}
+
+	@Override
+	public int getHeight()
+	{
+		return height;
+	}
+
+	public void setHeight(int height)
+	{
+		this.height = height;
+	}
+
+	public int getWorldHeight()
+	{
+		return worldHeight;
+	}
+
+	public void setWorldHeight(int worldHeight)
+	{
+		this.worldHeight = worldHeight;
+	}
+
+	public int getWorldWidth()
+	{
+		return worldWidth;
+	}
+
+	public void setWorldWidth(int worldWidth)
+	{
+		this.worldWidth = worldWidth;
+	}
+
+	public void updateSize()
+	{
+		this.width = calculatePanelWidth();
+		this.height = calculatePanelHeight();
+		repaint();
+
+	}
+
 }

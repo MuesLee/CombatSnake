@@ -1,9 +1,9 @@
 package timoschwarz.snake.util;
 
-import timoschwarz.snake.model.boosts.Boost;
-import timoschwarz.snake.model.boosts.GrowBoost;
-import timoschwarz.snake.model.boosts.PhaseBoost;
-import timoschwarz.snake.model.boosts.SpeedBoost;
+import timoschwarz.snake.model.powerups.Boost;
+import timoschwarz.snake.model.powerups.GrowBoost;
+import timoschwarz.snake.model.powerups.PhaseBoost;
+import timoschwarz.snake.model.powerups.SpeedBoost;
 
 public class BoostFactory
 {

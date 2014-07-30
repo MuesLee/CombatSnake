@@ -12,7 +12,6 @@ public class GameFrame extends JFrame implements ClockListener
 	public GameFrame(String s)
 	{
 		setTitle(s);
-		setIgnoreRepaint(true);
 	}
 
 	public Clock getClock()

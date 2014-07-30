@@ -1,4 +1,4 @@
-package timoschwarz.snake.model.boosts;
+package timoschwarz.snake.model.powerups;
 
 import java.awt.Color;
 import java.awt.Image;

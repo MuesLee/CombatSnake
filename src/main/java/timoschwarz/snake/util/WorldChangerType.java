@@ -2,22 +2,28 @@ package timoschwarz.snake.util;
 
 public enum WorldChangerType {
 
-	GAMESPEEDINCREASE(50), FOODEXPLOSION(100);
+	GAMESPEEDINCREASE(10), FOODEXPLOSION(20), WORLDSHRINKER(100);
 
 	private int percentage;
 
-	private WorldChangerType(int percentage) {
+	private WorldChangerType(int percentage)
+	{
 		this.percentage = percentage;
 	}
 
-	public static WorldChangerType getWorldChangerByPercentage(int percent) {
+	public static WorldChangerType getWorldChangerByPercentage(int percent)
+	{
 		WorldChangerType[] values = WorldChangerType.values();
 		WorldChangerType current = null;
-		for (int i = 0; i < values.length; i++) {
+		for (int i = 0; i < values.length; i++)
+		{
 			current = values[i];
-			if (percent > current.getSpawnPercentage()) {
+			if (percent > current.getSpawnPercentage())
+			{
 				continue;
-			} else {
+			}
+			else
+			{
 				return current;
 			}
 		}
@@ -25,7 +31,8 @@ public enum WorldChangerType {
 		return WorldChangerType.FOODEXPLOSION;
 	}
 
-	public int getSpawnPercentage() {
+	public int getSpawnPercentage()
+	{
 		return percentage;
 	}
 

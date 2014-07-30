@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import timoschwarz.snake.model.World;
-import timoschwarz.snake.model.boosts.WorldChanger;
+import timoschwarz.snake.model.powerups.WorldChanger;
 
 public class WorldChangerTask extends TimerTask {
 

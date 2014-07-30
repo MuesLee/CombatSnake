@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import timoschwarz.snake.model.Snake;
-import timoschwarz.snake.model.boosts.Boost;
+import timoschwarz.snake.model.powerups.Boost;
 
 public class SnakeTask extends TimerTask
 {

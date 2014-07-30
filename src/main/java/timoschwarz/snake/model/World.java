@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Random;
 
 import timoschwarz.snake.controller.GameController;
-import timoschwarz.snake.model.boosts.Boost;
-import timoschwarz.snake.model.boosts.WorldChanger;
+import timoschwarz.snake.model.powerups.Boost;
+import timoschwarz.snake.model.powerups.WorldChanger;
 import timoschwarz.snake.util.BoostFactory;
 import timoschwarz.snake.util.BoostType;
 import timoschwarz.snake.util.Diff;
@@ -211,8 +211,14 @@ public class World
 
 	private boolean checkForOutOfBoundsForSnake(Snake snake)
 	{
-		int x = snake.getHead().getX();
-		int y = snake.getHead().getY();
+
+		return checkForOutOfBoundsForPiece(snake.getHead());
+	}
+
+	private boolean checkForOutOfBoundsForPiece(Piece piece)
+	{
+		int x = piece.getX();
+		int y = piece.getY();
 
 		if (x > width || x < 0 || y < 0 || y > height)
 		{
@@ -443,4 +449,41 @@ public class World
 		}
 	}
 
+	public void revalidatePieces()
+	{
+		int amountOfRemovedLooseSnakePieces = 0;
+
+		for (int i = 0; i < looseSnakePieces.size(); i++)
+		{
+			Piece piece = looseSnakePieces.get(i);
+			if (checkForOutOfBoundsForPiece(piece))
+			{
+				looseSnakePieces.remove(i);
+				amountOfRemovedLooseSnakePieces++;
+			}
+		}
+
+		for (int i = 0; i < amountOfRemovedLooseSnakePieces; i++)
+		{
+			createNewLooseSnakePiece();
+			controller.updateLooseSnakePiecesInView();
+		}
+
+		for (int i = 0; i < worldChangers.size(); i++)
+		{
+			Piece piece = (Piece) worldChangers.get(i);
+			if (checkForOutOfBoundsForPiece(piece))
+			{
+				worldChangers.remove(i);
+			}
+		}
+		for (int i = 0; i < currentBooster.size(); i++)
+		{
+			Piece piece = (Piece) currentBooster.get(i);
+			if (checkForOutOfBoundsForPiece(piece))
+			{
+				currentBooster.remove(i);
+			}
+		}
+	}
 }
