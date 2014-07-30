@@ -44,10 +44,10 @@ public class SnakePanel extends JPanel
 
 	private GameController controller;
 
-	private List<Snake> snakes;
-	private List<Piece> looseSnakePieces;
-	private List<Boost> booster;
-	private List<WorldChanger> worldChangers;
+	private volatile List<Snake> snakes;
+	private volatile List<Piece> looseSnakePieces;
+	private volatile List<Boost> booster;
+	private volatile List<WorldChanger> worldChangers;
 
 	private Image backBuffer;
 	private Graphics bBG;
@@ -235,7 +235,6 @@ public class SnakePanel extends JPanel
 
 		final Stroke bigStroke = new BasicStroke(6F);
 		final Stroke smallStroke = new BasicStroke(3F);
-		Stroke actualStroke = smallStroke;
 
 		final Color mainColor = new Color(255, 243, 60);
 		final Color shadeColor = new Color(255, 250, 168);
@@ -373,33 +372,40 @@ public class SnakePanel extends JPanel
 			@Override
 			public void run()
 			{
+
 				boolean allLightningsWereAnimated = true;
 
-				for (Lightning l : lightnings)
+				while (!allLightningsWereAnimated)
 				{
-					if (!l.isDone())
+
+					for (Lightning l : lightnings)
 					{
-						allLightningsWereAnimated = false;
+						if (!l.isDone())
+						{
+							allLightningsWereAnimated = false;
+						}
 					}
-				}
-				if (allLightningsWereAnimated)
-				{
-					lightnings.clear();
-				}
-				else
-				{
-					try
+					if (allLightningsWereAnimated)
 					{
-						Thread.sleep(1000);
+						lightnings.clear();
 					}
-					catch (InterruptedException e)
+					else
 					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						try
+						{
+							Thread.sleep(1000);
+						}
+						catch (InterruptedException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}
 		});
+
+		t.start();
 
 	}
 
@@ -477,7 +483,13 @@ public class SnakePanel extends JPanel
 	{
 		this.width = calculatePanelWidth();
 		this.height = calculatePanelHeight();
+		updateSideSpaces();
 		repaint();
+	}
+
+	private void updateSideSpaces()
+	{
+
 	}
 
 	private void initSideSpaces()

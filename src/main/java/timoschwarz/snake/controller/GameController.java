@@ -132,6 +132,7 @@ public class GameController
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		frame.setResizable(true);
+		frame.setLocationRelativeTo(null);
 		frame.add(snakePanel, BorderLayout.CENTER);
 		frame.add(buttonPanel, BorderLayout.SOUTH);
 		frame.add(scorePanel, BorderLayout.NORTH);
