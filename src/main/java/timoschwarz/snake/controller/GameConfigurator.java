@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import timoschwarz.snake.model.DefaultGameRules;
 import timoschwarz.snake.util.VideoUtils;
 
 public class GameConfigurator
@@ -182,6 +183,6 @@ public class GameConfigurator
 	{
 		GameController.SNAKE_GROW_SIZE = snakeGrowSize - 1;
 		@SuppressWarnings("unused")
-		GameController gc = new GameController(namePlayerOne, namePlayerTwo);
+		GameController gc = new GameController(namePlayerOne, namePlayerTwo, new DefaultGameRules());
 	}
 }

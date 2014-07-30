@@ -23,6 +23,7 @@ import javax.swing.Timer;
 import timoschwarz.snake.model.Boost;
 import timoschwarz.snake.model.Piece;
 import timoschwarz.snake.model.Player;
+import timoschwarz.snake.model.RuleSet;
 import timoschwarz.snake.model.Snake;
 import timoschwarz.snake.model.World;
 import timoschwarz.snake.model.WorldChanger;
@@ -35,15 +36,12 @@ import timoschwarz.snake.view.SnakePanel;
 
 public class GameController
 {
-	public static final int POINTS_FOR_WORLDCHANGER_CONSUMPTION = 150;
 	private static final int DURATION_SOUND_WORLDCHANGER = 20000;
 	public static final int DEFAULT_GAME_SPEED = 100;
 	public static int SNAKE_SIZE = 15;
 	public static int paintSize = 15;
 	private static double MAX_PERCENTAGE_OF_SCREEN_SIZE = 0.7;
 	private static int AMOUNT_OF_LOOSE_SNAKEPIECES = 1;
-	private static int POINTS_FOR_FOOD_CONSUMPTION = 10;
-	private static int POINTS_FOR_BOOSTER_CONSUMPTION = 50;
 	public static int GAME_SPEED = 100;
 	private static int WORLD_SIZE_X = 50;
 	private static int WORLD_SIZE_Y = 50;
@@ -54,7 +52,6 @@ public class GameController
 	public static int DURATION_SPEEDBOOSTER = 5000;
 	public static int DURATION_PHASEBOOSTER = 7700;
 	public static final int WORLD_CHANGER_SPEED_INCREASE_DURATION = 15500;
-	public static final int BOUNCE_FROM_BOUNDS_DISTANCE = 2;
 	public static final int MAX_LIGHTNING_GENERATIONS = 5;
 	public static final int REPAINTS_TILL_NEXT_GENERATIONS_OF_LIGHTNINGS = 20;
 	private static final int NEW_LIGHTNING_SPAWN_INTERVAL = 1000;
@@ -90,8 +87,11 @@ public class GameController
 	private JLabel lifesPlayerOne;
 	private JLabel lifesPlayerTwo;
 
-	public GameController(String namePlayerOne, String namePlayerTwo)
+	private RuleSet gameRules;
+
+	public GameController(String namePlayerOne, String namePlayerTwo, RuleSet gameRules)
 	{
+		this.gameRules = gameRules;
 		initGame(namePlayerOne, namePlayerTwo);
 	}
 
@@ -224,7 +224,7 @@ public class GameController
 	public void punishSnakeForHittingTheBounds(Snake snake)
 	{
 		audioController.playSound("snakeHitsBounds");
-		world.moveWholeSnakeAgainstCurrentDirection(snake, BOUNCE_FROM_BOUNDS_DISTANCE);
+		gameRules.punishSnakeForHittingBounds(snake, this);
 	}
 
 	private void endGame()
@@ -598,14 +598,14 @@ public class GameController
 
 	public void snakeHasConsumedABooster(Snake snake, Boost booster)
 	{
-		Player player = getPlayerForSnake(snake);
-		player.increaseScore(POINTS_FOR_BOOSTER_CONSUMPTION);
-		updatePlayerScoreLabel();
 		audioController.playSound(booster.getSoundFileName());
+		gameRules.snakeHasConsumedABooster(snake, this);
+
+		updatePlayerScoreLabel();
 		updatePlaygroundBooster();
 	}
 
-	private Player getPlayerForSnake(Snake snake)
+	public Player getPlayerForSnake(Snake snake)
 	{
 		if (playerOne.getSnake() == snake)
 		{
@@ -620,18 +620,9 @@ public class GameController
 	public void snakeHasConsumedALoosePiece(Snake snake)
 	{
 		audioController.playSound("bite");
-		if (playerOne.getSnake() == snake)
-		{
-			playerOne.increaseScore(calculatePointsForGrowing(snake));
-		}
-		else
-		{
-			playerTwo.increaseScore(calculatePointsForGrowing(playerTwo.getSnake()));
-		}
+		gameRules.snakeHasConsumedALoosePiece(snake, this);
 
 		updatePlayerScoreLabel();
-
-		world.createNewLooseSnakePiece();
 		updateLooseSnakePiecesOfCanvas();
 	}
 
@@ -652,11 +643,6 @@ public class GameController
 	public void updateLooseSnakePiecesOfCanvas()
 	{
 		playground.updateLooseSnakePieceEntities();
-	}
-
-	private int calculatePointsForGrowing(Snake snake)
-	{
-		return POINTS_FOR_FOOD_CONSUMPTION * (snake.getGrowSize() + 1);
 	}
 
 	public World getWorld()
@@ -683,10 +669,11 @@ public class GameController
 
 	public void snakeHasConsumedAWorldChanger(Snake snake, WorldChanger usedWorldChanger)
 	{
-		Player player = getPlayerForSnake(snake);
-		player.increaseScore(POINTS_FOR_WORLDCHANGER_CONSUMPTION);
-		updatePlayerScoreLabel();
 		audioController.playSound(usedWorldChanger.getSoundFile());
+
+		gameRules.snakeHasConsumedAWorldChanger(snake, this);
+
+		updatePlayerScoreLabel();
 	}
 
 	public List<WorldChanger> getCurrentWorldChangers()
@@ -710,9 +697,10 @@ public class GameController
 		return graphicsController.createLightningImage();
 	}
 
-	public void punishSnakeForHittingSnake(Snake snakeTwo)
+	public void punishSnakeForHittingSnake(Snake snake)
 	{
 		audioController.playSound("snakeHitsSnake");
+		gameRules.punishSnakeForHittingSnake(snake, this);
 
 	}
 

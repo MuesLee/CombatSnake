@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import timoschwarz.snake.model.DefaultGameRules;
 import timoschwarz.snake.model.Player;
 import timoschwarz.snake.util.Direction;
 import timoschwarz.snake.util.OPCode;
@@ -28,7 +29,7 @@ public class LANController extends GameController
 
 	public LANController(String namePlayerOne, String namePlayerTwo)
 	{
-		super(namePlayerOne, "Victim");
+		super(namePlayerOne, "Victim", new DefaultGameRules());
 	}
 
 	@Override
