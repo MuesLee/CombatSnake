@@ -11,31 +11,38 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class HighscoreFileDAO implements HighscoreDAO {
+public class HighscoreFileDAO implements HighscoreDAO
+{
 
-	private static final Path db = Paths.get("./data/highscore.db");
+	private static final Path db = Paths.get("./highscore.db");
 	private List<Score> scores;
 
-	public HighscoreFileDAO() {
+	public HighscoreFileDAO()
+	{
 	}
 
 	@Override
-	public List<Score> getBestenliste() {
+	public List<Score> getHighscore()
+	{
 
-		if (scores != null) {
+		if (scores != null)
+		{
 			return scores;
 		}
 
 		List<Score> ret = new ArrayList<Score>(10);
 
-		if (!Files.exists(db)) {
-			scores = ret;
+		if (!Files.exists(db))
+		{
 			return ret;
 		}
 
-		try {
+		try
+		{
 			readIntoList(ret);
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 
@@ -45,27 +52,27 @@ public class HighscoreFileDAO implements HighscoreDAO {
 		return ret;
 	}
 
-	private void readIntoList(List<Score> ret) throws IOException {
+	private void readIntoList(List<Score> ret) throws IOException
+	{
 
-		if (!Files.exists(db)) {
-			return;
-		}
-
-		BufferedReader in = Files.newBufferedReader(db,
-				Charset.forName("UTF-8"));
+		BufferedReader in = Files.newBufferedReader(db, Charset.forName("UTF-8"));
 
 		String line = null;
 
-		while ((line = in.readLine()) != null) {
+		while ((line = in.readLine()) != null)
+		{
 
-			try {
+			try
+			{
 				String name = line;
 
-				String score = (line = in.readLine());
+				String score = line = in.readLine();
 				int scoreI = Integer.valueOf(score);
 
 				ret.add(new Score(name, scoreI));
-			} catch (NumberFormatException e) {
+			}
+			catch (NumberFormatException e)
+			{
 				e.printStackTrace();
 			}
 		}
@@ -73,12 +80,15 @@ public class HighscoreFileDAO implements HighscoreDAO {
 		in.close();
 	}
 
-	private void writeFromList(List<Score> list) throws IOException {
+	private void writeFromList(List<Score> list) throws IOException
+	{
 
-		if (!Files.exists(db)) {
+		if (!Files.exists(db))
+		{
 
 			Path dir = db.getParent();
-			if (!Files.exists(dir)) {
+			if (!Files.exists(dir))
+			{
 				Files.createDirectories(dir);
 			}
 
@@ -87,10 +97,10 @@ public class HighscoreFileDAO implements HighscoreDAO {
 
 		scores = list;
 
-		BufferedWriter out = Files.newBufferedWriter(db,
-				Charset.forName("UTF-8"));
+		BufferedWriter out = Files.newBufferedWriter(db, Charset.forName("UTF-8"));
 
-		for (Score s : list) {
+		for (Score s : list)
+		{
 
 			out.write(s.getName());
 			out.newLine();
@@ -103,11 +113,13 @@ public class HighscoreFileDAO implements HighscoreDAO {
 	}
 
 	@Override
-	public boolean insertScore(Score score) {
+	public boolean insertScore(Score score)
+	{
 
-		List<Score> list = getBestenliste();
+		List<Score> list = getHighscore();
 
-		if (list.size() >= 10 && list.get(9).getScore() >= score.getScore()) {
+		if (list.size() >= 10 && list.get(9).getScore() >= score.getScore())
+		{
 			return false;
 		}
 
@@ -116,9 +128,12 @@ public class HighscoreFileDAO implements HighscoreDAO {
 
 		list = list.subList(0, Math.min(list.size(), 10));
 
-		try {
+		try
+		{
 			writeFromList(list);
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 
@@ -126,14 +141,17 @@ public class HighscoreFileDAO implements HighscoreDAO {
 	}
 
 	@Override
-	public boolean isHighscore(int score) {
-		List<Score> list = getBestenliste();
+	public boolean isHighscore(int score)
+	{
+		List<Score> list = getHighscore();
 
-		if (list.size() < 10) {
+		if (list.size() < 10)
+		{
 			return true;
 		}
 
-		if (list.get(9).getScore() < score) {
+		if (list.get(9).getScore() < score)
+		{
 			return true;
 		}
 

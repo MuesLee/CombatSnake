@@ -15,7 +15,6 @@ import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -107,10 +106,16 @@ public class GameController
 
 	protected void prepareStartOfGame(String namePlayerOne, String namePlayerTwo, int playerLifes)
 	{
+		if (frame != null)
+		{
+			frame.dispose();
+		}
+
+		this.frame = new GameFrame("COMBAT SNAKEZ!!!111", this);
 		this.setPlayerOne(new Player(namePlayerOne, playerLifes));
 		this.setPlayerTwo(new Player(namePlayerTwo, playerLifes));
 		this.graphicsController = new GraphicsController();
-		this.frame = new GameFrame("COMBAT SNAKEZ!!!111", this);
+
 		Snake snakeOne = new Snake(SNAKE_SIZE, SNAKE_SIZE, 0);
 		Snake snakeTwo = new Snake(SNAKE_SIZE, SNAKE_SIZE, WORLD_SIZE_Y);
 
@@ -140,7 +145,6 @@ public class GameController
 		JButton startButton = createStartButton();
 		JButton resetButton = createResetButton();
 		JPanel buttonPanel = createButtonPanel(startButton, resetButton);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		frame.setBackground(Color.BLACK);
 		frame.setResizable(true);
@@ -188,9 +192,7 @@ public class GameController
 
 	private void resetGame()
 	{
-		frame.dispose();
 		initGame(playerOne.getName(), playerTwo.getName());
-
 	}
 
 	/**
@@ -707,5 +709,11 @@ public class GameController
 	public RuleSet getGameRules()
 	{
 		return gameRules;
+	}
+
+	public List<Score> getHighscore()
+	{
+		return highscoreDAO.getHighscore();
+
 	}
 }

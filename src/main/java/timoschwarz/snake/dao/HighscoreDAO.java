@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface HighscoreDAO {
 
-	public List<Score> getBestenliste();
+	public List<Score> getHighscore();
 
 	public boolean insertScore(Score score);
 
