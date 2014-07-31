@@ -2,6 +2,7 @@ package timoschwarz.snake.util;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 
 public class VideoUtils
 {
@@ -17,6 +18,11 @@ public class VideoUtils
 	{
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		return gd.getDisplayMode().getHeight();
+	}
+
+	public static Point getCenterPoint()
+	{
+		return GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
 	}
 
 }

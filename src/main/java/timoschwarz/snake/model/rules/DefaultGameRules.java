@@ -78,7 +78,7 @@ public class DefaultGameRules implements RuleSet
 
 			applyPenaltyToPlayer(playerTwo);
 
-			if (playerOne.getLifesLeft() == 0 || playerTwo.getLifesLeft() == 0)
+			if (playerOne.getLifesLeft() <= 0 || playerTwo.getLifesLeft() <= 0)
 			{
 				controller.updatePlayerScoreLabel();
 				controller.endGame();
@@ -88,7 +88,7 @@ public class DefaultGameRules implements RuleSet
 		{
 			applyPenaltyToPlayer(player);
 
-			if (player.getLifesLeft() == 0)
+			if (player.getLifesLeft() <= 0)
 			{
 				controller.updatePlayerScoreLabel();
 				controller.endGame();

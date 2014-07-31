@@ -1,5 +1,8 @@
 package timoschwarz.snake.view;
 
+import java.awt.Color;
+import java.awt.Graphics;
+
 import javax.swing.JFrame;
 
 public class GameFrame extends JFrame implements ClockListener
@@ -12,6 +15,7 @@ public class GameFrame extends JFrame implements ClockListener
 	public GameFrame(String s)
 	{
 		setTitle(s);
+		getContentPane().setBackground(Color.black);
 	}
 
 	public Clock getClock()
@@ -34,6 +38,16 @@ public class GameFrame extends JFrame implements ClockListener
 	public void tick()
 	{
 		repaint();
+	}
+
+	@Override
+	public void paintComponents(Graphics g)
+	{
+		g.setColor(Color.black);
+
+		g.fillRect(0, 0, getWidth(), getHeight());
+		super.paintComponents(g);
+
 	}
 
 	public SnakePanel getSnakePanel()
