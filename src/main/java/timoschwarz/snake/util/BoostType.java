@@ -2,7 +2,7 @@ package timoschwarz.snake.util;
 
 public enum BoostType {
 
-	SPEEDBOOST(50), PHASEBOOST(75), GROWBOOST(100);
+	SPEEDBOOST(30), PHASEBOOST(70), GROWBOOST(100);
 
 	private int spawnPercentage;
 

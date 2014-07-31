@@ -21,6 +21,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import timoschwarz.snake.dao.HighscoreDAO;
+import timoschwarz.snake.dao.HighscoreFileDAO;
+import timoschwarz.snake.dao.Score;
 import timoschwarz.snake.model.Piece;
 import timoschwarz.snake.model.Player;
 import timoschwarz.snake.model.Snake;
@@ -59,10 +62,11 @@ public class GameController
 	public static final double WORLD_SHRINKER_MULTIPLIER = 0.95;
 	public static final int WORLD_SHRINKER_ITERATIONS = 5;
 	public static final int WORLD_SHRINKER_INTERVAL = 2000;
-	public static int PLAYERS_LIFES = 3;
+	private static final String TEXT_POSTHIGHSCORE = "Do u want to upload your Score?";
+	private static final String TITLE_POSTHIGHSCORE = "Post Highscore?";
 	public static int MAX_AMOUNT_OF_BOOSTER = 2;
 	public static int BOOST_SPAWN_INTERVAL = 10000;
-	public static int WORLDCHANGER_SPAWN_INTERVAL = 4000;
+	public static int WORLDCHANGER_SPAWN_INTERVAL = 40000;
 	public static int SNAKE_GROW_SIZE = 1;
 
 	private SnakePanel snakePanel;
@@ -90,20 +94,23 @@ public class GameController
 	private JLabel lifesPlayerOne;
 	private JLabel lifesPlayerTwo;
 
+	private HighscoreDAO highscoreDAO;
+
 	private RuleSet gameRules;
 
 	public GameController(String namePlayerOne, String namePlayerTwo, RuleSet gameRules)
 	{
 		this.gameRules = gameRules;
+		this.highscoreDAO = new HighscoreFileDAO();
 		initGame(namePlayerOne, namePlayerTwo);
 	}
 
-	protected void prepareStartOfGame(String namePlayerOne, String namePlayerTwo)
+	protected void prepareStartOfGame(String namePlayerOne, String namePlayerTwo, int playerLifes)
 	{
-		this.setPlayerOne(new Player(namePlayerOne));
-		this.setPlayerTwo(new Player(namePlayerTwo));
+		this.setPlayerOne(new Player(namePlayerOne, playerLifes));
+		this.setPlayerTwo(new Player(namePlayerTwo, playerLifes));
 		this.graphicsController = new GraphicsController();
-		this.frame = new GameFrame("COMBAT SNAKEZ!!!111");
+		this.frame = new GameFrame("COMBAT SNAKEZ!!!111", this);
 		Snake snakeOne = new Snake(SNAKE_SIZE, SNAKE_SIZE, 0);
 		Snake snakeTwo = new Snake(SNAKE_SIZE, SNAKE_SIZE, WORLD_SIZE_Y);
 
@@ -145,7 +152,7 @@ public class GameController
 		frame.setLocation(centerPoint);
 		frame.setVisible(true);
 
-		clock = new Clock(60);
+		clock = new Clock(30);
 
 		frame.setClock(clock);
 		updatePlayerScoreLabel();
@@ -165,7 +172,7 @@ public class GameController
 	private void initGame(String namePlayerOne, String namePlayerTwo)
 	{
 		audioController = new AudioController();
-		prepareStartOfGame(namePlayerOne, namePlayerTwo);
+		prepareStartOfGame(namePlayerOne, namePlayerTwo, gameRules.getPlayerLifes());
 	}
 
 	private void calculatePaintSize()
@@ -199,7 +206,7 @@ public class GameController
 	public void punishSnakeForHittingTheBounds(Snake snake)
 	{
 		audioController.playSound("snakeHitsBounds");
-		gameRules.punishSnakeForHittingBounds(snake, this);
+		gameRules.processSnakeHittingBounds(snake, this);
 	}
 
 	private void stopTimer()
@@ -231,6 +238,14 @@ public class GameController
 		}
 
 		JOptionPane.showMessageDialog(frame, text, TEXT_GAME_OVER, JOptionPane.INFORMATION_MESSAGE);
+		int postHighscore = JOptionPane.showConfirmDialog(frame, TEXT_POSTHIGHSCORE, TITLE_POSTHIGHSCORE,
+			JOptionPane.OK_CANCEL_OPTION);
+
+		if (postHighscore == 1)
+		{
+			highscoreDAO.insertScore(new Score(playerWithHighestScore.getName(), playerWithHighestScore.getScore()));
+		}
+
 		SnakePanel.running.set(false);
 		resetGame();
 	}
@@ -678,7 +693,7 @@ public class GameController
 	public void punishSnakeForHittingSnake(Snake snake)
 	{
 		audioController.playSound("snakeHitsSnake");
-		gameRules.punishSnakeForHittingSnake(snake, this);
+		gameRules.processSnakeHittingSnake(snake, this);
 	}
 
 	public void worldSizeHasBeenUpdated()
@@ -687,5 +702,10 @@ public class GameController
 		snakePanel.updateWorldHeight(world.getHeight());
 		snakePanel.updateWorldWidth(world.getWidth());
 		snakePanel.updateSize();
+	}
+
+	public RuleSet getGameRules()
+	{
+		return gameRules;
 	}
 }

@@ -8,25 +8,24 @@ import timoschwarz.snake.model.Snake;
 
 public class DefaultGameRules implements RuleSet
 {
+	private static final int PUSH_DISTANCE_HITTING_BOUNDS = 2;
 	private static int VARIABLE_PENALTY_FOR_FAILURE = 4;
 	private static int STATIC_PENALTY_FOR_FAILURE = 4;
-	private static int BOUNCE_FROM_BOUNDS_DISTANCE = 2;
 	private static int POINTS_FOR_FOOD_CONSUMPTION = 10;
 	private static int POINTS_FOR_BOOSTER_CONSUMPTION = 50;
 	private static int POINTS_FOR_WORLDCHANGER_CONSUMPTION = 150;
 	public static int PLAYERS_LIFES = 3;
 
 	@Override
-	public void punishSnakeForHittingSnake(Snake snake, GameController controller)
+	public void processSnakeHittingSnake(Snake snake, GameController controller)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void punishSnakeForHittingBounds(Snake snake, GameController controller)
+	public void processSnakeHittingBounds(Snake snake, GameController controller)
 	{
-		controller.getWorld().moveWholeSnakeAgainstCurrentDirection(snake, BOUNCE_FROM_BOUNDS_DISTANCE);
+		controller.getWorld().moveWholeSnakeAgainstCurrentDirection(snake, PUSH_DISTANCE_HITTING_BOUNDS);
 	}
 
 	@Override
@@ -51,7 +50,6 @@ public class DefaultGameRules implements RuleSet
 	{
 		Player player = controller.getPlayerForSnake(snake);
 		player.increaseScore(POINTS_FOR_BOOSTER_CONSUMPTION);
-
 	}
 
 	@Override
@@ -107,6 +105,18 @@ public class DefaultGameRules implements RuleSet
 		player.setLifesLeft(lifesLeft);
 		int score = player.getScore() / (random.nextInt(VARIABLE_PENALTY_FOR_FAILURE) + 1) - STATIC_PENALTY_FOR_FAILURE;
 		player.setScore(score);
+	}
+
+	@Override
+	public int getPlayerLifes()
+	{
+		return PLAYERS_LIFES;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "FUN MODE";
 	}
 
 }

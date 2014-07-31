@@ -56,7 +56,7 @@ public class LANConfigurator
 			public void actionPerformed(ActionEvent arg0)
 			{
 				String playerName = textFieldPlayer.getText();
-				controller.hostGame(playerName);
+				controller.hostGame(playerName, controller.getGameRules().getPlayerLifes());
 			}
 		});
 		joinGameButton = new JButton("Join Game");
@@ -69,7 +69,7 @@ public class LANConfigurator
 				String playerName = textFieldPlayer.getText();
 				if (!hostIP.isEmpty())
 				{
-					controller.joinGame(hostIP, playerName);
+					controller.joinGame(hostIP, playerName, controller.getGameRules().getPlayerLifes());
 				}
 
 			}

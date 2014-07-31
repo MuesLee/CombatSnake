@@ -34,14 +34,14 @@ public class LANController extends GameController
 	}
 
 	@Override
-	protected void prepareStartOfGame(String namePlayerOne, String namePlayerTwo)
+	protected void prepareStartOfGame(String namePlayerOne, String namePlayerTwo, int playerLifes)
 	{
 		configurator = new LANConfigurator(this);
 	}
 
 	public void startLANGame()
 	{
-		super.prepareStartOfGame(host.getName(), client.getName());
+		super.prepareStartOfGame(host.getName(), client.getName(), super.getGameRules().getPlayerLifes());
 	}
 
 	private void establishConnectionToServer()
@@ -135,10 +135,10 @@ public class LANController extends GameController
 		client.getSnake().setDirection(direction);
 	}
 
-	public void hostGame(String playerName)
+	public void hostGame(String playerName, int lifes)
 	{
 		LANLobby lobby = new LANLobby(this);
-		host = new Player(playerName);
+		host = new Player(playerName, lifes);
 		setPlayerOne(host);
 		lobby.addPlayer(host);
 
@@ -146,9 +146,9 @@ public class LANController extends GameController
 
 	}
 
-	public void joinGame(String hostIP, String playerName)
+	public void joinGame(String hostIP, String playerName, int lifes)
 	{
-		client = new Player(playerName);
+		client = new Player(playerName, lifes);
 		setPlayerTwo(client);
 		InetAddress address = null;
 		try

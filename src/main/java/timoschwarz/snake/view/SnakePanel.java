@@ -262,7 +262,6 @@ public class SnakePanel extends JPanel
 
 			for (LightningSegment lightningSegment : segments)
 			{
-
 				g2d.setStroke(smallStroke);
 
 				final Coordinates start = lightningSegment.getStart();
@@ -338,7 +337,6 @@ public class SnakePanel extends JPanel
 	public void clearBooster()
 	{
 		getBooster().clear();
-
 	}
 
 	public List<Snake> getSnakes()
@@ -384,7 +382,6 @@ public class SnakePanel extends JPanel
 			@Override
 			public void run()
 			{
-
 				boolean allLightningsWereAnimated = true;
 
 				while (!allLightningsWereAnimated)

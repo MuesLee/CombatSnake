@@ -2,7 +2,7 @@ package timoschwarz.snake.util;
 
 public enum WorldChangerType {
 
-	GAMESPEEDINCREASE(10), FOODEXPLOSION(20), WORLDSHRINKER(100);
+	GAMESPEEDINCREASE(33), FOODEXPLOSION(67), WORLDSHRINKER(100);
 
 	private int percentage;
 

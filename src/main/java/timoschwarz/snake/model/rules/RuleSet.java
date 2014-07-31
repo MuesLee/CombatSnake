@@ -6,9 +6,9 @@ import timoschwarz.snake.model.Snake;
 
 public interface RuleSet
 {
-	public void punishSnakeForHittingSnake(Snake snake, GameController controller);
+	public void processSnakeHittingSnake(Snake snake, GameController controller);
 
-	public void punishSnakeForHittingBounds(Snake snake, GameController controller);
+	public void processSnakeHittingBounds(Snake snake, GameController controller);
 
 	public void snakeHasConsumedAWorldChanger(Snake snake, GameController controller);
 
@@ -21,4 +21,6 @@ public interface RuleSet
 	public int calculatePointsForGrowing(Snake snake);
 
 	public void processFailureOfSnake(Player player, GameController controller);
+
+	public int getPlayerLifes();
 }

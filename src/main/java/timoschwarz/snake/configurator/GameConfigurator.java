@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -19,6 +21,8 @@ import javax.swing.JTextField;
 import timoschwarz.snake.controller.GameController;
 import timoschwarz.snake.controller.LANController;
 import timoschwarz.snake.model.rules.DefaultGameRules;
+import timoschwarz.snake.model.rules.HardcoreGameRules;
+import timoschwarz.snake.model.rules.RuleSet;
 import timoschwarz.snake.util.VideoUtils;
 
 public class GameConfigurator
@@ -26,11 +30,12 @@ public class GameConfigurator
 	private String namePlayerOne;
 	private String namePlayerTwo;
 	private int snakeGrowSize = 1;
+	private RuleSet choosenGameRule = new DefaultGameRules();
 
 	private static final String TITLE_GAME_CONFIGURATION = "Combat Snakez Konfigurator";
 	private static final String TEXT_BUTTON_START_LOCAL_GAME = "Start Local Game";
 	private static final String TEXT_BUTTON_START_LAN_GAME = "Start LAN Game";
-	private static final double PERCENTAGE_OF_SCREEN_SIZE = 0.2;
+	private static final double PERCENTAGE_OF_SCREEN_SIZE = 0.25;
 	JFrame frame;
 
 	public GameConfigurator()
@@ -69,29 +74,64 @@ public class GameConfigurator
 		Dimension preferredSize = new Dimension(width, height);
 		frame.setPreferredSize(preferredSize);
 
-		Integer[] items = new Integer[5];
-		items[0] = 1;
-		items[1] = 2;
-		items[2] = 3;
-		items[3] = 4;
-		items[4] = 5;
-		final JComboBox<Integer> comboBoxGrowSize = new JComboBox<>(items);
-		comboBoxGrowSize.setSelectedIndex(0);
-		comboBoxGrowSize.setMaximumRowCount(5);
-		comboBoxGrowSize.addFocusListener(new FocusAdapter()
-		{
-			@Override
-			public void focusLost(FocusEvent e)
-			{
-				snakeGrowSize = (int) comboBoxGrowSize.getSelectedItem();
-			}
-		});
+		final JComboBox<Integer> comboBoxGrowSize = createComboBoxForGrowSize();
 
+		final JComboBox<RuleSet> comboBoxRuleSet = createComboBoxForRuleSet();
 		final JLabel labelGrowSize = new JLabel("Snake Grow Size");
 		labelGrowSize.setLabelFor(comboBoxGrowSize);
+		final JLabel labelGameRules = new JLabel("Game Rule Set");
+		labelGameRules.setLabelFor(comboBoxRuleSet);
 
 		JButton startLocalGame = createStartLocalGameButton();
 		JButton startLanGame = createStartLanGameButton();
+		final JTextField textFieldPlayerOne = createJTextFieldNamePlayerOne();
+		final JTextField textFieldPlayerTwo = createJTextFieldNamePlayerTwo();
+
+		JPanel configPanel = new JPanel();
+		BoxLayout boxLayout = new BoxLayout(configPanel, BoxLayout.Y_AXIS);
+		configPanel.setLayout(boxLayout);
+		configPanel.add(Box.createHorizontalStrut(15));
+		configPanel.add(labelGrowSize);
+		configPanel.add(comboBoxGrowSize);
+		configPanel.add(labelGameRules);
+		configPanel.add(comboBoxRuleSet);
+
+		JPanel textFieldPanel = new JPanel(new FlowLayout());
+		textFieldPanel.add(textFieldPlayerOne);
+		textFieldPanel.add(textFieldPlayerTwo);
+
+		frame.add(textFieldPanel, BorderLayout.NORTH);
+		frame.add(startLocalGame, BorderLayout.WEST);
+		frame.add(startLanGame, BorderLayout.EAST);
+		frame.add(configPanel, BorderLayout.CENTER);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+	}
+
+	private JComboBox<RuleSet> createComboBoxForRuleSet()
+	{
+		RuleSet[] items = new RuleSet[2];
+		items[0] = new DefaultGameRules();
+		items[1] = new HardcoreGameRules();
+
+		final JComboBox<RuleSet> cb = new JComboBox<>(items);
+
+		cb.setSelectedIndex(0);
+		cb.setMaximumRowCount(5);
+		cb.addFocusListener(new FocusAdapter()
+		{
+
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				choosenGameRule = (RuleSet) cb.getSelectedItem();
+			}
+		});
+		return cb;
+	}
+
+	private JTextField createJTextFieldNamePlayerOne()
+	{
 		final JTextField textFieldPlayerOne = createTextFieldPlayerOne();
 		textFieldPlayerOne.addFocusListener(new FocusAdapter()
 		{
@@ -109,6 +149,11 @@ public class GameConfigurator
 				textFieldPlayerOne.selectAll();
 			}
 		});
+		return textFieldPlayerOne;
+	}
+
+	private JTextField createJTextFieldNamePlayerTwo()
+	{
 		final JTextField textFieldPlayerTwo = createTextFieldPlayerTwo();
 		textFieldPlayerTwo.addFocusListener(new FocusAdapter()
 		{
@@ -125,21 +170,29 @@ public class GameConfigurator
 				textFieldPlayerTwo.selectAll();
 			}
 		});
+		return textFieldPlayerTwo;
+	}
 
-		JPanel configPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		configPanel.add(labelGrowSize);
-		configPanel.add(comboBoxGrowSize);
-
-		JPanel textFieldPanel = new JPanel(new FlowLayout());
-		textFieldPanel.add(textFieldPlayerOne);
-		textFieldPanel.add(textFieldPlayerTwo);
-
-		frame.add(textFieldPanel, BorderLayout.NORTH);
-		frame.add(startLocalGame, BorderLayout.WEST);
-		frame.add(startLanGame, BorderLayout.EAST);
-		frame.add(configPanel, BorderLayout.CENTER);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
+	private JComboBox<Integer> createComboBoxForGrowSize()
+	{
+		Integer[] items = new Integer[5];
+		items[0] = 1;
+		items[1] = 2;
+		items[2] = 3;
+		items[3] = 4;
+		items[4] = 5;
+		final JComboBox<Integer> comboBoxGrowSize = new JComboBox<>(items);
+		comboBoxGrowSize.setSelectedIndex(0);
+		comboBoxGrowSize.setMaximumRowCount(5);
+		comboBoxGrowSize.addFocusListener(new FocusAdapter()
+		{
+			@Override
+			public void focusLost(FocusEvent e)
+			{
+				snakeGrowSize = (int) comboBoxGrowSize.getSelectedItem();
+			}
+		});
+		return comboBoxGrowSize;
 	}
 
 	private JButton createStartLanGameButton()
@@ -185,6 +238,6 @@ public class GameConfigurator
 	{
 		GameController.SNAKE_GROW_SIZE = snakeGrowSize - 1;
 		@SuppressWarnings("unused")
-		GameController gc = new GameController(namePlayerOne, namePlayerTwo, new DefaultGameRules());
+		GameController gc = new GameController(namePlayerOne, namePlayerTwo, choosenGameRule);
 	}
 }

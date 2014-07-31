@@ -212,7 +212,42 @@ public class World
 	private boolean checkForOutOfBoundsForSnake(Snake snake)
 	{
 
-		return checkForOutOfBoundsForPiece(snake.getHead());
+		final SnakePiece head = snake.getHead();
+		boolean isOutOfBounds = checkForOutOfBoundsForPiece(head);
+
+		if (snake.isPhased() && isOutOfBounds)
+		{
+			moveSnakeHeadToTheOtherSideOfTheWorld(head);
+			return false;
+		}
+		else
+		{
+			return isOutOfBounds;
+		}
+
+	}
+
+	private void moveSnakeHeadToTheOtherSideOfTheWorld(SnakePiece head)
+	{
+		int x = head.getX();
+		int y = head.getY();
+
+		if (x < 0)
+		{
+			head.setX(width);
+		}
+		else if (x > width)
+		{
+			head.setX(0);
+		}
+		if (y < 0)
+		{
+			head.setY(height);
+		}
+		else if (y > height)
+		{
+			head.setY(0);
+		}
 	}
 
 	private boolean checkForOutOfBoundsForPiece(Piece piece)
@@ -330,13 +365,13 @@ public class World
 		}
 		else if (collisionSnakeOneWithItself || collisionSnakeOneWithSnakeTwo)
 		{
-			controller.processFailureOfSnake(snakeTwo);
-			controller.punishSnakeForHittingSnake(snakeTwo);
+			controller.processFailureOfSnake(snakeOne);
+			controller.punishSnakeForHittingSnake(snakeOne);
 		}
 		else if (collisionSnakeTwoWithItself || collisionSnakeTwoWithSnakeOne)
 		{
-			controller.processFailureOfSnake(snakeOne);
-			controller.punishSnakeForHittingSnake(snakeOne);
+			controller.processFailureOfSnake(snakeTwo);
+			controller.punishSnakeForHittingSnake(snakeTwo);
 		}
 
 	}
