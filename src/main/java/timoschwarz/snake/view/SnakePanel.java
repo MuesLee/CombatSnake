@@ -6,9 +6,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,7 +76,6 @@ public class SnakePanel extends JPanel
 		this.setSnakes(new ArrayList<Snake>());
 		this.setWorldChangers(new ArrayList<WorldChanger>());
 
-		updateSize();
 		setWorldWidth(w);
 		setWorldHeight(h);
 
@@ -91,18 +90,14 @@ public class SnakePanel extends JPanel
 
 	private int calculatePanelHeight()
 	{
-		Insets insets = getInsets();
 
-		return getWorldHeight() * paintSize + 2 * BORDER_THICKNESS + insets.bottom + insets.top + paintSize + 2
-			* SPACE_TOPBOT;
+		return getPaintedAreaHeigth() + 2 * SPACE_TOPBOT;
 	}
 
 	private int calculatePanelWidth()
 	{
-		Insets insets = getInsets();
 
-		return getWorldWidth() * paintSize + 2 * BORDER_THICKNESS + insets.left + insets.right + paintSize + 2
-			* SPACE_LEFTRIGHT;
+		return getPaintedAreaWidth() + 2 * SPACE_LEFTRIGHT;
 	}
 
 	@Override
@@ -117,6 +112,7 @@ public class SnakePanel extends JPanel
 		if (backBuffer == null)
 		{
 			backBuffer = createImage(getWidth(), getHeight());
+			backBuffer.setAccelerationPriority(1f);
 			bBG = backBuffer.getGraphics();
 		}
 
@@ -139,10 +135,30 @@ public class SnakePanel extends JPanel
 		applyRenderHints(g2d);
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
-		drawEntitiesToScreen(g2d);
-		drawBorders(g2d);
-		drawLightning(g2d);
+		BufferedImage image = new BufferedImage(getPaintedAreaWidth(), getPaintedAreaHeigth(),
+			BufferedImage.TYPE_INT_RGB);
+		image.setAccelerationPriority(0.9f);
+		Graphics2D paintedArea = (Graphics2D) image.getGraphics();
+		drawEntitiesToScreen(paintedArea);
+		drawBorders(paintedArea);
+		paintedArea.dispose();
+
+		g2d.drawImage(image, getTopLeftCornerOfCenteredPaintedAreaX(), getTopLeftCornerOfCenteredPaintedAreaY(), this);
 		drawFPS(g2d);
+		drawLightning(g2d);
+	}
+
+	private int getTopLeftCornerOfCenteredPaintedAreaY()
+	{
+		int y = getHeight() / 2 - getPaintedAreaHeigth() / 2;
+
+		return y;
+	}
+
+	private int getTopLeftCornerOfCenteredPaintedAreaX()
+	{
+		int x = getWidth() / 2 - getPaintedAreaWidth() / 2;
+		return x;
 	}
 
 	private void drawBorders(Graphics2D graphics)
@@ -150,17 +166,15 @@ public class SnakePanel extends JPanel
 		graphics.setColor(Color.MAGENTA);
 
 		// TOP
-		graphics.fillRect(SPACE_LEFTRIGHT - BORDER_THICKNESS, SPACE_TOPBOT - BORDER_THICKNESS, paintSize + worldWidth
-			* paintSize + 2 * BORDER_THICKNESS, BORDER_THICKNESS);
+		graphics.fillRect(0, 0, paintSize + worldWidth * paintSize + 2 * BORDER_THICKNESS, BORDER_THICKNESS);
 		// BOT
-		graphics.fillRect(SPACE_LEFTRIGHT - BORDER_THICKNESS, SPACE_TOPBOT + worldHeight * paintSize + paintSize,
-			paintSize + worldWidth * paintSize + 2 * BORDER_THICKNESS, BORDER_THICKNESS);
+		graphics.fillRect(0, worldHeight * paintSize + paintSize + BORDER_THICKNESS, paintSize + worldWidth * paintSize
+			+ 2 * BORDER_THICKNESS, BORDER_THICKNESS);
 		// RIGHT
-		graphics.fillRect(paintSize + SPACE_LEFTRIGHT + worldWidth * paintSize, SPACE_TOPBOT - BORDER_THICKNESS,
-			BORDER_THICKNESS, paintSize + worldHeight * paintSize + 2 * BORDER_THICKNESS);
+		graphics.fillRect(paintSize + worldWidth * paintSize + BORDER_THICKNESS, 0, BORDER_THICKNESS, paintSize
+			+ worldHeight * paintSize + 2 * BORDER_THICKNESS);
 		// LEFT
-		graphics.fillRect(SPACE_LEFTRIGHT - BORDER_THICKNESS, SPACE_TOPBOT - BORDER_THICKNESS, BORDER_THICKNESS,
-			paintSize + worldHeight * paintSize + 2 * BORDER_THICKNESS);
+		graphics.fillRect(0, 0, BORDER_THICKNESS, paintSize + worldHeight * paintSize + 2 * BORDER_THICKNESS);
 	}
 
 	private void drawEntitiesToScreen(Graphics2D graphics)
@@ -214,12 +228,12 @@ public class SnakePanel extends JPanel
 
 	private int getShiftedXCoordForPiece(Piece piece)
 	{
-		return piece.getX() * paintSize + SPACE_LEFTRIGHT;
+		return piece.getX() * paintSize + BORDER_THICKNESS;
 	}
 
 	private int getShiftedYCoordForPiece(Piece piece)
 	{
-		return piece.getY() * paintSize + SPACE_TOPBOT;
+		return piece.getY() * paintSize + BORDER_THICKNESS;
 	}
 
 	private void drawLightning(Graphics g)
@@ -479,24 +493,34 @@ public class SnakePanel extends JPanel
 
 	public void updateSize()
 	{
-		this.width = calculatePanelWidth();
-		this.height = calculatePanelHeight();
-		updateSideSpaces();
 		repaint();
 	}
 
-	private void updateSideSpaces()
+	public void updateWorldHeight(int worldHeight)
 	{
-		int paintedAreaWidth = getWorldWidth() * paintSize + 2 * BORDER_THICKNESS + paintSize;
-		int paintedAreaHeigth = getWorldWidth() * paintSize + 2 * BORDER_THICKNESS + paintSize;
+		int dif = worldHeight - this.worldHeight;
 
-		int panelWidth = getWidth();
-		int panelHeight = getWidth();
+		this.worldHeight = worldHeight;
 
-		SPACE_LEFTRIGHT = panelWidth - paintedAreaWidth;
-		SPACE_LEFTRIGHT /= 2;
-		SPACE_TOPBOT = panelHeight - paintedAreaHeigth;
-		SPACE_TOPBOT /= 2;
+		SPACE_TOPBOT += dif * paintSize;
+	}
+
+	public void updateWorldWidth(int worldWidth)
+	{
+		int dif = worldWidth - this.worldWidth;
+
+		this.worldWidth = worldWidth;
+		SPACE_LEFTRIGHT += dif * paintSize;
+	}
+
+	private int getPaintedAreaHeigth()
+	{
+		return getWorldHeight() * paintSize + 2 * BORDER_THICKNESS + paintSize;
+	}
+
+	private int getPaintedAreaWidth()
+	{
+		return getWorldWidth() * paintSize + 2 * BORDER_THICKNESS + paintSize;
 	}
 
 	private void initSideSpaces()

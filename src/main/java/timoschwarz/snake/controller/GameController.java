@@ -232,7 +232,7 @@ public class GameController
 
 		JOptionPane.showMessageDialog(frame, text, TEXT_GAME_OVER, JOptionPane.INFORMATION_MESSAGE);
 		SnakePanel.running.set(false);
-		initGame(playerOne.getName(), playerTwo.getName());
+		resetGame();
 	}
 
 	private Player getPlayerWithHighestScore()
@@ -684,8 +684,8 @@ public class GameController
 	public void worldSizeHasBeenUpdated()
 	{
 		//calculatePaintSize();
-		snakePanel.setWorldHeight(world.getHeight());
-		snakePanel.setWorldWidth(world.getWidth());
+		snakePanel.updateWorldHeight(world.getHeight());
+		snakePanel.updateWorldWidth(world.getWidth());
 		snakePanel.updateSize();
 	}
 }
