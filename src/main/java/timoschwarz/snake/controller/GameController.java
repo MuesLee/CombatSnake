@@ -56,16 +56,16 @@ public class GameController
 	public static int DURATION_PHASEBOOSTER = 7700;
 	public static final int WORLD_GAME_SPEED_INCREASE_DURATION = 15500;
 	public static final int MAX_LIGHTNING_GENERATIONS = 5;
-	public static final int REPAINTS_TILL_NEXT_GENERATIONS_OF_LIGHTNINGS = 20;
+	public static final int REPAINTS_TILL_NEXT_GENERATIONS_OF_LIGHTNINGS = 12;
 	private static final int NEW_LIGHTNING_SPAWN_INTERVAL = 1000;
 	public static final double WORLD_SHRINKER_MULTIPLIER = 0.95;
 	public static final int WORLD_SHRINKER_ITERATIONS = 5;
-	public static final int WORLD_SHRINKER_INTERVAL = 2000;
+	public static final int WORLD_SHRINKER_INTERVAL = 1500;
 	private static final String TEXT_POSTHIGHSCORE = "Do u want to upload your Score?";
 	private static final String TITLE_POSTHIGHSCORE = "Post Highscore?";
 	public static int MAX_AMOUNT_OF_BOOSTER = 2;
 	public static int BOOST_SPAWN_INTERVAL = 10000;
-	public static int WORLDCHANGER_SPAWN_INTERVAL = 4000;
+	public static int WORLDCHANGER_SPAWN_INTERVAL = 40000;
 	public static int SNAKE_GROW_SIZE = 1;
 
 	private SnakePanel snakePanel;

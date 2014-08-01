@@ -10,7 +10,7 @@ public class DefaultGameRules implements RuleSet
 {
 	private static final int PUSH_DISTANCE_HITTING_BOUNDS = 2;
 	private static int VARIABLE_PENALTY_FOR_FAILURE = 4;
-	private static int STATIC_PENALTY_FOR_FAILURE = 4;
+	private static int STATIC_PENALTY_FOR_FAILURE = 40;
 	private static int POINTS_FOR_FOOD_CONSUMPTION = 10;
 	private static int POINTS_FOR_BOOSTER_CONSUMPTION = 50;
 	private static int POINTS_FOR_WORLDCHANGER_CONSUMPTION = 150;
