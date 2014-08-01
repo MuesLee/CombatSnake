@@ -34,7 +34,7 @@ public class GameConfigurator
 
 	private static final String TITLE_GAME_CONFIGURATION = "Combat Snakez Konfigurator";
 	private static final String TEXT_BUTTON_START_LOCAL_GAME = "Start Local Game";
-	private static final String TEXT_BUTTON_START_LAN_GAME = "Start LAN Game";
+	private static final String TEXT_BUTTON_START_LAN_GAME = "LAN Game (coming soon)";
 	private static final double PERCENTAGE_OF_SCREEN_SIZE = 0.25;
 	JFrame frame;
 
@@ -84,6 +84,7 @@ public class GameConfigurator
 
 		JButton startLocalGame = createStartLocalGameButton();
 		JButton startLanGame = createStartLanGameButton();
+		startLanGame.setEnabled(false);
 		final JTextField textFieldPlayerOne = createJTextFieldNamePlayerOne();
 		final JTextField textFieldPlayerTwo = createJTextFieldNamePlayerTwo();
 

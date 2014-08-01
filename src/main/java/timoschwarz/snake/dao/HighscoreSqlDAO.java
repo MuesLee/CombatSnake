@@ -25,7 +25,7 @@ import javax.net.ssl.X509TrustManager;
 public class HighscoreSqlDAO implements HighscoreDAO
 {
 
-	private static final String server_url = "https://do-rh-studizubi1.doms.kvwl.de/CombatSnakez/Bestenliste";
+	private static final String server_url = "https://do-rh-studizubi1.doms.kvwl.de/CombatSnakeZ/Bestenliste";
 	private static final String PWD_INSERT = "insert_score";
 	private static final String PWD_GET = "get_score";
 	private static final String PWD_CHECK = "check_score";

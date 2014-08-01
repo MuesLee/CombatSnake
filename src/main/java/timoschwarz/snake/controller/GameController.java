@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import timoschwarz.snake.dao.HighscoreDAO;
-import timoschwarz.snake.dao.HighscoreFileDAO;
+import timoschwarz.snake.dao.HighscoreSqlDAO;
 import timoschwarz.snake.dao.Score;
 import timoschwarz.snake.model.Piece;
 import timoschwarz.snake.model.Player;
@@ -65,7 +65,7 @@ public class GameController
 	private static final String TITLE_POSTHIGHSCORE = "Post Highscore?";
 	public static int MAX_AMOUNT_OF_BOOSTER = 2;
 	public static int BOOST_SPAWN_INTERVAL = 10000;
-	public static int WORLDCHANGER_SPAWN_INTERVAL = 40000;
+	public static int WORLDCHANGER_SPAWN_INTERVAL = 45000;
 	public static int SNAKE_GROW_SIZE = 1;
 
 	private SnakePanel snakePanel;
@@ -100,7 +100,7 @@ public class GameController
 	public GameController(String namePlayerOne, String namePlayerTwo, RuleSet gameRules)
 	{
 		this.gameRules = gameRules;
-		this.highscoreDAO = new HighscoreFileDAO();
+		this.highscoreDAO = new HighscoreSqlDAO();
 		initGame(namePlayerOne, namePlayerTwo);
 	}
 
