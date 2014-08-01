@@ -65,7 +65,7 @@ public class GameController
 	private static final String TITLE_POSTHIGHSCORE = "Post Highscore?";
 	public static int MAX_AMOUNT_OF_BOOSTER = 2;
 	public static int BOOST_SPAWN_INTERVAL = 10000;
-	public static int WORLDCHANGER_SPAWN_INTERVAL = 40000;
+	public static int WORLDCHANGER_SPAWN_INTERVAL = 4000;
 	public static int SNAKE_GROW_SIZE = 1;
 
 	private SnakePanel snakePanel;

@@ -53,6 +53,7 @@ public class WorldShrinker extends Piece implements WorldChanger
 				}
 				else
 				{
+					timer.stop();
 					restoreWorld(world);
 				}
 			}
@@ -63,14 +64,38 @@ public class WorldShrinker extends Piece implements WorldChanger
 	}
 
 	@Override
-	public void restoreWorld(World world)
+	public void restoreWorld(final World world)
 	{
 		final GameController controller = world.getController();
+		timer = new Timer(GameController.WORLD_SHRINKER_INTERVAL, new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				if (shrinkCounter >= 0)
+				{
+					int width = world.getWidth();
+					int height = world.getHeight();
 
-		world.setWidth(oldWidth);
-		world.setHeight(oldHeigth);
-		controller.worldSizeHasBeenUpdated();
-		timer.stop();
+					width = (int) (width * (2 - GameController.WORLD_SHRINKER_MULTIPLIER));
+					height = (int) (width * (2 - GameController.WORLD_SHRINKER_MULTIPLIER));
+
+					world.setWidth(width);
+					world.setHeight(height);
+					controller.worldSizeHasBeenUpdated();
+					shrinkCounter--;
+				}
+				else
+				{
+					world.setWidth(oldWidth);
+					world.setHeight(oldHeigth);
+					controller.worldSizeHasBeenUpdated();
+					timer.stop();
+				}
+			}
+		});
+
+		timer.start();
 
 	}
 
