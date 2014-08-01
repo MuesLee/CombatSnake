@@ -66,7 +66,7 @@ public class GameFrame extends JFrame implements ClockListener
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				JFrame scoreFrame = new JFrame();
+				JFrame scoreFrame = new JFrame("Highscore");
 				scoreFrame.setLayout(new BorderLayout());
 				scoreFrame.setSize(200, 500);
 				scoreFrame.setLocationRelativeTo(null);

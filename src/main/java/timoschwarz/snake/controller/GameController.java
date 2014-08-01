@@ -243,7 +243,7 @@ public class GameController
 		int postHighscore = JOptionPane.showConfirmDialog(frame, TEXT_POSTHIGHSCORE, TITLE_POSTHIGHSCORE,
 			JOptionPane.OK_CANCEL_OPTION);
 
-		if (postHighscore == 1)
+		if (postHighscore == JOptionPane.OK_OPTION)
 		{
 			highscoreDAO.insertScore(new Score(playerWithHighestScore.getName(), playerWithHighestScore.getScore()));
 		}

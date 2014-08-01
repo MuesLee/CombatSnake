@@ -19,6 +19,7 @@ public class HighscoreFileDAO implements HighscoreDAO
 
 	public HighscoreFileDAO()
 	{
+		System.out.println(Files.exists(db));
 	}
 
 	@Override
