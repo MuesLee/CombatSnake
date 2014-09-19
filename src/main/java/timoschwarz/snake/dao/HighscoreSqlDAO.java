@@ -50,7 +50,7 @@ public class HighscoreSqlDAO implements HighscoreDAO
 		connection.setDoInput(true);
 		connection.setDoOutput(true);
 		connection.setUseCaches(false);
-		connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 		connection.setRequestProperty("Content-Length", String.valueOf(body.length()));
 
 		OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
